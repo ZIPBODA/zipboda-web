@@ -1,0 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* @zipboda/tokens preset이 raw 값을 담고 있어 tokens/css import는 선택.
+   커스텀 CSS에서 --zb-* 변수를 쓰려면 아래 주석 해제:
+   @import "@zipboda/tokens/css"; */
