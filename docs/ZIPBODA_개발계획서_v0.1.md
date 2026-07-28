@@ -52,7 +52,7 @@ LH·SH·GH·IH 공공 청약 정보 통합 조회 + 평면도(2D)·**WebGL 3D �
 | 공유 코드 | **pnpm workspace `@zipboda/shared`**(API 타입·훅) app과 공유 | 검토 app-Minor(공유 메커니즘) |
 
 ### 3.1 디자인시스템 토큰(Figma)
-Brand `#FFBA17` / Neutral `#111111`~`#F3F4F6` / Semantic 정보 `#2B7FFF`·성공 `#00BC7D`·경고 `#F59E0B`·오류 `#FF6467` / Social Kakao `#FEE500`·Naver `#03C75A` / Inter+한글, weight 400–900, scale 11~48.
+Brand `#FFBA17` / Neutral `#111111`~`#F3F4F6` / Semantic 정보 `#2B7FFF`·성공 `#00BC7D`·경고 `#F59E0B`·오류 `#FF6467` / Social Kakao `#FEE500`·Naver `#03C75A` / Pretendard, weight 400–900, scale 10~48.
 
 ### 3.2 WebGL 3D(집구경)
 평면도 3D 배치도(ZB-U-PLAN-04)를 three.js로 구현. 자산 메타 API-032 로딩, 1·3인칭 전환(ITF-013)·이동·회전, 미지원 시 2D 폴백(ZB-U-PLAN-03). 성능 목표 30fps 이상(REQ-NF-003).

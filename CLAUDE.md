@@ -15,6 +15,7 @@
 @.claude/rules/frontend-rule.md
 @.claude/rules/frontend-architecture.md
 @.claude/rules/code-organization.md
+@.claude/rules/figma-implementation-rule.md
 @.claude/rules/contributing-role.md
 @.claude/rules/document-template-rule.md
 @.claude/rules/phase-review-rule.md

@@ -149,7 +149,7 @@
 | P4 | 경로 별칭 | `@/*` (내부) · `@zipboda/shared` (web·app 공유 패키지) |
 | P5 | 프레임워크 관용구 | 클라이언트 경계 `'use client'` · `next/dynamic`+`<Suspense>`(3D 등) · `react-hooks/exhaustive-deps` · 함수형 컴포넌트만 |
 | P6 | 상태 관리 | 전역 스토어 + URL 쿼리 파라미터 · props drilling 3단계 초과 시 분리 |
-| P7 | 디자인 토큰 | brand `#FFBA17` · neutral `#111111~#F3F4F6` · semantic 정보 `#2B7FFF`/성공 `#00BC7D`/경고 `#F59E0B`/오류 `#FF6467` · social Kakao `#FEE500`/Naver `#03C75A` · Inter+한글, weight 400–900 · 임의 hex/arbitrary spacing 금지 |
+| P7 | 디자인 토큰 | brand `#FFBA17` · neutral `#111111~#F3F4F6` · semantic 정보 `#2B7FFF`/성공 `#00BC7D`/경고 `#F59E0B`/오류 `#FF6467` · social Kakao `#FEE500`/Naver `#03C75A` · Pretendard, weight 400–900 · 임의 hex/arbitrary spacing 금지 |
 | P8 | 공용 컴포넌트 | `shared/ui` (Button/Input/Badge/Modal/Table/Tabs/EmptyState 등) — 인라인 재구현 금지 |
 | P9 | 차트 | 기본 N/A(대시보드성 지표 필요 시 단일 차트 라이브러리 + 커스텀 tooltip) |
 | P10 | 투명도 정책 | 배경 불투명 원칙(투명도는 사용자 명시 지시 시) |
