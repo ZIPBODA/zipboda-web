@@ -65,7 +65,7 @@ entities/subscription/
 | `lib/` | 순수 함수 |
 | `config/` | 상수·환경 설정 |
 
-> 상수·타입의 배치 상세는 `code-organization.md`를 따른다(공통 상수는 `shared/config`, 도메인 상수는 각 slice `config/`).
+> 상수·타입의 배치 상세는 `code-organization.rule.md`를 따른다(공통 상수는 `shared/config`, 도메인 상수는 각 slice `config/`).
 
 ---
 

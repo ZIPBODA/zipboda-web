@@ -5,9 +5,9 @@
 | 항목 | 내용 |
 |------|------|
 | 문서명 | 집보다 디자인 시스템 — Figma node-id 레퍼런스 |
-| 버전 | v2.2.0 |
+| 버전 | v2.3.0 |
 | 작성일 | 2026-07-28 |
-| 기반 문서 | Figma(Zipboda, fileKey `eQbErccR3ilS8Ri6EKBBD0`), ZIPBODA_디자인시스템_추가본.md(병합), .claude/rules/figma-implementation-rule.md |
+| 기반 문서 | Figma(Zipboda, fileKey `eQbErccR3ilS8Ri6EKBBD0`), ZIPBODA_디자인시스템_추가본.md(병합), .claude/rules/figma-implementation.rule.md |
 
 ### 변경 이력
 
@@ -17,12 +17,13 @@
 | v2.0.0 | 2026-07-28 | Claude | MCP 연동 개편 — 사용법·호출 예시·빠른 색인 추가, 각 node-id의 **실측값(HEX·타이포·상태색·간격·버튼/컴포넌트 스펙)**을 Figma MCP로 추출해 반영, 코드 매핑 가이드 추가 |
 | v2.1.0 | 2026-07-28 | Claude | 추가본 병합 — Admin Status 색(96:59~94)·Radius 6/10/18·Admin 타이포(Compact 13/2XSmall 11/ExtraBold)·Admin 컴포넌트 8종(StatusIndicator/Breadcrumb/Pagination/Sidebar/Dropdown/Table/Chart) MCP 실측 반영 |
 | v2.2.0 | 2026-07-28 | Claude | 추가본 병합 2 — System/Purple(111:83~93)·Code/Syntax Highlight(111:101~126)·Radius 3px(111:131) 추가 |
+| v2.3.0 | 2026-07-29 | Claude | 파일명 영문화 — ZIPBODA_design-system.md 로 변경, .claude/rules 규칙 파일 .rule.md 접미 통일 및 참조 갱신 |
 
 ---
 
 ## 2. MCP 연동 사용법
 
-> 이 문서는 **Figma node-id ↔ 값 ↔ 코드 매핑**의 단일 참조원이다. 구현 시 `.claude/rules/figma-implementation-rule.md`(디자인 이탈·임의 판단 금지)를 반드시 함께 따른다.
+> 이 문서는 **Figma node-id ↔ 값 ↔ 코드 매핑**의 단일 참조원이다. 구현 시 `.claude/rules/figma-implementation.rule.md`(디자인 이탈·임의 판단 금지)를 반드시 함께 따른다.
 
 - **fileKey**: `eQbErccR3ilS8Ri6EKBBD0`
 - **node-id 포맷**: URL `node-id=9-94` → MCP 호출은 **`9:94`** (하이픈→콜론).
@@ -374,7 +375,7 @@ width 320 padding 12/16 gap 8 row-center. 라벨 `#1A1A1A` 400/14 · 값 `#6A728
 ---
 
 ## 13. 코드 매핑 가이드
-- **색/간격/radius/그림자/타이포** → `shared/config` 디자인 토큰으로 정의 후 참조(code-organization.md). 임의 hex/px 금지(D3).
+- **색/간격/radius/그림자/타이포** → `shared/config` 디자인 토큰으로 정의 후 참조(code-organization.rule.md). 임의 hex/px 금지(D3).
 - **컴포넌트**(Button/Chip/Tab/Checkbox/Input/SearchBar/Badge/Rating/Avatar/Divider/Card/ListItem/Nav) → `shared/ui`에 구현·재사용(D4). **Admin 전용**(StatusIndicator/Breadcrumb/Pagination/Sidebar/Dropdown/Table/Chart)은 `zipboda-admin`의 `shared/ui`.
 - **토큰 패키지 반영**: Admin Status 색·Radius 6/10/18은 `@zipboda/tokens`에 추가 대상(현 tokens는 사용자 앰버 세트 기준). Admin 팔레트는 별도 그룹(admin-status)으로 분리 권장.
 - 상태 뱃지(청약/배송/D-Day)는 §5 매핑을 그대로 쓰는 단일 컴포넌트 권장.
