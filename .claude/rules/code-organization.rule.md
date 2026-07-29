@@ -7,7 +7,7 @@
 | 문서명 | 코드 구조 전략 — 상수 & 타입 관리 |
 | 버전 | v2.0.0 |
 | 작성일 | 2026-07-27 |
-| 기반 문서 | .claude/rules/frontend-architecture.md |
+| 기반 문서 | .claude/rules/frontend-architecture.rule.md |
 
 ### 변경 이력
 
@@ -20,7 +20,7 @@
 
 ## 2. 원칙
 
-`frontend-architecture.md`의 FSD를 **단일 기준**으로 삼는다. 상수·타입은 별도의 전역 `lib/`·`types/` 디렉터리로 분리하지 않고 **FSD 레이어/세그먼트에 귀속**시킨다(이전 버전의 `lib/constants.ts`·`types/server.ts` 전역 분리 방식은 폐기).
+`frontend-architecture.rule.md`의 FSD를 **단일 기준**으로 삼는다. 상수·타입은 별도의 전역 `lib/`·`types/` 디렉터리로 분리하지 않고 **FSD 레이어/세그먼트에 귀속**시킨다(이전 버전의 `lib/constants.ts`·`types/server.ts` 전역 분리 방식은 폐기).
 
 ---
 

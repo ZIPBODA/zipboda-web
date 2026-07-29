@@ -7,7 +7,7 @@
 | 문서명 | Figma node-id 기반 UI 구현 규칙 |
 | 버전 | v1.0.0 |
 | 작성일 | 2026-07-28 |
-| 기반 문서 | ZIPBODA_디자인시스템.md (zipboda-web/docs 대표 관리), .claude/rules/frontend-rule.md, .claude/rules/code-organization.md |
+| 기반 문서 | ZIPBODA_design-system.md (zipboda-web/docs 대표 관리), .claude/rules/frontend.rule.md, .claude/rules/code-organization.rule.md |
 
 ### 변경 이력
 
@@ -22,7 +22,7 @@
 Figma MCP로 **node-id를 추적**하여 UI 컴포넌트·페이지를 구현할 때, **Figma 디자인에서 벗어나지 않고 임의로 판단하지 않도록** 하는 규칙이다. 적용 대상은 프론트엔드(zipboda-web/app/admin). 백엔드(api)에는 적용하지 않는다.
 
 - Zipboda Figma fileKey: `eQbErccR3ilS8Ri6EKBBD0`
-- **디자인 토큰·컴포넌트 node-id 색인은 `ZIPBODA_디자인시스템.md`(zipboda-web/docs 대표 관리; app/admin은 `../zipboda-web/docs/` 참조)를 단일 참조원으로 삼는다.**
+- **디자인 토큰·컴포넌트 node-id 색인은 `ZIPBODA_design-system.md`(zipboda-web/docs 대표 관리; app/admin은 `../zipboda-web/docs/` 참조)를 단일 참조원으로 삼는다.**
 
 ---
 
@@ -43,7 +43,7 @@ Figma MCP로 **node-id를 추적**하여 UI 컴포넌트·페이지를 구현할
 
 - Figma URL `.../design/:fileKey/:name?node-id=1-2` → **fileKey=`:fileKey`, nodeId=`1:2`** (URL의 `1-2`는 `1:2`로 변환).
 - node-id가 없는 URL은 진행하지 말고 **node 지정 URL을 요청**한다(임의로 페이지 전체를 가정하지 않는다 — D2).
-- 토큰/공용 컴포넌트는 URL이 아니라 **디자인시스템 색인(`ZIPBODA_디자인시스템.md`)의 node-id**를 우선 사용한다.
+- 토큰/공용 컴포넌트는 URL이 아니라 **디자인시스템 색인(`ZIPBODA_design-system.md`)의 node-id**를 우선 사용한다.
 
 ---
 
@@ -89,7 +89,7 @@ Figma MCP로 **node-id를 추적**하여 UI 컴포넌트·페이지를 구현할
 1. **임의로 결정하지 않는다(D6).**
 2. 무엇이 불명확한지 node-id와 함께 **사용자에게 확인 요청**한다.
 3. 확정 전까지 해당 부분은 구현을 보류하거나, 합의된 임시 처리를 **명시적으로 표기**한다(추측성 완성 금지).
-4. 디자인시스템에 반영이 필요한 신규 토큰/컴포넌트는 `ZIPBODA_디자인시스템.md`에 등록 후 사용한다.
+4. 디자인시스템에 반영이 필요한 신규 토큰/컴포넌트는 `ZIPBODA_design-system.md`에 등록 후 사용한다.
 
 ---
 

@@ -5,7 +5,7 @@
 | 항목 | 내용 |
 |------|------|
 | 문서명 | 집보다(Zipboda) Web(PC 웹) 개발계획서 |
-| 버전 | v1.1.0 |
+| 버전 | v1.2.0 |
 | 작성일 | 2026-07-27 |
 | 기반 문서 | /docs/ZIPBODA_요구사항정의서_v0.1.xlsx, /docs/ZIPBODA_화면설계서_v0.1.xlsx, /docs/ZIPBODA_API 및 인터페이스 정의서_v0.1.xlsx (xlsx 3종은 zipboda-web에서 대표 관리) |
 
@@ -15,6 +15,7 @@
 |------|------|--------|-----------|
 | v0.1.0 | 2026-07-27 | Claude | 신규 작성 — web 전용 WBS·Phase·추적 매트릭스 |
 | v1.1.0 | 2026-07-27 | Claude | 검토 반영 — 통합 마스터 로드맵·저장소 간 의존성, 확정(권장) 스택(SSR/SEO 결정 포함), 일정·공수·오너, 수치형 수용 기준, API-less 화면 처리 명시 |
+| v1.2.0 | 2026-07-29 | Claude | 파일명 정비 — 개발계획서 파일명 영문화(ZIPBODA_development-plan_v0.1.md), .claude/rules 규칙 파일 .rule.md 접미 통일 및 참조 경로 갱신 |
 
 ---
 
@@ -46,7 +47,7 @@ LH·SH·GH·IH 공공 청약 정보 통합 조회 + 평면도(2D)·**WebGL 3D �
 |------|-----------|------|
 | 프레임워크 | **Next.js(App Router) + TypeScript** | 청약 정보 SEO·공유·초기 로딩(검토 web-Major: SSR/SEO) |
 | 렌더링 전략 | 청약 목록/상세=**SSR/ISR**, 3D 뷰어·마이·커머스=**CSR** | SEO 필요 영역만 서버 렌더, 인터랙션 영역은 클라이언트 |
-| 폴더 구조 | Feature-Sliced Design | frontend-architecture.md |
+| 폴더 구조 | Feature-Sliced Design | frontend-architecture.rule.md |
 | 서버 상태 | TanStack Query(응답 `{success,data,error}` 소비) | — |
 | 3D 엔진 | **three.js + glTF/GLB(Draco 압축)** | ZB-U-PLAN-04, REQ-CO-005 |
 | 공유 코드 | **pnpm workspace `@zipboda/shared`**(API 타입·훅) app과 공유 | 검토 app-Minor(공유 메커니즘) |
@@ -98,7 +99,7 @@ Brand `#FFBA17` / Neutral `#111111`~`#F3F4F6` / Semantic 정보 `#2B7FFF`·성�
 
 ## 6. Phase 계획 & 수용 기준 (Web)
 
-Phase 검토는 `.claude/rules/phase-review-rule.md` 준수. 각 Phase 완료(수용) 기준을 수치로 명시(검토 C5).
+Phase 검토는 `.claude/rules/phase-review.rule.md` 준수. 각 Phase 완료(수용) 기준을 수치로 명시(검토 C5).
 
 | Phase(=스테이지) | 화면 | 수용 기준(수치) |
 |------|------|-----------------|
@@ -145,6 +146,6 @@ Phase 검토는 `.claude/rules/phase-review-rule.md` 준수. 각 Phase 완료(�
 | RW4 | 커머스(2차) 범위 확장 | 중 | 중 | Med | PM | 결제 요건 증가 | 1차 분리, PG 사전 검토 |
 
 ## 10. 검증 & 검토 반영 이력
-1. Phase 검토는 phase-review-rule.md 따르고 `/docs/reviews/`에 기록. 2. CI 강제·회귀 누적. 3. 화면ID·API ID가 대표 xlsx와 일치(미존재 참조 0건). 4. A1~A4 준수(실연동 시 목 제거). 5. 비기능: LCP≤2.5s·성능/접근성 Lighthouse≥90(S7).
+1. Phase 검토는 phase-review.rule.md 따르고 `/docs/reviews/`에 기록. 2. CI 강제·회귀 누적. 3. 화면ID·API ID가 대표 xlsx와 일치(미존재 참조 0건). 4. A1~A4 준수(실연동 시 목 제거). 5. 비기능: LCP≤2.5s·성능/접근성 Lighthouse≥90(S7).
 
 **검토 반영:** C1(일정·공수·오너 추가)·C2(스택 확정안)·C3(통합 로드맵)·C4(리스크 정량)·C5(수치 수용기준)·web-Major(SSR/SEO 결정)·API-less 화면 처리 명시.
