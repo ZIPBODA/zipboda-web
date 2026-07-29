@@ -12,8 +12,8 @@
   },
   "dependencies": {
     "@zipboda/tokens": "^1.0.0",
-    "@zipboda/ui": "^1.0.0",
-    "@zipboda/ui-core": "^1.0.0",
+    "@zipboda/ui": "^1.1.0",
+    "@zipboda/ui-core": "^1.1.0",
     "next": "^14.2.15",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
