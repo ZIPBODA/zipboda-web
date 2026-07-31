@@ -3,7 +3,7 @@ import { AgencyBadge } from "./AgencyBadge";
 import { DdayBadge } from "./DdayBadge";
 import type { Subscription } from "../model/types";
 
-// figma 135:5598 공고 카드 — 카드 전체가 청약 상세 진입(별도 신청 CTA 없음, 외부 신청 전환)
+// figma 135:5669 공고 카드 — 가로형 리스트 행(이미지 좌측 + 본문). 카드 전체가 상세 진입(외부 신청 전환)
 export function SubscriptionCard({ item }: { item: Subscription }) {
   const stats: [string, string][] = [
     ["신청자", item.applicants.toLocaleString()],
@@ -14,34 +14,32 @@ export function SubscriptionCard({ item }: { item: Subscription }) {
   return (
     <Link
       href={`/subscriptions/${item.id}`}
-      className="group flex flex-col overflow-hidden rounded-xl border border-line-subtle bg-surface transition-shadow hover:shadow-md"
+      className="flex items-stretch overflow-hidden rounded-xl border border-line-subtle bg-surface transition-shadow hover:shadow-md"
     >
-      <div className="relative aspect-[16/10] w-full bg-surface-tertiary">
-        <span className="absolute left-3 top-3">
-          <AgencyBadge agency={item.agency} />
-        </span>
-        <span className="absolute right-3 top-3">
-          <DdayBadge dday={item.dday} />
-        </span>
-      </div>
-      <div className="flex flex-col gap-2 p-4">
-        <h3 className="text-lg font-bold text-fg-strong">{item.title}</h3>
-        <p className="text-xs text-fg-muted">{item.location}</p>
-        <div className="flex flex-wrap gap-1">
-          {item.sizes.map((s) => (
-            <span key={s} className="rounded-full bg-surface-tertiary px-2 py-0.5 text-caption font-medium text-fg-muted">
-              {s}㎡
-            </span>
-          ))}
+      {/* figma 135:5670 이미지 컬럼(고정폭). 실 이미지 연동 전 플레이스홀더 */}
+      <div className="w-48 shrink-0 bg-surface-tertiary" />
+      <div className="flex flex-1 items-center gap-6 p-6">
+        <AgencyBadge agency={item.agency} />
+        <div className="flex min-w-0 flex-1 flex-col">
+          <h3 className="truncate text-lg font-bold text-fg-heading">{item.title}</h3>
+          <p className="mt-0.5 text-sm text-fg-disabled">{item.location}</p>
+          <div className="mt-3 flex items-center gap-2">
+            {item.sizes.map((s) => (
+              <span key={s} className="rounded-full bg-surface-tertiary px-2.5 py-1 text-xs font-medium text-fg-body">
+                {s}㎡
+              </span>
+            ))}
+          </div>
         </div>
-        <dl className="mt-2 grid grid-cols-4 gap-2 border-t border-line-subtle pt-3">
-          {stats.map(([k, v]) => (
-            <div key={k} className="flex flex-col gap-0.5">
-              <dt className="text-caption text-fg-disabled">{k}</dt>
-              <dd className="text-xs font-semibold text-fg-heading">{v}</dd>
+        <dl className="flex shrink-0 items-center gap-6">
+          {stats.map(([label, value]) => (
+            <div key={label} className="flex flex-col items-center">
+              <dt className="text-xs text-fg-disabled">{label}</dt>
+              <dd className="mt-0.5 text-sm font-semibold text-gray-800">{value}</dd>
             </div>
           ))}
         </dl>
+        <DdayBadge dday={item.dday} />
       </div>
     </Link>
   );
