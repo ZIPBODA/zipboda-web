@@ -1,7 +1,9 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import logo from "@/shared/assets/brand/logo.png";
 import { NAV_ITEMS } from "../config/nav";
 
 // figma 135:7846(로그인 후) / 170:2(로그인 전) 공통 헤더/GNB (ZB-U-COM-01/04)
@@ -14,10 +16,8 @@ export function Header({ authenticated = false }: { authenticated?: boolean }) {
       <div className="mx-auto max-w-[1280px] px-6">
         {/* 상단: 로고 · 검색 · 액션 */}
         <div className="flex h-16 items-center gap-6">
-          <Link href="/" className="flex shrink-0 items-center gap-2" aria-label="집보다 홈">
-            {/* TODO: Figma 로고 에셋(imageRef) 다운로드 적용 — 현재 토큰 타일 placeholder */}
-            <span className="flex size-8 items-center justify-center rounded-lg bg-brand text-sm font-bold text-brand-on">집</span>
-            <span className="text-lg font-bold text-fg-heading">집보다</span>
+          <Link href="/" className="flex shrink-0 items-center" aria-label="집보다 홈">
+            <Image src={logo} alt="집보다" priority className="h-8 w-auto" />
           </Link>
 
           <div className="relative hidden min-w-0 flex-1 md:block">
