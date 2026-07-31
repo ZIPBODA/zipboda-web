@@ -1,5 +1,7 @@
 import "./globals.css";
 import type { Metadata } from "next";
+import { Header } from "@/widgets/header";
+import { Footer } from "@/widgets/footer";
 
 export const metadata: Metadata = {
   title: "집보다",
@@ -16,7 +18,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@1.3.9/dist/web/static/pretendard.min.css"
         />
       </head>
-      <body className="font-sans bg-surface text-fg-strong">{children}</body>
+      <body className="flex min-h-screen flex-col bg-surface font-sans text-fg-strong">
+        <Header />
+        <div className="flex-1">{children}</div>
+        <Footer />
+      </body>
     </html>
   );
 }
