@@ -32,28 +32,28 @@ export function SubscriptionFilters() {
     <div className="flex flex-col gap-4 rounded-xl border border-line bg-surface p-5">
       <FilterGroup label="지역">
         {REGION_OPTIONS.map((o) => (
-          <button key={o} type="button" className={chipClass(current("region") === o)} onClick={() => update("region", o, o === "전체")}>
+          <button key={o} type="button" aria-pressed={current("region") === o} className={chipClass(current("region") === o)} onClick={() => update("region", o, o === "전체")}>
             {o}
           </button>
         ))}
       </FilterGroup>
       <FilterGroup label="면적">
         {SIZE_OPTIONS.map((o) => (
-          <button key={o} type="button" className={chipClass(current("size") === o)} onClick={() => update("size", o, o === "전체")}>
+          <button key={o} type="button" aria-pressed={current("size") === o} className={chipClass(current("size") === o)} onClick={() => update("size", o, o === "전체")}>
             {o === "전체" ? o : `${o}㎡`}
           </button>
         ))}
       </FilterGroup>
       <FilterGroup label="공급기관">
         {AGENCY_OPTIONS.map((o) => (
-          <button key={o} type="button" className={chipClass(current("agency") === o)} onClick={() => update("agency", o, o === "전체")}>
+          <button key={o} type="button" aria-pressed={current("agency") === o} className={chipClass(current("agency") === o)} onClick={() => update("agency", o, o === "전체")}>
             {o}
           </button>
         ))}
       </FilterGroup>
       <FilterGroup label="정렬">
         {SORT_OPTIONS.map((o) => (
-          <button key={o.value} type="button" className={sortChipClass(currentSort === o.value)} onClick={() => update("sort", o.value, o.value === DEFAULT_SORT)}>
+          <button key={o.value} type="button" aria-pressed={currentSort === o.value} className={sortChipClass(currentSort === o.value)} onClick={() => update("sort", o.value, o.value === DEFAULT_SORT)}>
             {o.label}
           </button>
         ))}
