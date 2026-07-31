@@ -1,4 +1,4 @@
-// figma 135:7846 / 170:2 GNB 주 메뉴 (평면도는 청약으로 통합되어 제외)
+// figma 135:7847 / 170:2 GNB 주 메뉴 (평면도는 청약으로 통합되어 제외)
 export const NAV_ITEMS = [
   { label: "홈", href: "/" },
   { label: "청약", href: "/subscriptions" },

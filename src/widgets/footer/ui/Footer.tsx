@@ -1,4 +1,7 @@
-// figma 135:5925 DesktopFooter (ZB-U-COM-03) — 평면도 컬럼은 청약으로 통합되어 제외
+import Image from "next/image";
+import icon from "@/shared/assets/brand/icon.png";
+
+// figma 250:76 Footer (ZB-U-COM-03)
 const COLUMNS: { title: string; items: string[] }[] = [
   { title: "주택", items: ["LH 청약", "SH 공고", "자격 안내", "신청 팁", "가점 계산기"] },
   { title: "쇼핑", items: ["전체 가구", "거실", "침실", "주방", "조명"] }
@@ -9,11 +12,15 @@ const POLICIES = ["개인정보처리방침", "이용약관", "쿠키 설정"];
 export function Footer() {
   return (
     <footer className="bg-surface-dark">
-      <div className="mx-auto max-w-[1280px] px-6 py-16">
+      <div className="mx-auto max-w-7xl px-6 py-16">
+        {/* figma 250:78 상단 — 브랜드 · 주택 · 쇼핑 (좌·중·우) */}
         <div className="flex flex-col gap-10 md:flex-row md:justify-between">
-          <div className="max-w-[320px]">
+          {/* figma 250:79 브랜드 */}
+          <div className="max-w-xs">
             <div className="flex items-center gap-2">
-              <span className="flex size-8 items-center justify-center rounded-lg bg-brand text-sm font-bold text-brand-on">집</span>
+              <span className="relative h-8 w-8 shrink-0 overflow-hidden rounded-lg">
+                <Image src={icon} alt="" fill sizes="32px" className="object-contain" />
+              </span>
               <span className="text-lg font-bold text-fg-ondark">집보다</span>
             </div>
             <p className="mt-4 text-sm text-fg-disabled">
@@ -21,22 +28,21 @@ export function Footer() {
             </p>
           </div>
 
-          <div className="flex gap-16">
-            {COLUMNS.map((col) => (
-              <nav key={col.title} aria-label={col.title}>
-                <h2 className="text-xs font-bold text-fg-muted">{col.title}</h2>
-                <ul className="mt-4 flex flex-col gap-2.5">
-                  {col.items.map((it) => (
-                    <li key={it}>
-                      <span className="cursor-pointer text-sm text-fg-disabled transition-colors hover:text-fg-ondark">{it}</span>
-                    </li>
-                  ))}
-                </ul>
-              </nav>
-            ))}
-          </div>
+          {COLUMNS.map((col) => (
+            <nav key={col.title} aria-label={col.title}>
+              <h2 className="text-xs font-bold text-fg-muted">{col.title}</h2>
+              <ul className="mt-4 flex flex-col gap-2.5">
+                {col.items.map((it) => (
+                  <li key={it}>
+                    <span className="cursor-pointer text-sm text-fg-disabled transition-colors hover:text-fg-ondark">{it}</span>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+          ))}
         </div>
 
+        {/* figma 250:134 하단 — 저작권 · 정책 · 언어 */}
         <div className="mt-14 flex flex-col gap-4 border-t border-white/10 pt-8 md:flex-row md:items-center md:justify-between">
           <p className="text-xs text-fg-body">© 2025 집보다 Inc. All rights reserved.</p>
           <div className="flex gap-6 text-xs text-fg-body">
@@ -46,8 +52,8 @@ export function Footer() {
               </span>
             ))}
           </div>
-          <div className="flex items-center gap-2 text-xs text-fg-body">
-            <span>🇰🇷 한국어</span>
+          <div className="flex items-center gap-2 text-xs">
+            <span className="text-fg-body">🇰🇷 한국어</span>
             <span className="text-gray-700">·</span>
             <span className="text-fg-disabled">🌐 영어</span>
           </div>
