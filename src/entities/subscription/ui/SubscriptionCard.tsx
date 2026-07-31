@@ -14,7 +14,7 @@ export function SubscriptionCard({ item }: { item: Subscription }) {
   return (
     <Link
       href={`/subscriptions/${item.id}`}
-      className="group flex flex-col overflow-hidden rounded-xl border border-line bg-surface transition-shadow hover:shadow-md"
+      className="group flex flex-col overflow-hidden rounded-xl border border-line-subtle bg-surface transition-shadow hover:shadow-md"
     >
       <div className="relative aspect-[16/10] w-full bg-surface-tertiary">
         <span className="absolute left-3 top-3">
@@ -25,7 +25,7 @@ export function SubscriptionCard({ item }: { item: Subscription }) {
         </span>
       </div>
       <div className="flex flex-col gap-2 p-4">
-        <h3 className="text-base font-bold text-fg-strong">{item.title}</h3>
+        <h3 className="text-lg font-bold text-fg-strong">{item.title}</h3>
         <p className="text-xs text-fg-muted">{item.location}</p>
         <div className="flex flex-wrap gap-1">
           {item.sizes.map((s) => (
