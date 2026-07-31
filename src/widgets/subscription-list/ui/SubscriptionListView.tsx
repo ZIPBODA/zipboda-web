@@ -1,5 +1,6 @@
 import { SubscriptionCard, type Subscription } from "@/entities/subscription";
 
+// figma 135:5668 목록 — 가로형 카드 세로 스택
 export function SubscriptionListView({ items }: { items: Subscription[] }) {
   if (items.length === 0) {
     return (
@@ -10,7 +11,7 @@ export function SubscriptionListView({ items }: { items: Subscription[] }) {
     );
   }
   return (
-    <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+    <div className="flex flex-col gap-4">
       {items.map((item) => (
         <SubscriptionCard key={item.id} item={item} />
       ))}

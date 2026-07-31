@@ -21,6 +21,7 @@
 | 코드 주석 작성·정리 | `.claude/rules/code-comments.rule.md` |
 | 폴더/레이어(FSD) 구조·slice 배치 결정 | `.claude/rules/frontend-architecture.rule.md` |
 | Figma node-id로 UI 컴포넌트/화면 구현 | `.claude/rules/figma-implementation.rule.md` |
+| UI 화면/컴포넌트 구현·수정 후 시각 검증 | `.claude/rules/visual-verification.rule.md` |
 | 커밋·브랜치·PR 진행 | `.claude/rules/contributing-role.rule.md` |
 | 마크다운 문서(.md) 작성·수정 | `.claude/rules/document-template.rule.md` |
 | 스테이지/Phase 완료 검토 | `.claude/rules/phase-review.rule.md` |
