@@ -1,4 +1,4 @@
-// figma 135:7899 공통 푸터 (ZB-U-COM-03) — 평면도 컬럼은 청약으로 통합되어 제외
+// figma 135:5925 DesktopFooter (ZB-U-COM-03) — 평면도 컬럼은 청약으로 통합되어 제외
 const COLUMNS: { title: string; items: string[] }[] = [
   { title: "주택", items: ["LH 청약", "SH 공고", "자격 안내", "신청 팁", "가점 계산기"] },
   { title: "쇼핑", items: ["전체 가구", "거실", "침실", "주방", "조명"] }
@@ -48,7 +48,7 @@ export function Footer() {
           </div>
           <div className="flex items-center gap-2 text-xs text-fg-body">
             <span>🇰🇷 한국어</span>
-            <span>·</span>
+            <span className="text-gray-700">·</span>
             <span className="text-fg-disabled">🌐 영어</span>
           </div>
         </div>
