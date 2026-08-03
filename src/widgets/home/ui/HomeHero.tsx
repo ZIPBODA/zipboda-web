@@ -26,7 +26,7 @@ export function HomeHero() {
         </div>
 
         {/* figma 135:7776 지표 카드 */}
-        <div className="absolute bottom-6 right-6 flex gap-3">
+        <div className="absolute bottom-[26px] right-6 flex gap-3">
           {HOME_HERO_STATS.map((stat) => (
             <div key={stat.label} className="rounded-xl border border-white/20 bg-white/10 px-5 py-3 text-center">
               <p className="text-lg font-bold leading-none text-fg-ondark">{stat.value}</p>

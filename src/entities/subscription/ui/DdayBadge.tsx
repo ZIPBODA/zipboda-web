@@ -5,7 +5,7 @@ import { DDAY_URGENT_THRESHOLD } from "../config/constants";
  * D-7 이하는 brand 강조. 태그형은 마감 여유가 있으면 텍스트까지 흐리게 처리한다.
  */
 const VARIANT_CLASS = {
-  tile: "h-16 w-16 flex-col items-center justify-center rounded-xl text-lg",
+  tile: "h-16 w-16 flex-col items-center justify-center rounded-xl text-lg leading-none",
   tag: "px-5 py-3 rounded-lg text-sm"
 } as const;
 
@@ -23,5 +23,5 @@ export function DdayBadge({ dday, variant = "tile" }: Props) {
         : "bg-surface-tertiary text-fg-disabled"
       : `text-fg-heading ${urgent ? "bg-brand" : "bg-surface-tertiary"}`;
 
-  return <span className={`flex shrink-0 font-bold leading-none ${VARIANT_CLASS[variant]} ${tone}`}>D-{dday}</span>;
+  return <span className={`flex shrink-0 font-bold ${VARIANT_CLASS[variant]} ${tone}`}>D-{dday}</span>;
 }

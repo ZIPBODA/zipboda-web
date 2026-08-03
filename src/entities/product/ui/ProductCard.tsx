@@ -28,7 +28,7 @@ export function ProductCard({ item }: { item: Product }) {
           <div>
             <p className="text-sm font-bold text-fg-heading">{item.price.toLocaleString()}원</p>
             {item.originalPrice !== undefined && (
-              <p className="text-xs text-line-strong line-through">{item.originalPrice.toLocaleString()}원</p>
+              <p className="text-xs text-line-strong">{item.originalPrice.toLocaleString()}원</p>
             )}
           </div>
           <button

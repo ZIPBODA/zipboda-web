@@ -12,11 +12,12 @@ interface Props {
 
 // figma 135:7075·135:7285·135:7368 섹션 셸 — 제목/설명/전체보기 + 콘텐츠
 export function HomeSection({ title, description, actionLabel, actionHref, last = false, children }: Props) {
-  const action = (
-    <span className="flex items-center gap-1 text-sm font-medium text-fg-disabled">
+  const actionClass = "flex items-center gap-1 text-sm font-medium text-fg-disabled";
+  const actionBody = (
+    <>
       {actionLabel}
       <ChevronRightIcon />
-    </span>
+    </>
   );
 
   return (
@@ -29,11 +30,11 @@ export function HomeSection({ title, description, actionLabel, actionHref, last 
           <p className="mt-1 text-sm text-fg-muted">{description}</p>
         </div>
         {actionHref ? (
-          <Link href={actionHref} className="transition-colors hover:text-fg-muted">
-            {action}
+          <Link href={actionHref} className={`${actionClass} transition-colors hover:text-fg-muted`}>
+            {actionBody}
           </Link>
         ) : (
-          action
+          <span className={actionClass}>{actionBody}</span>
         )}
       </div>
       <div className="mt-6">{children}</div>

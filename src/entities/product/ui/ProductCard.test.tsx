@@ -22,7 +22,8 @@ describe("ProductCard", () => {
     expect(screen.getByText("노르딕 3인 소파")).toBeInTheDocument();
     expect(screen.getByText("(342)")).toBeInTheDocument();
     expect(screen.getByText("1,280,000원")).toBeInTheDocument();
-    expect(screen.getByText("1,780,000원")).toBeInTheDocument();
+    // 디자인상 정가는 취소선 없이 연한 회색으로만 구분한다
+    expect(screen.getByText("1,780,000원")).not.toHaveClass("line-through");
     expect(screen.getByRole("img", { name: "5 / 5" })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "장바구니 담기" })).toBeInTheDocument();
   });
