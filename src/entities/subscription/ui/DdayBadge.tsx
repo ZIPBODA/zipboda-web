@@ -1,15 +1,27 @@
 import { DDAY_URGENT_THRESHOLD } from "../config/constants";
 
-// figma 135:5706 D-day 배지 64×64 r16 (D-7 이하 brand, 초과 gray)
-export function DdayBadge({ dday }: { dday: number }) {
+/**
+ * figma 135:5706 타일형(목록 64×64 r16) / 135:7118·135:7152 태그형(메인 padding 12·20 r12).
+ * D-7 이하는 brand 강조. 태그형은 마감 여유가 있으면 텍스트까지 흐리게 처리한다.
+ */
+const VARIANT_CLASS = {
+  tile: "h-16 w-16 flex-col items-center justify-center rounded-xl text-lg leading-none",
+  tag: "px-5 py-3 rounded-lg text-sm"
+} as const;
+
+interface Props {
+  dday: number;
+  variant?: keyof typeof VARIANT_CLASS;
+}
+
+export function DdayBadge({ dday, variant = "tile" }: Props) {
   const urgent = dday <= DDAY_URGENT_THRESHOLD;
-  return (
-    <span
-      className={`flex h-16 w-16 shrink-0 flex-col items-center justify-center rounded-xl text-lg font-bold leading-none text-fg-heading ${
-        urgent ? "bg-brand" : "bg-surface-tertiary"
-      }`}
-    >
-      D-{dday}
-    </span>
-  );
+  const tone =
+    variant === "tag"
+      ? urgent
+        ? "bg-brand text-fg-strong"
+        : "bg-surface-tertiary text-fg-disabled"
+      : `text-fg-heading ${urgent ? "bg-brand" : "bg-surface-tertiary"}`;
+
+  return <span className={`flex shrink-0 font-bold ${VARIANT_CLASS[variant]} ${tone}`}>D-{dday}</span>;
 }
