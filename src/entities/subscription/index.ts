@@ -21,5 +21,6 @@ export {
 export { getSubscriptions } from "./api/getSubscriptions";
 export { getSubscriptionDetail } from "./api/getSubscriptionDetail";
 export { SubscriptionCard } from "./ui/SubscriptionCard";
+export { SubscriptionSummaryRow } from "./ui/SubscriptionSummaryRow";
 export { AgencyBadge } from "./ui/AgencyBadge";
 export { DdayBadge } from "./ui/DdayBadge";

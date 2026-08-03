@@ -16,6 +16,7 @@ export interface Subscription {
   households: number;
   competition: string;
   moveIn: string;
+  deadline: string;
   dday: number;
 }
 
