@@ -15,3 +15,24 @@ export interface CommunityHero {
   likes: number;
   comments: number;
 }
+
+export interface CommunityComment {
+  id: string;
+  handle: string;
+  time: string;
+  likes: number;
+  body: string;
+}
+
+export interface CommunityPostDetail {
+  id: string;
+  category: string;
+  handle: string;
+  date: string;
+  views: number;
+  title: string;
+  likes: number;
+  commentCount: number;
+  body: string[];
+  comments: CommunityComment[];
+}
