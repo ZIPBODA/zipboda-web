@@ -36,7 +36,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body className="flex min-h-screen flex-col bg-surface font-sans text-fg-strong">
         <CartProvider>
-          <Header />
+          {/* 인증 미구현 프로토타입 — 로그인 후 헤더(찜·알림·프로필)를 기본 노출. 로그인 화면은 /login 직접 접근 */}
+          <Header authenticated />
           <div className="flex-1">{children}</div>
           <Footer />
           <CartDrawer />
