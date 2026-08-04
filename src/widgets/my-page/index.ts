@@ -1,11 +1,8 @@
-export { getMyPage, getMyProfile } from "./api/getMyPage";
+export { getMyPage } from "./api/getMyPage";
 export { getWishlist } from "./api/getWishlist";
 export { getOrders } from "./api/getOrders";
 export { getProfileEdit } from "./api/getProfileEdit";
 export { ProfileCard } from "./ui/ProfileCard";
-export { MyPageTabs } from "./ui/MyPageTabs";
-export { MySubscriptionList } from "./ui/MySubscriptionList";
-export { WishlistGrid } from "./ui/WishlistGrid";
-export { OrderList } from "./ui/OrderList";
+export { MyPageContent } from "./ui/MyPageContent";
 export { ProfileEditForm } from "./ui/ProfileEditForm";
 export type { MyProfile, MyListing, MyListingStatus, MyPageData, WishlistItem, Order, OrderStatus, ProfileEditData } from "./model/types";
