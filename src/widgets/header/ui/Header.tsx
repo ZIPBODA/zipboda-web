@@ -2,15 +2,22 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { useState } from "react";
 import { usePathname } from "next/navigation";
 import icon from "@/shared/assets/brand/icon.png";
 import { useCart } from "@/features/cart";
 import { NAV_ITEMS } from "../config/nav";
+import { NotificationPanel } from "./NotificationPanel";
+import { ProfilePanel } from "./ProfilePanel";
+
+type HeaderPanel = "notifications" | "profile" | null;
 
 // figma 135:7847(로그인 후) / 170:2(로그인 전) 공통 헤더/GNB (ZB-U-COM-01/04)
 export function Header({ authenticated = false }: { authenticated?: boolean }) {
   const pathname = usePathname();
   const isActive = (href: string) => (href === "/" ? pathname === "/" : pathname.startsWith(href));
+  const [panel, setPanel] = useState<HeaderPanel>(null);
+  const toggle = (next: Exclude<HeaderPanel, null>) => setPanel((p) => (p === next ? null : next));
 
   return (
     <header className="sticky top-0 z-40 border-b border-line-subtle bg-surface">
@@ -44,13 +51,27 @@ export function Header({ authenticated = false }: { authenticated?: boolean }) {
                 <IconButton label="찜">
                   <HeartIcon />
                 </IconButton>
-                <IconButton label="알림">
-                  <BellIcon />
-                  <span className="absolute right-2 top-2 size-2 rounded-full border border-surface bg-brand" />
-                </IconButton>
-                <IconButton label="내 정보">
-                  <UserIcon />
-                </IconButton>
+                <div className="relative">
+                  <button type="button" onClick={() => toggle("notifications")} aria-label="알림" aria-expanded={panel === "notifications"} className="relative rounded-lg p-2 text-fg-muted transition-colors hover:bg-surface-secondary">
+                    <BellIcon />
+                    <span className="absolute right-2 top-2 size-2 rounded-full border border-surface bg-brand" />
+                  </button>
+                  {panel === "notifications" && (
+                    <div className="absolute right-0 top-full z-50 mt-2">
+                      <NotificationPanel />
+                    </div>
+                  )}
+                </div>
+                <div className="relative">
+                  <button type="button" onClick={() => toggle("profile")} aria-label="내 정보" aria-expanded={panel === "profile"} className="rounded-lg p-2 text-fg-muted transition-colors hover:bg-surface-secondary">
+                    <UserIcon />
+                  </button>
+                  {panel === "profile" && (
+                    <div className="absolute right-0 top-full z-50 mt-2">
+                      <ProfilePanel onNavigate={() => setPanel(null)} />
+                    </div>
+                  )}
+                </div>
               </>
             ) : (
               <Link href="/login" className="rounded-lg px-4 py-2.5 text-sm font-semibold text-gray-700 hover:bg-surface-secondary">
@@ -58,6 +79,7 @@ export function Header({ authenticated = false }: { authenticated?: boolean }) {
               </Link>
             )}
           </div>
+          {panel && <button type="button" aria-label="패널 닫기" tabIndex={-1} onClick={() => setPanel(null)} className="fixed inset-0 z-40 cursor-default" />}
         </div>
 
         {/* figma 135:7882 하단: 주 메뉴 */}
