@@ -1,3 +1,4 @@
+import Link from "next/link";
 import type { MyProfile } from "../model/types";
 
 // figma 135:1519 프로필 카드 — 아바타 + 이름·인증·이메일·통계 + 프로필 수정
@@ -29,9 +30,9 @@ export function ProfileCard({ profile }: { profile: MyProfile }) {
         </dl>
       </div>
 
-      <button type="button" className="shrink-0 rounded-xl border-2 border-line px-5 py-2.5 text-sm font-semibold text-gray-700 hover:bg-surface-secondary">
+      <Link href="/my/profile" className="shrink-0 rounded-xl border-2 border-line px-5 py-2.5 text-sm font-semibold text-gray-700 hover:bg-surface-secondary">
         프로필 수정
-      </button>
+      </Link>
     </div>
   );
 }

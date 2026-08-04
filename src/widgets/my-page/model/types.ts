@@ -27,3 +27,31 @@ export interface MyPageData {
   profile: MyProfile;
   listings: MyListing[];
 }
+
+export interface WishlistItem {
+  id: string;
+  brand: string;
+  name: string;
+  discount: number;
+  price: number;
+  originalPrice: number;
+}
+
+export type OrderStatus = "배송완료" | "배송중" | "준비중";
+
+export interface Order {
+  id: string;
+  brand: string;
+  name: string;
+  orderDate: string;
+  price: number;
+  status: OrderStatus;
+}
+
+export interface ProfileEditData {
+  nickname: string;
+  email: string;
+  phone: string;
+  bio: string;
+  interests: string[];
+}

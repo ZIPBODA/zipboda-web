@@ -1,4 +1,4 @@
-import type { MyProfile, MyListing } from "../../model/types";
+import type { MyProfile, MyListing, WishlistItem, Order, ProfileEditData } from "../../model/types";
 
 // figma 135:1519 프로필. TODO(API): 실 사용자/집계 연동 시 mock 제거(A1)
 export const MOCK_PROFILE: MyProfile = {
@@ -20,3 +20,26 @@ export const MOCK_MY_LISTINGS: MyListing[] = [
   { id: "2", title: "마포 상암 SH 아파트", size: 59, status: "관심등록", dday: 10, applyUrl: "https://www.i-sh.co.kr", applied: false },
   { id: "3", title: "인천 송도 LH 단지", size: 114, status: "저장됨", dday: 17, applyUrl: "https://apply.lh.or.kr", applied: false }
 ];
+
+// figma 135:1819·135:1840·135:1861 찜한 가구
+export const MOCK_WISHLIST: WishlistItem[] = [
+  { id: "1", brand: "바움 스튜디오", name: "노르딕 3인 소파", discount: 28, price: 1280000, originalPrice: 1780000 },
+  { id: "2", brand: "폼 스튜디오", name: "메소 액센트 체어", discount: 22, price: 485000, originalPrice: 620000 },
+  { id: "3", brand: "루네 오브제", name: "할로 라운지 체어", discount: 23, price: 398000, originalPrice: 520000 }
+];
+
+// figma 135:2096·135:2111·135:2126 주문내역
+export const MOCK_ORDERS: Order[] = [
+  { id: "1", brand: "바움 스튜디오", name: "노르딕 3인 소파", orderDate: "2025년 7월 10일 주문", price: 1280000, status: "배송완료" },
+  { id: "2", brand: "폼 스튜디오", name: "메소 액센트 체어", orderDate: "2025년 7월 18일 주문", price: 485000, status: "배송중" },
+  { id: "3", brand: "루네 오브제", name: "할로 라운지 체어", orderDate: "2025년 7월 20일 주문", price: 398000, status: "준비중" }
+];
+
+// figma 208:263 프로필 수정 초기값
+export const MOCK_PROFILE_EDIT: ProfileEditData = {
+  nickname: "김민지",
+  email: "minji@email.com",
+  phone: "010-1234-5678",
+  bio: "인테리어와 집꾸미기를 좋아하는 3년차 입주민입니다. 84㎡ 아파트에서 미니멀 라이프를 실천 중이에요.",
+  interests: ["인테리어"]
+};
