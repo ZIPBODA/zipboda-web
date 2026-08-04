@@ -1,20 +1,26 @@
 import { MAX_TOTAL_SCORE } from "../config/constants";
 
-// figma 135:2702 점수 게이지 — 하단 개방 270° 아크(0 좌하단 → 84 우하단, 상단 경유)
+// figma 135:2702 점수 게이지 — 하단 개방 270° 아크(0 좌하단 → 상단 경유 → 84 우하단)
 const CX = 90;
 const CY = 80;
 const RADIUS = 64;
 const STROKE = 14;
 const START_DEG = 135;
 const SWEEP_DEG = 270;
+const SAMPLES = 90;
 
 const polar = (deg: number) => {
   const rad = (deg * Math.PI) / 180;
   return { x: CX + RADIUS * Math.cos(rad), y: CY + RADIUS * Math.sin(rad) };
 };
-const s = polar(START_DEG);
-const e = polar(START_DEG + SWEEP_DEG);
-const ARC = `M ${s.x.toFixed(2)} ${s.y.toFixed(2)} A ${RADIUS} ${RADIUS} 0 1 0 ${e.x.toFixed(2)} ${e.y.toFixed(2)}`;
+
+// 각도를 직접 샘플링해 폴리라인으로 아크를 그린다(arc 플래그 방향 모호성 제거 — 상단 경유 확정).
+const ARC =
+  "M " +
+  Array.from({ length: SAMPLES + 1 }, (_, i) => {
+    const p = polar(START_DEG + (SWEEP_DEG * i) / SAMPLES);
+    return `${p.x.toFixed(2)} ${p.y.toFixed(2)}`;
+  }).join(" L ");
 
 export function ScoreGauge({ total }: { total: number }) {
   const ratio = Math.max(0, Math.min(1, total / MAX_TOTAL_SCORE));
