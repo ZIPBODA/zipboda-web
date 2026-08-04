@@ -12,6 +12,12 @@ export function ProductCard({ item }: { item: Product }) {
             -{item.discountRate}%
           </span>
         )}
+        {/* figma 135:3436 카테고리 태그(가구 쇼핑 목록에서만) */}
+        {item.category && (
+          <span className="absolute bottom-3 left-3 rounded-full bg-white/80 px-2 py-0.5 text-xs font-medium text-fg-body">
+            {item.category}
+          </span>
+        )}
       </div>
 
       <div className="flex flex-1 flex-col p-4">
