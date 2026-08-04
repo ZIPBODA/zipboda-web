@@ -1,0 +1,24 @@
+import type { Metadata } from "next";
+import { notFound } from "next/navigation";
+import { getCommunityPost } from "@/entities/community";
+import { CommunityDetailView } from "@/widgets/community-detail";
+
+export async function generateMetadata({ params }: { params: { id: string } }): Promise<Metadata> {
+  const post = await getCommunityPost(params.id);
+  if (!post) return { title: "커뮤니티 | 집보다" };
+  return { title: `${post.title} | 집보다`, description: post.body[0]?.slice(0, 80) };
+}
+
+// figma 199:216 커뮤니티 글 상세(ZB-U-COMM-02, PC)
+export default async function CommunityPostPage({ params }: { params: { id: string } }) {
+  const post = await getCommunityPost(params.id);
+  if (!post) notFound();
+
+  return (
+    <main className="bg-surface-secondary">
+      <div className="mx-auto max-w-7xl px-6 pb-20 pt-10">
+        <CommunityDetailView post={post} />
+      </div>
+    </main>
+  );
+}
