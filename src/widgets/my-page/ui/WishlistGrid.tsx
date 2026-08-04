@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import type { WishlistItem } from "../model/types";
 
 // figma 135:1818 찜 목록 — 3열 상품 그리드(찜 하트 토글은 클라이언트 상태)
@@ -19,13 +20,14 @@ function WishlistCard({ item }: { item: WishlistItem }) {
   return (
     <div className="flex flex-col overflow-hidden rounded-xl border border-line-subtle bg-surface">
       <div className="relative h-[200px] bg-surface-secondary">
-        <span className="absolute left-3 top-3 rounded-full bg-brand px-2.5 py-1 text-xs font-bold text-brand-on">-{item.discount}%</span>
+        <Image src={item.image} alt="" fill sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw" className="object-cover" />
+        <span className="absolute left-3 top-3 z-10 rounded-full bg-brand px-2.5 py-1 text-xs font-bold text-brand-on">-{item.discount}%</span>
         <button
           type="button"
           onClick={() => setWished((v) => !v)}
           aria-pressed={wished}
           aria-label={wished ? "찜 해제" : "찜"}
-          className="absolute right-3 top-3 flex h-8 w-8 items-center justify-center rounded-full bg-surface shadow"
+          className="absolute right-3 top-3 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-surface shadow"
         >
           <HeartIcon filled={wished} />
         </button>

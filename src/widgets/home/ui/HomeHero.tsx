@@ -1,9 +1,11 @@
+import Image from "next/image";
 import { HOME_HERO_STATS } from "../config/constants";
 
-// figma 135:7753 히어로 — 배경 이미지는 콘텐츠 연동 전까지 플레이스홀더, 그라디언트/문구는 디자인 그대로
+// figma 135:7753 히어로 — 배경 이미지 + 그라디언트/문구는 디자인 그대로
 export function HomeHero() {
   return (
     <section className="relative h-[520px] overflow-hidden bg-line">
+      <Image src="/mock/main/main-banner.png" alt="" fill priority sizes="100vw" className="object-cover" />
       <div className="absolute inset-0 bg-gradient-to-r from-black/[0.68] via-black/[0.35] to-transparent" />
 
       <div className="relative mx-auto flex h-full w-full max-w-7xl items-center px-6">

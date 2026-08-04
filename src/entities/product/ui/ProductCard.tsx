@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { Rating } from "@/shared/ui";
 import type { Product } from "../model/types";
@@ -9,6 +10,7 @@ export function ProductCard({ item, href }: { item: Product; href?: string }) {
       {href && <Link href={href} aria-label={item.name} className="absolute inset-0 z-10" />}
 
       <div className="relative h-[220px] bg-surface-secondary">
+        {item.image && <Image src={item.image} alt="" fill sizes="(min-width: 1280px) 300px, 50vw" className="object-cover" />}
         {item.discountRate !== undefined && (
           <span className="absolute left-3 top-3 rounded-full bg-brand px-2.5 py-1 text-xs font-bold text-brand-on">
             -{item.discountRate}%

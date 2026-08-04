@@ -15,7 +15,8 @@ const item: Subscription = {
   competition: "12.4:1",
   moveIn: "2026년 3월",
   deadline: "2025년 8월 15일",
-  dday: 3
+  dday: 3,
+  image: "/mock/subscriptions/subscriptions-list-1.png"
 };
 
 describe("SubscriptionSummaryRow", () => {

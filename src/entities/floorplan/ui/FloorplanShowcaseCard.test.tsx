@@ -2,7 +2,7 @@ import { describe, it, expect } from "vitest";
 import { render, screen } from "@testing-library/react";
 import { FloorplanShowcaseCard } from "./FloorplanShowcaseCard";
 
-const item = { id: "fp-84a", size: 84, type: "A", summary: "방3 · 화장실2 · 거실/식당 통합", has2d: true, has3d: true };
+const item = { id: "fp-84a", size: 84, type: "A", summary: "방3 · 화장실2 · 거실/식당 통합", has2d: true, has3d: true, image: "/mock/main/main-interactive-1.png" };
 
 describe("FloorplanShowcaseCard", () => {
   it("평형·구성과 2D/3D 지원을 표시한다", () => {

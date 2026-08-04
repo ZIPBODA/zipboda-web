@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import type { CommunityPost } from "../model/types";
 
@@ -6,7 +7,8 @@ export function CommunityCard({ post }: { post: CommunityPost }) {
   return (
     <Link href={`/community/${post.id}`} className="flex flex-col overflow-hidden rounded-xl border border-line-subtle bg-surface transition-shadow hover:shadow-md">
       <div className="relative h-[190px] bg-surface-tertiary">
-        <span className="absolute left-3 top-3 rounded-full bg-brand px-2.5 py-1 text-xs font-bold text-brand-on">{post.category}</span>
+        <Image src={post.image} alt="" fill sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw" className="object-cover" />
+        <span className="absolute left-3 top-3 z-10 rounded-full bg-brand px-2.5 py-1 text-xs font-bold text-brand-on">{post.category}</span>
       </div>
       <div className="p-4">
         <div className="flex items-center gap-2">

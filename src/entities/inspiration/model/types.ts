@@ -5,4 +5,5 @@ export interface InspirationItem {
   likes: number;
   /** 마소너리 카드 높이(px) */
   height: number;
+  image: string;
 }

@@ -1,11 +1,12 @@
+import Image from "next/image";
 import type { FloorplanShowcase } from "../model/types";
 
 // figma 135:7298 대표 평면도 카드 — 미리보기 + 2D/3D 지원 표시
 export function FloorplanShowcaseCard({ item }: { item: FloorplanShowcase }) {
   return (
     <article className="flex flex-col overflow-hidden rounded-xl border border-line-subtle bg-surface">
-      {/* 미리보기 이미지는 자산 연동(API-032) 전까지 플레이스홀더 */}
       <div className="relative h-[190px] bg-surface-tertiary">
+        <Image src={item.image} alt="" fill sizes="(min-width: 1280px) 400px, 33vw" className="object-cover" />
         <div className="absolute left-3 top-3 flex gap-1.5">
           {item.has2d && (
             <span className="rounded-full bg-black/45 px-2.5 py-1 text-xs font-semibold text-fg-ondark">2D</span>

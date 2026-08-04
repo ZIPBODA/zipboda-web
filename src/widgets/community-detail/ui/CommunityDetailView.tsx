@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import type { CommunityPostDetail } from "@/entities/community";
 
@@ -38,7 +39,11 @@ export function CommunityDetailView({ post }: { post: CommunityPostDetail }) {
         {post.body.map((para, i) => (
           <div key={i} className="flex flex-col gap-6">
             <p className="text-base leading-[1.75] text-fg-heading">{para}</p>
-            {i < post.body.length - 1 && <div className="h-[360px] rounded-2xl bg-surface-tertiary" aria-hidden />}
+            {post.bodyImages[i] && (
+              <div className="relative h-[360px] overflow-hidden rounded-2xl bg-surface-tertiary">
+                <Image src={post.bodyImages[i]} alt="" fill sizes="(min-width: 768px) 768px, 100vw" className="object-cover" />
+              </div>
+            )}
           </div>
         ))}
       </div>

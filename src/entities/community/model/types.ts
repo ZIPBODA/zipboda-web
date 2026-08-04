@@ -6,6 +6,7 @@ export interface CommunityPost {
   title: string;
   likes: number;
   comments: number;
+  image: string;
 }
 
 export interface CommunityHero {
@@ -14,6 +15,7 @@ export interface CommunityHero {
   title: string;
   likes: number;
   comments: number;
+  image: string;
 }
 
 export interface CommunityComment {
@@ -34,5 +36,7 @@ export interface CommunityPostDetail {
   likes: number;
   commentCount: number;
   body: string[];
+  /** 본문 문단 사이 이미지. 길이는 (body.length - 1) 이하 */
+  bodyImages: string[];
   comments: CommunityComment[];
 }

@@ -10,6 +10,7 @@ export interface Product {
   reviewCount?: number;
   /** 가구 쇼핑 목록의 카테고리 태그(소파/의자/…). 홈 추천에는 없음 */
   category?: string;
+  image?: string;
 }
 
 export type ShopSort = "POPULAR" | "PRICE_ASC" | "PRICE_DESC" | "RATING";
