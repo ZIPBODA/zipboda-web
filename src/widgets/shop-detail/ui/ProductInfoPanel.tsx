@@ -3,10 +3,12 @@
 import { useState } from "react";
 import { Rating } from "@/shared/ui";
 import type { ProductDetail } from "@/entities/product";
+import { useCart } from "@/features/cart";
 import { PRODUCT_BENEFITS, DETAIL_TABS, type DetailTabId } from "../config/constants";
 
 // figma 135:3901 상품 정보 패널 — 색상·수량·탭은 클라이언트 상태
 export function ProductInfoPanel({ product }: { product: ProductDetail }) {
+  const { add } = useCart();
   const [color, setColor] = useState(0);
   const [qty, setQty] = useState(1);
   const [tab, setTab] = useState<DetailTabId>("detail");
@@ -64,8 +66,11 @@ export function ProductInfoPanel({ product }: { product: ProductDetail }) {
 
       {/* figma 135:3948 액션 */}
       <div className="mt-6 flex gap-3">
-        {/* TODO(CART): 장바구니 담기 API 연동 */}
-        <button type="button" className="flex-1 rounded-2xl bg-brand py-4 text-base font-bold text-brand-on shadow-md">
+        <button
+          type="button"
+          onClick={() => add({ id: product.id, brand: product.brand, name: product.name, price: product.price }, qty)}
+          className="flex-1 rounded-2xl bg-brand py-4 text-base font-bold text-brand-on shadow-md"
+        >
           장바구니 담기 — {(product.price * qty).toLocaleString()}원
         </button>
         <button type="button" aria-label="찜" className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl border-2 border-line text-fg-muted hover:bg-surface-secondary">

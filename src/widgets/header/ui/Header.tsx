@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import icon from "@/shared/assets/brand/icon.png";
+import { useCart } from "@/features/cart";
 import { NAV_ITEMS } from "../config/nav";
 
 // figma 135:7847(로그인 후) / 170:2(로그인 전) 공통 헤더/GNB (ZB-U-COM-01/04)
@@ -35,8 +36,9 @@ export function Header({ authenticated = false }: { authenticated?: boolean }) {
             />
           </div>
 
-          {/* figma 135:7863 액션 — 로그인 후 아이콘 3개 / 로그인 전 로그인 버튼 */}
+          {/* figma 135:7863 액션 — 장바구니 + (로그인 후 아이콘 3개 / 로그인 전 로그인 버튼) */}
           <div className="ml-auto flex shrink-0 items-center gap-1">
+            <CartButton />
             {authenticated ? (
               <>
                 <IconButton label="찜">
@@ -86,6 +88,28 @@ function IconButton({ label, children }: { label: string; children: React.ReactN
     <button type="button" aria-label={label} className="relative rounded-lg p-2 text-fg-muted transition-colors hover:bg-surface-secondary">
       {children}
     </button>
+  );
+}
+
+function CartButton() {
+  const { count, open } = useCart();
+  return (
+    <button type="button" onClick={open} aria-label="장바구니" className="relative rounded-lg p-2 text-fg-muted transition-colors hover:bg-surface-secondary">
+      <CartIcon />
+      {count > 0 && (
+        <span className="absolute -right-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-brand px-1 text-[10px] font-bold text-brand-on">{count}</span>
+      )}
+    </button>
+  );
+}
+
+function CartIcon() {
+  return (
+    <svg width={20} height={20} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.67} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <circle cx="8" cy="21" r="1" />
+      <circle cx="19" cy="21" r="1" />
+      <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12" />
+    </svg>
   );
 }
 

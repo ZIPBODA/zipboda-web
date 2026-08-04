@@ -2,6 +2,7 @@ import "./globals.css";
 import type { Metadata, Viewport } from "next";
 import { Header } from "@/widgets/header";
 import { Footer } from "@/widgets/footer";
+import { CartProvider, CartDrawer } from "@/features/cart";
 
 export const metadata: Metadata = {
   title: "집보다",
@@ -34,9 +35,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
       </head>
       <body className="flex min-h-screen flex-col bg-surface font-sans text-fg-strong">
-        <Header />
-        <div className="flex-1">{children}</div>
-        <Footer />
+        <CartProvider>
+          <Header />
+          <div className="flex-1">{children}</div>
+          <Footer />
+          <CartDrawer />
+        </CartProvider>
       </body>
     </html>
   );
