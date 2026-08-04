@@ -19,3 +19,12 @@ export interface ShopProductFilter {
   discount: number;
   sort: ShopSort;
 }
+
+export interface ProductDetail extends Product {
+  rating: number;
+  reviewCount: number;
+  inStock: boolean;
+  /** 색상 스와치(hex) */
+  colors: string[];
+  description: string;
+}
