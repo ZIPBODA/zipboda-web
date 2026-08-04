@@ -5,7 +5,7 @@
 | 항목 | 내용 |
 |------|------|
 | 문서명 | 집보다 디자인 시스템 — Figma node-id 레퍼런스 |
-| 버전 | v2.3.0 |
+| 버전 | v2.4.0 |
 | 작성일 | 2026-07-28 |
 | 기반 문서 | Figma(Zipboda, fileKey `eQbErccR3ilS8Ri6EKBBD0`), ZIPBODA_디자인시스템_추가본.md(병합), .claude/rules/figma-implementation.rule.md |
 
@@ -18,6 +18,7 @@
 | v2.1.0 | 2026-07-28 | Claude | 추가본 병합 — Admin Status 색(96:59~94)·Radius 6/10/18·Admin 타이포(Compact 13/2XSmall 11/ExtraBold)·Admin 컴포넌트 8종(StatusIndicator/Breadcrumb/Pagination/Sidebar/Dropdown/Table/Chart) MCP 실측 반영 |
 | v2.2.0 | 2026-07-28 | Claude | 추가본 병합 2 — System/Purple(111:83~93)·Code/Syntax Highlight(111:101~126)·Radius 3px(111:131) 추가 |
 | v2.3.0 | 2026-07-29 | Claude | 파일명 영문화 — ZIPBODA_design-system.md 로 변경, .claude/rules 규칙 파일 .rule.md 접미 통일 및 참조 갱신 |
+| v2.4.0 | 2026-08-04 | Claude | Modal(set `281:136`) 추가 — §13 신설(5 variant·레이아웃·토큰), §7 Shadow/Modal 행·§2 색인 Modal 추가, 기존 §13 코드 매핑 가이드 → §14. 신규 토큰 `modal.*`·`shadow.modal`(@zipboda/tokens) 반영 |
 
 ---
 
@@ -54,6 +55,7 @@ mcp__figma__download_figma_images(fileKey="eQbErccR3ilS8Ri6EKBBD0", nodes=[{"nod
 
 **Admin 추가(추가본):** Admin Status `96:59` · Admin 타이포 `96:113`~`96:140` · StatusIndicator `96:288` · Breadcrumb `96:292` · Pagination `96:296` · Sidebar/Item `96:300` · Dropdown `96:304` · Table(DataRow/Container) `96:315`/`96:319` · Chart `96:326`
 **추가본 2:** System/Purple `111:83` · Code/Syntax `111:101`~`111:126` · Radius 3px `111:131`
+**Modal:** set `281:136` · 오버레이 `281:145` · Confirm `281:51` · Alert `281:67` · Info `281:83` · Success `281:97` · Form `281:111`
 
 ---
 
@@ -253,6 +255,7 @@ mcp__figma__download_figma_images(fileKey="eQbErccR3ilS8Ri6EKBBD0", nodes=[{"nod
 | Shadow/MD | `0 4px 8px rgba(0,0,0,.10)` | 카드 호버 |
 | Shadow/LG | `0 8px 16px -2px rgba(0,0,0,.12)` | 드롭다운·모달 |
 | Shadow/XL | `0 12px 24px -4px rgba(0,0,0,.15)` | 팝업·시트 |
+| Shadow/Modal | `0 8px 32px -4px rgba(0,0,0,.15)` | Modal 카드(§13, set `281:136`) |
 
 ---
 
@@ -374,7 +377,38 @@ width 320 padding 12/16 gap 8 row-center. 라벨 `#1A1A1A` 400/14 · 값 `#6A728
 
 ---
 
-## 13. 코드 매핑 가이드
+## 13. Modal — set `281:136`
+
+전체 프레임 `281:136` · 오버레이 `281:145`(배경 **50% black** `rgba(0,0,0,.5)`, 1440×900). 5 variant × 공통 구조(header·divider·body·footer). `@zipboda/ui` **Modal**로 구현(D4). 카드 radius 16 · shadow-modal · bg `#FFFFFF`.
+
+| variant | node | 아이콘 bg / glyph | 타이틀 | 푸터 버튼 |
+|---------|------|-------------------|--------|-----------|
+| Confirm | `281:51` | `#FFF8E7` / `?` `#CC8C00` | 확인 | 취소 + 확인(brand) |
+| Alert | `281:67` | `#FEE2E2` / `!` `#EF4444` | 삭제 확인 | 취소 + 삭제(`#EF4444`/白) |
+| Info | `281:83` | `#EFF6FF` / `i` `#3373D9` | 안내 | 확인(brand) |
+| Success | `281:97` | `#ECFDF5` / `✓` `#00BC7D` | 완료 | 확인(brand) |
+| Form | `281:111` | 없음 | (커스텀) | 취소 + 저장(brand) |
+
+**레이아웃(공통)**
+- 카드 width **420**(Form **480**), column, radius 16, `shadow-modal`(`0 8px 32px -4px rgba(0,0,0,.15)`), bg `#FFFFFF`.
+- header `281:52`: row space-between, padding 20/24/16. header-left gap 10 = 아이콘 28×28(radius full) + 타이틀(H4 16/600 `#101828`). close ✕ 16/400 `#99A1AF`, h32 radius 8.
+- divider `281:59`: 1px **`#E5E7EB`**(=line). Divider 컴포넌트(`#F3F4F6`)와 다르므로 주의.
+- body `281:60`: column gap 12, padding 20/24. message 14/400 lh1.6 `#4A5565`(줄바꿈 유지).
+- footer `281:62`: row flex-end gap 8, padding 16/24/20, bg `#F9FAFB`. 버튼 padding 10/20 · radius 8 · 14/500 — **Button(lg/sm)과 다른 전용 스펙**.
+  - 취소(secondary): bg `#FFFFFF` border `#E5E7EB` 텍스트 `#364153`.
+  - 주 버튼(primary): bg `#FFBA17` 텍스트 `#101828`. Alert 주 버튼(danger): bg `#EF4444` 텍스트 白.
+- Form body `281:118`: column gap 16, padding 20/24. form-group gap 6 = label(Compact 13/500 `#364153`) + input(radius 8, padding 10/14, border `#E5E7EB`, 값 14/400, placeholder `#99A1AF`).
+
+**토큰(신규 등록 — `@zipboda/tokens`)**
+- semantic `modal.*`: `confirmIconBg #FFF8E7` · `confirmIcon #CC8C00` · `alertIconBg #FEE2E2` · `alertIcon #EF4444` · `infoIconBg #EFF6FF` · `infoIcon #3373D9` · `successIconBg #ECFDF5` · `successIcon #00BC7D`. (Tailwind `modal.*` preset + CSS `--zb-modal-*`)
+- shadow `modal` = `0 8px 32px -4px rgba(0,0,0,.15)`.
+- **기존 토큰 재사용**: 흰색·`#101828`·`#4A5565`·`#99A1AF`·`#E5E7EB`·`#F9FAFB`·`#364153`·`#FFBA17`는 surface/fg-heading/fg-body/fg-disabled/line/surface-secondary/gray-700/brand. Confirm bg=amber.100·Info bg=blue.50·Success bg/glyph=green.50/green.500과 **정확 일치**. 오버레이=`bg-black/50`.
+
+**API(`Modal`)**: `open · variant · title · message | children · confirmLabel · onConfirm · cancelLabel · onCancel · onClose · dismissOnOverlay`. Alert=danger 주 버튼, Info·Success=취소 없음, Form=children 슬롯. 상호작용 컴포넌트이므로 소비처 클라이언트 경계에서 렌더.
+
+---
+
+## 14. 코드 매핑 가이드
 - **색/간격/radius/그림자/타이포** → `shared/config` 디자인 토큰으로 정의 후 참조(code-organization.rule.md). 임의 hex/px 금지(D3).
 - **컴포넌트**(Button/Chip/Tab/Checkbox/Input/SearchBar/Badge/Rating/Avatar/Divider/Card/ListItem/Nav) → `shared/ui`에 구현·재사용(D4). **Admin 전용**(StatusIndicator/Breadcrumb/Pagination/Sidebar/Dropdown/Table/Chart)은 `zipboda-admin`의 `shared/ui`.
 - **토큰 패키지 반영**: Admin Status 색·Radius 6/10/18은 `@zipboda/tokens`에 추가 대상(현 tokens는 사용자 앰버 세트 기준). Admin 팔레트는 별도 그룹(admin-status)으로 분리 권장.
