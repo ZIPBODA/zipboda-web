@@ -443,13 +443,13 @@ width 320 padding 12/16 gap 8 row-center. 라벨 `#1A1A1A` 400/14 · 값 `#6A728
   - 취소: bg `#FFFFFF` border 1px `#E5E7EB`(line) 텍스트 `#4A5565`.
   - 주 버튼: bg `#FFBA17` 텍스트 `#FFFFFF`. 삭제(danger): bg `#EF4444` 텍스트 `#FFFFFF`.
 - Success 아이콘 `366:166`: 48×48 원형, bg `#ECFDF5` / glyph ✓ `22/700` `#00BC7D`(= PC 모달 success 토큰).
-- Form `365:124`: form-group gap 8 = 라벨(`13/500` `#101828`) + input(bg `#F9FAFB`, border `#E5E7EB`, radius 8, padding 12/14, 값 `14/400` `#101828`, placeholder `#99A1AF`).
-- BottomSheet `365:135`: width **375**, radius **20 20 0 0**, 하단 고정. handle `40×4` radius 2 `#E5E7EB`(wrap padding 12/0/8) · header padding 8/24/12 · list-item padding 16/24 gap(라벨 `15/400` + radio 22 border 2, 선택 시 `#FFBA17`) · footer padding **12/24/34**(하단 34 = iOS 홈 인디케이터).
+- Form `365:124`: form-group gap 8 = 라벨(`13/500` lh **16** `#101828`) + input(bg `#F9FAFB`, border `#E5E7EB`, radius 8, padding 12/14, 값 `14/400` `#101828`, placeholder `#99A1AF`). 라벨 행간이 Admin `compact`(13/20)와 달라 `m-label`(13/16)을 쓴다.
+- BottomSheet `365:135`: width **375**, radius **20 20 0 0**, 하단 고정. handle `40×4` radius 2 `#E5E7EB`(wrap padding 12/0/8) · header padding 8/24/12 · list-item padding 16/24(**gap 없음** — 라벨이 남은 폭을 채우고 radio 22 border 2가 우측, 선택 시 `#FFBA17`) · footer padding **12/24/34**(하단 34 = iOS 홈 인디케이터).
 - 오버레이: `rgba(0,0,0,.5)`. 일반 variant는 화면 중앙, BottomSheet는 하단 정렬.
 
 **토큰 — 색은 신규 등록 없음(기존 재사용)**
 - 색: `#FFFFFF`·`#101828`·`#4A5565`·`#F9FAFB`·`#FFBA17`·`#EF4444`·radius 16/20/8/2 → surface·fg-heading·fg-body·surface-secondary·brand·modal-alert-icon·xl·2xl·md·xs. 주 버튼 텍스트(흰색)=`fg-ondark`, Success 아이콘=`modal-success-icon-bg`/`modal-success-icon`.
-- 타이포 **신규**: `m-title 17/21` · `m-body 15/18` · `m-message 14/22` · `m-icon 22/27` — §4 스케일에 없는 크기·행간이라 등록.
+- 타이포 **신규**: `m-title 17/21` · `m-body 15/18` · `m-label 13/16` · `m-message 14/22` · `m-icon 22/27` — §4 스케일에 없는 크기·행간이라 등록.
 - spacing **신규**: `5.5 = 22px`(라디오) · `safe-b = 34px`(홈 인디케이터 여백).
 
 > **Figma 실측과의 미세 차이(의도적 통합)**: Figma raw 값은 테두리·핸들 `#E4E7EC`, Success `#DCFCE7`/`#16A34A`, placeholder `#9CA3AF`였으나 **기존 토큰(line `#E5E7EB` · modal-success-* · fg-disabled `#99A1AF`)으로 통합**했다. 1~2 단위 차이로 육안 구분이 없고, 플랫폼별 색 토큰을 늘리지 않는 편이 유지보수에 유리하다. Figma도 동일하게 정리 예정.
