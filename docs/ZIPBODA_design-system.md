@@ -5,7 +5,7 @@
 | 항목 | 내용 |
 |------|------|
 | 문서명 | 집보다 디자인 시스템 — Figma node-id 레퍼런스 |
-| 버전 | v2.4.0 |
+| 버전 | v2.5.0 |
 | 작성일 | 2026-07-28 |
 | 기반 문서 | Figma(Zipboda, fileKey `eQbErccR3ilS8Ri6EKBBD0`), ZIPBODA_디자인시스템_추가본.md(병합), .claude/rules/figma-implementation.rule.md |
 
@@ -19,6 +19,7 @@
 | v2.2.0 | 2026-07-28 | Claude | 추가본 병합 2 — System/Purple(111:83~93)·Code/Syntax Highlight(111:101~126)·Radius 3px(111:131) 추가 |
 | v2.3.0 | 2026-07-29 | Claude | 파일명 영문화 — ZIPBODA_design-system.md 로 변경, .claude/rules 규칙 파일 .rule.md 접미 통일 및 참조 갱신 |
 | v2.4.0 | 2026-08-04 | Claude | Modal(set `281:136`) 추가 — §13 신설(5 variant·레이아웃·토큰), §7 Shadow/Modal 행·§2 색인 Modal 추가, 기존 §13 코드 매핑 가이드 → §14. 신규 토큰 `modal.*`·`shadow.modal`(@zipboda/tokens) 반영 |
+| v2.5.0 | 2026-08-05 | Claude | Mobile Modal(set `365:152`) 추가 — §14 신설(6 variant·BottomSheet 포함·PC 대비 차이표), §2 색인 추가, 기존 §14 코드 매핑 가이드 → §15. 색은 **기존 토큰 재사용**(line·fg-ondark·fg-disabled·modal-success-*)으로 신규 색 토큰 없음, 타이포 `m-title/m-body/m-message/m-icon`·spacing `5.5`/`safe-b`만 신규 등록(@zipboda/tokens), `MobileModal` 컴포넌트(@zipboda/ui) 반영 |
 
 ---
 
@@ -56,6 +57,7 @@ mcp__figma__download_figma_images(fileKey="eQbErccR3ilS8Ri6EKBBD0", nodes=[{"nod
 **Admin 추가(추가본):** Admin Status `96:59` · Admin 타이포 `96:113`~`96:140` · StatusIndicator `96:288` · Breadcrumb `96:292` · Pagination `96:296` · Sidebar/Item `96:300` · Dropdown `96:304` · Table(DataRow/Container) `96:315`/`96:319` · Chart `96:326`
 **추가본 2:** System/Purple `111:83` · Code/Syntax `111:101`~`111:126` · Radius 3px `111:131`
 **Modal:** set `281:136` · 오버레이 `281:145` · Confirm `281:51` · Alert `281:67` · Info `281:83` · Success `281:97` · Form `281:111`
+**Mobile Modal:** set `365:152` · Confirm `365:102` · Alert `365:110` · Info `365:118` · Success `366:160` · Form `365:124` · BottomSheet `365:135`
 
 ---
 
@@ -408,9 +410,61 @@ width 320 padding 12/16 gap 8 row-center. 라벨 `#1A1A1A` 400/14 · 값 `#6A728
 
 ---
 
-## 14. 코드 매핑 가이드
+## 14. Mobile Modal — set `365:152`
+
+모바일(app) 전용 모달. PC Modal(§13, `281:136`)과 **구조가 다르므로 반응형 변형이 아니라 별도 컴포넌트**로 다룬다. `@zipboda/ui` **MobileModal**(DOM)·`@zipboda/ui-core` `mobileModal*` 클래스(app RN)로 구현(D4).
+
+| variant | node | 본문 | 푸터 버튼 |
+|---------|------|------|-----------|
+| Confirm | `365:102` | 타이틀 + 메시지 | 취소 + 확인(brand) |
+| Alert | `365:110` | 타이틀 + 메시지 | 취소 + 삭제(`#EF4444`/白) |
+| Info | `365:118` | 타이틀 + 메시지 | 확인(brand) |
+| Success | `366:160` | **아이콘 48** + 타이틀 + 메시지 | 확인(brand) |
+| Form | `365:124` | 타이틀(좌측) + form-group×n | 취소 + 저장(brand) |
+| BottomSheet | `365:135` | 핸들 + 헤더(좌측) + 목록 | 확인(brand) |
+
+**PC(§13) 대비 차이 — 혼용 금지**
+
+| 항목 | PC `281:136` | Mobile `365:152` |
+|------|--------------|------------------|
+| 구조 | header·divider·body·footer(bg `#F9FAFB`) | 단일 컬럼(구분선·푸터 배경 없음) |
+| 아이콘 | 4 variant 모두 28 원형(header 좌측) | Success만 48 원형(상단 중앙) |
+| 닫기 ✕ | 있음 | **없음**(오버레이 탭으로 닫음) |
+| 타이틀 | 16/600 좌측 | **17/700 가운데**(Form·BottomSheet만 좌측) |
+| 주 버튼 텍스트 | `#101828` | **`#FFFFFF`** |
+| 버튼 배치 | 우측 정렬 hug | **전체폭 균등 분할** |
+| 카드 | w420(Form 480) · shadow-modal | w320(BottomSheet 375) · **그림자 없음** |
+
+**레이아웃(공통)**
+- 카드 width **320**, column, radius 16, bg `#FFFFFF`, padding **28/24/24**(Success **32/24/24**).
+- gap: Confirm·Alert **20**, Info·Success·Form **16**.
+- 타이틀 `17/700` lh 21 `#101828`. 메시지 `14/400` lh **22** 가운데 `#4A5565`(줄바꿈 유지).
+- button-row: row gap 12, 버튼 `fill` · padding 14/20 · radius 8 · `15/600`.
+  - 취소: bg `#FFFFFF` border 1px `#E5E7EB`(line) 텍스트 `#4A5565`.
+  - 주 버튼: bg `#FFBA17` 텍스트 `#FFFFFF`. 삭제(danger): bg `#EF4444` 텍스트 `#FFFFFF`.
+- Success 아이콘 `366:166`: 48×48 원형, bg `#ECFDF5` / glyph ✓ `22/700` `#00BC7D`(= PC 모달 success 토큰).
+- Form `365:124`: form-group gap 8 = 라벨(`13/500` `#101828`) + input(bg `#F9FAFB`, border `#E5E7EB`, radius 8, padding 12/14, 값 `14/400` `#101828`, placeholder `#99A1AF`).
+- BottomSheet `365:135`: width **375**, radius **20 20 0 0**, 하단 고정. handle `40×4` radius 2 `#E5E7EB`(wrap padding 12/0/8) · header padding 8/24/12 · list-item padding 16/24 gap(라벨 `15/400` + radio 22 border 2, 선택 시 `#FFBA17`) · footer padding **12/24/34**(하단 34 = iOS 홈 인디케이터).
+- 오버레이: `rgba(0,0,0,.5)`. 일반 variant는 화면 중앙, BottomSheet는 하단 정렬.
+
+**토큰 — 색은 신규 등록 없음(기존 재사용)**
+- 색: `#FFFFFF`·`#101828`·`#4A5565`·`#F9FAFB`·`#FFBA17`·`#EF4444`·radius 16/20/8/2 → surface·fg-heading·fg-body·surface-secondary·brand·modal-alert-icon·xl·2xl·md·xs. 주 버튼 텍스트(흰색)=`fg-ondark`, Success 아이콘=`modal-success-icon-bg`/`modal-success-icon`.
+- 타이포 **신규**: `m-title 17/21` · `m-body 15/18` · `m-message 14/22` · `m-icon 22/27` — §4 스케일에 없는 크기·행간이라 등록.
+- spacing **신규**: `5.5 = 22px`(라디오) · `safe-b = 34px`(홈 인디케이터 여백).
+
+> **Figma 실측과의 미세 차이(의도적 통합)**: Figma raw 값은 테두리·핸들 `#E4E7EC`, Success `#DCFCE7`/`#16A34A`, placeholder `#9CA3AF`였으나 **기존 토큰(line `#E5E7EB` · modal-success-* · fg-disabled `#99A1AF`)으로 통합**했다. 1~2 단위 차이로 육안 구분이 없고, 플랫폼별 색 토큰을 늘리지 않는 편이 유지보수에 유리하다. Figma도 동일하게 정리 예정.
+> 타이포 `lineHeight 1.2102em`은 Figma가 **Inter 메트릭**으로 계산한 값이며, 실제 폰트는 Pretendard이므로 px로 반올림해 등록했다(§12 Admin 표기 원칙과 동일).
+
+**API(`MobileModal`)**: `open · variant · title · message | children · confirmLabel · onConfirm · cancelLabel · onCancel · onClose · dismissOnOverlay`. Alert=danger 주 버튼, Info·Success·BottomSheet=취소 없음, Form=children 슬롯, BottomSheet=목록 children 슬롯. 상호작용 컴포넌트이므로 소비처 클라이언트 경계에서 렌더.
+
+> **app(RN) 사용**: `@zipboda/ui`(DOM) 대신 `@zipboda/ui-core`의 `mobileModalCardClass()`·`mobileSheetItemClass` 등을 RN 프리미티브 `className`에 적용한다(README의 web/app 동일 클래스 원칙).
+
+---
+
+## 15. 코드 매핑 가이드
 - **색/간격/radius/그림자/타이포** → `shared/config` 디자인 토큰으로 정의 후 참조(code-organization.rule.md). 임의 hex/px 금지(D3).
-- **컴포넌트**(Button/Chip/Tab/Checkbox/Input/SearchBar/Badge/Rating/Avatar/Divider/Card/ListItem/Nav) → `shared/ui`에 구현·재사용(D4). **Admin 전용**(StatusIndicator/Breadcrumb/Pagination/Sidebar/Dropdown/Table/Chart)은 `zipboda-admin`의 `shared/ui`.
+- **컴포넌트**(Button/Chip/Tab/Checkbox/Input/SearchBar/Badge/Rating/Avatar/Divider/Card/ListItem/Nav/Modal) → `shared/ui`에 구현·재사용(D4). **Admin 전용**(StatusIndicator/Breadcrumb/Pagination/Sidebar/Dropdown/Table/Chart)은 `zipboda-admin`의 `shared/ui`.
+- **모달은 플랫폼별로 분리**: PC=`Modal`(§13), 모바일=`MobileModal`(§14). 구조·타이포·버튼 스펙이 달라 한 컴포넌트의 반응형 분기로 처리하지 않는다.
 - **토큰 패키지 반영**: Admin Status 색·Radius 6/10/18은 `@zipboda/tokens`에 추가 대상(현 tokens는 사용자 앰버 세트 기준). Admin 팔레트는 별도 그룹(admin-status)으로 분리 권장.
 - 상태 뱃지(청약/배송/D-Day)는 §5 매핑을 그대로 쓰는 단일 컴포넌트 권장.
 - 구현 시 출처 node-id 주석(D5). 예: `// figma 20:183 Card/Product`.
