@@ -19,7 +19,7 @@
 | v2.2.0 | 2026-07-28 | Claude | 추가본 병합 2 — System/Purple(111:83~93)·Code/Syntax Highlight(111:101~126)·Radius 3px(111:131) 추가 |
 | v2.3.0 | 2026-07-29 | Claude | 파일명 영문화 — ZIPBODA_design-system.md 로 변경, .claude/rules 규칙 파일 .rule.md 접미 통일 및 참조 갱신 |
 | v2.4.0 | 2026-08-04 | Claude | Modal(set `281:136`) 추가 — §13 신설(5 variant·레이아웃·토큰), §7 Shadow/Modal 행·§2 색인 Modal 추가, 기존 §13 코드 매핑 가이드 → §14. 신규 토큰 `modal.*`·`shadow.modal`(@zipboda/tokens) 반영 |
-| v2.5.0 | 2026-08-05 | Claude | Mobile Modal(set `365:152`) 추가 — §14 신설(6 variant·BottomSheet 포함·PC 대비 차이·토큰), §2 색인 추가, 기존 §14 코드 매핑 가이드 → §15. 신규 토큰 `modal-mobile.*`·타이포 `m-title/m-body/m-message/m-icon`·spacing `5.5`/`safe-b`(@zipboda/tokens), `MobileModal` 컴포넌트(@zipboda/ui) 반영 |
+| v2.5.0 | 2026-08-05 | Claude | Mobile Modal(set `365:152`) 추가 — §14 신설(6 variant·BottomSheet 포함·PC 대비 차이표), §2 색인 추가, 기존 §14 코드 매핑 가이드 → §15. 색은 **기존 토큰 재사용**(line·fg-ondark·fg-disabled·modal-success-*)으로 신규 색 토큰 없음, 타이포 `m-title/m-body/m-message/m-icon`·spacing `5.5`/`safe-b`만 신규 등록(@zipboda/tokens), `MobileModal` 컴포넌트(@zipboda/ui) 반영 |
 
 ---
 
@@ -440,20 +440,20 @@ width 320 padding 12/16 gap 8 row-center. 라벨 `#1A1A1A` 400/14 · 값 `#6A728
 - gap: Confirm·Alert **20**, Info·Success·Form **16**.
 - 타이틀 `17/700` lh 21 `#101828`. 메시지 `14/400` lh **22** 가운데 `#4A5565`(줄바꿈 유지).
 - button-row: row gap 12, 버튼 `fill` · padding 14/20 · radius 8 · `15/600`.
-  - 취소: bg `#FFFFFF` border 1px **`#E4E7EC`** 텍스트 `#4A5565`.
+  - 취소: bg `#FFFFFF` border 1px `#E5E7EB`(line) 텍스트 `#4A5565`.
   - 주 버튼: bg `#FFBA17` 텍스트 `#FFFFFF`. 삭제(danger): bg `#EF4444` 텍스트 `#FFFFFF`.
-- Success 아이콘 `366:166`: 48×48 원형, bg **`#DCFCE7`** / glyph ✓ `22/700` **`#16A34A`**.
-- Form `365:124`: form-group gap 8 = 라벨(`13/500` `#101828`) + input(bg `#F9FAFB`, border `#E4E7EC`, radius 8, padding 12/14, 값 `14/400` `#101828`, placeholder `#9CA3AF`).
-- BottomSheet `365:135`: width **375**, radius **20 20 0 0**, 하단 고정. handle `40×4` radius 2 `#E4E7EC`(wrap padding 12/0/8) · header padding 8/24/12 · list-item padding 16/24 gap(라벨 `15/400` + radio 22 border 2, 선택 시 `#FFBA17`) · footer padding **12/24/34**(하단 34 = iOS 홈 인디케이터).
+- Success 아이콘 `366:166`: 48×48 원형, bg `#ECFDF5` / glyph ✓ `22/700` `#00BC7D`(= PC 모달 success 토큰).
+- Form `365:124`: form-group gap 8 = 라벨(`13/500` `#101828`) + input(bg `#F9FAFB`, border `#E5E7EB`, radius 8, padding 12/14, 값 `14/400` `#101828`, placeholder `#99A1AF`).
+- BottomSheet `365:135`: width **375**, radius **20 20 0 0**, 하단 고정. handle `40×4` radius 2 `#E5E7EB`(wrap padding 12/0/8) · header padding 8/24/12 · list-item padding 16/24 gap(라벨 `15/400` + radio 22 border 2, 선택 시 `#FFBA17`) · footer padding **12/24/34**(하단 34 = iOS 홈 인디케이터).
 - 오버레이: `rgba(0,0,0,.5)`. 일반 variant는 화면 중앙, BottomSheet는 하단 정렬.
 
-**토큰(신규 등록 — `@zipboda/tokens`)**
-- semantic `modalMobile.*`: `border #E4E7EC` · `onPrimary #FFFFFF` · `placeholder #9CA3AF` · `successIconBg #DCFCE7` · `successIcon #16A34A`. (Tailwind `modal-mobile.*`)
-- 타이포 `m-title 17/21` · `m-body 15/18` · `m-message 14/22` · `m-icon 22/27` — §4 스케일에 없는 크기·행간이라 별도 등록.
-- spacing `5.5 = 22px`(라디오) · `safe-b = 34px`(홈 인디케이터 여백).
-- **기존 토큰 재사용**: `#FFFFFF`·`#101828`·`#4A5565`·`#F9FAFB`·`#FFBA17`·`#EF4444`·radius 16/20/8/2는 surface/fg-heading/fg-body/surface-secondary/brand/modal-alert-icon/xl·2xl·md·xs.
+**토큰 — 색은 신규 등록 없음(기존 재사용)**
+- 색: `#FFFFFF`·`#101828`·`#4A5565`·`#F9FAFB`·`#FFBA17`·`#EF4444`·radius 16/20/8/2 → surface·fg-heading·fg-body·surface-secondary·brand·modal-alert-icon·xl·2xl·md·xs. 주 버튼 텍스트(흰색)=`fg-ondark`, Success 아이콘=`modal-success-icon-bg`/`modal-success-icon`.
+- 타이포 **신규**: `m-title 17/21` · `m-body 15/18` · `m-message 14/22` · `m-icon 22/27` — §4 스케일에 없는 크기·행간이라 등록.
+- spacing **신규**: `5.5 = 22px`(라디오) · `safe-b = 34px`(홈 인디케이터 여백).
 
-> **주의 — PC 토큰과 값이 다른 항목**: 테두리 `#E4E7EC`(PC line `#E5E7EB`), Success `#DCFCE7`·`#16A34A`(PC `#ECFDF5`·`#00BC7D`), placeholder `#9CA3AF`(사용자 팔레트 `#99A1AF`). Figma 실측값 그대로 등록했으나 **디자인 의도인지 확인 필요** — 통합 확정 시 토큰을 재사용하도록 정리한다(D6).
+> **Figma 실측과의 미세 차이(의도적 통합)**: Figma raw 값은 테두리·핸들 `#E4E7EC`, Success `#DCFCE7`/`#16A34A`, placeholder `#9CA3AF`였으나 **기존 토큰(line `#E5E7EB` · modal-success-* · fg-disabled `#99A1AF`)으로 통합**했다. 1~2 단위 차이로 육안 구분이 없고, 플랫폼별 색 토큰을 늘리지 않는 편이 유지보수에 유리하다. Figma도 동일하게 정리 예정.
+> 타이포 `lineHeight 1.2102em`은 Figma가 **Inter 메트릭**으로 계산한 값이며, 실제 폰트는 Pretendard이므로 px로 반올림해 등록했다(§12 Admin 표기 원칙과 동일).
 
 **API(`MobileModal`)**: `open · variant · title · message | children · confirmLabel · onConfirm · cancelLabel · onCancel · onClose · dismissOnOverlay`. Alert=danger 주 버튼, Info·Success·BottomSheet=취소 없음, Form=children 슬롯, BottomSheet=목록 children 슬롯. 상호작용 컴포넌트이므로 소비처 클라이언트 경계에서 렌더.
 
