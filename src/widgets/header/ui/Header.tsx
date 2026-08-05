@@ -32,8 +32,8 @@ export function Header({ authenticated = false }: { authenticated?: boolean }) {
             <span className="text-base font-bold text-fg-heading md:text-lg">집보다</span>
           </Link>
 
-          {/* figma 353:3084(모바일 fill·아이콘 외부) / 135:7856(PC 512·아이콘 내부) */}
-          <div className="flex flex-1 items-center gap-2 md:relative md:w-full md:max-w-lg md:flex-none md:gap-0">
+          {/* figma 353:3084(모바일 fill·입력만) / 135:7856(PC 512·아이콘 내부) */}
+          <div className="flex flex-1 items-center md:relative md:w-full md:max-w-lg md:flex-none">
             <SearchIcon />
             <input
               type="search"
@@ -143,7 +143,7 @@ function CartIcon() {
 function SearchIcon() {
   return (
     <svg
-      className="shrink-0 text-fg-disabled md:pointer-events-none md:absolute md:left-3.5 md:top-1/2 md:-translate-y-1/2"
+      className="hidden text-fg-disabled md:pointer-events-none md:absolute md:left-3.5 md:top-1/2 md:block md:-translate-y-1/2"
       width={18}
       height={18}
       viewBox="0 0 24 24"

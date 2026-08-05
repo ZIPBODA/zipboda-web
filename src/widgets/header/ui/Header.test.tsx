@@ -49,14 +49,18 @@ describe("Header", () => {
     expect(screen.getByRole("button", { name: "장바구니" }).parentElement).toHaveClass("order-2", "md:order-1");
   });
 
-  it("검색 아이콘은 모바일에서도 노출된다(디자인상 pill 좌측 외부)", () => {
+  // figma 353:3084 — 모바일 검색은 입력 pill만 노출(돋보기 노드 없음), PC는 입력 내부 아이콘
+  it("검색 아이콘은 모바일에서 감추고 PC에서만 입력 안쪽에 둔다", () => {
     renderHeader(true);
 
     const input = screen.getByRole("searchbox", { name: "주택·가구 검색" });
     const icon = input.previousElementSibling as SVGElement;
+    const iconClass = icon.getAttribute("class") ?? "";
+
     expect(icon.tagName.toLowerCase()).toBe("svg");
-    expect(icon.getAttribute("class")).not.toContain("hidden");
-    expect(icon.getAttribute("class")).toContain("md:absolute");
+    expect(iconClass).toContain("hidden");
+    expect(iconClass).toContain("md:block");
+    expect(iconClass).toContain("md:absolute");
   });
 
   it("주 메뉴 행은 모바일에서 감춘다(하단 탭이 대체)", () => {
