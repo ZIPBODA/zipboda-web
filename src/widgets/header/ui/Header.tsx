@@ -44,17 +44,19 @@ export function Header({ authenticated = false }: { authenticated?: boolean }) {
           </div>
 
           {/* figma 353:3091 액션 — 장바구니 + (로그인 후 아이콘 3개 / 로그인 전 로그인 버튼) */}
+          {/* figma 353:3091 모바일은 알림·장바구니만 노출(순서도 PC와 반대). 찜·내 정보는 하단 탭으로 접근 */}
           <div className="flex shrink-0 items-center gap-1 md:ml-auto">
-            <CartButton />
+            <span className="order-2 inline-flex md:order-1">
+              <CartButton />
+            </span>
             {authenticated ? (
               <>
-                {/* 찜은 모바일에서 마이페이지 탭으로 접근(디자인상 헤더 미노출) */}
-                <span className="hidden md:inline-flex">
+                <span className="hidden md:order-2 md:inline-flex">
                   <IconButton label="찜">
                     <HeartIcon />
                   </IconButton>
                 </span>
-                <div className="relative">
+                <div className="relative order-1 md:order-3">
                   <button type="button" onClick={() => toggle("notifications")} aria-label="알림" aria-expanded={panel === "notifications"} className="relative rounded-lg p-2 text-fg-muted transition-colors hover:bg-surface-secondary">
                     <BellIcon />
                     <span className="absolute right-2 top-2 size-2 rounded-full border border-surface bg-brand" />
@@ -65,7 +67,7 @@ export function Header({ authenticated = false }: { authenticated?: boolean }) {
                     </div>
                   )}
                 </div>
-                <div className="relative">
+                <div className="relative hidden md:order-4 md:block">
                   <button type="button" onClick={() => toggle("profile")} aria-label="내 정보" aria-expanded={panel === "profile"} className="rounded-lg p-2 text-fg-muted transition-colors hover:bg-surface-secondary">
                     <UserIcon />
                   </button>
