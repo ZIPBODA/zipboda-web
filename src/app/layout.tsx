@@ -2,6 +2,7 @@ import "./globals.css";
 import type { Metadata, Viewport } from "next";
 import { Header } from "@/widgets/header";
 import { Footer } from "@/widgets/footer";
+import { MobileBottomNav } from "@/widgets/mobile-bottom-nav";
 import { CartProvider, CartDrawer } from "@/features/cart";
 
 export const metadata: Metadata = {
@@ -38,8 +39,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <CartProvider>
           {/* 인증 미구현 프로토타입 — 로그인 후 헤더(찜·알림·프로필)를 기본 노출. 로그인 화면은 /login 직접 접근 */}
           <Header authenticated />
-          <div className="flex-1">{children}</div>
+          {/* 모바일은 하단 탭이 고정되므로 콘텐츠 하단에 탭 높이만큼 여백을 둔다 */}
+          <div className="flex-1 pb-16 md:pb-0">{children}</div>
           <Footer />
+          <MobileBottomNav />
           <CartDrawer />
         </CartProvider>
       </body>

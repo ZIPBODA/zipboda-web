@@ -21,37 +21,42 @@ export function Header({ authenticated = false }: { authenticated?: boolean }) {
 
   return (
     <header className="sticky top-0 z-40 border-b border-line-subtle bg-surface">
-      <div className="mx-auto max-w-7xl px-6">
-        {/* figma 135:7849 상단: 로고 · 검색 · 액션 */}
-        <div className="flex h-16 items-center gap-6">
-          {/* figma 135:7850 로고 — 아이콘 32(r12) + 집보다 */}
-          <Link href="/" className="flex shrink-0 items-center gap-2" aria-label="집보다 홈">
-            <span className="relative h-8 w-8 shrink-0 overflow-hidden rounded-lg">
+      <div className="mx-auto max-w-7xl px-4 md:px-6">
+        {/* figma 353:3077(모바일 56) / 135:7849(PC 64) 상단: 로고 · 검색 · 액션 */}
+        <div className="flex h-14 items-center gap-2.5 md:h-16 md:gap-6">
+          {/* figma 353:3078 로고 — 모바일 28(r8) · PC 32(r12) */}
+          <Link href="/" className="flex shrink-0 items-center gap-1.5 md:gap-2" aria-label="집보다 홈">
+            <span className="relative size-7 shrink-0 overflow-hidden rounded-md md:size-8 md:rounded-lg">
               <Image src={icon} alt="" fill sizes="32px" priority className="object-contain" />
             </span>
-            <span className="text-lg font-bold text-fg-heading">집보다</span>
+            <span className="text-base font-bold text-fg-heading md:text-lg">집보다</span>
           </Link>
 
-          {/* figma 135:7856 검색(512px) */}
-          <div className="relative hidden w-full max-w-lg md:block">
+          {/* figma 353:3084(모바일 fill·입력만) / 135:7856(PC 512·아이콘 내부) */}
+          <div className="flex flex-1 items-center md:relative md:w-full md:max-w-lg md:flex-none">
             <SearchIcon />
             <input
               type="search"
               aria-label="주택·가구 검색"
               placeholder="주택, 가구 검색..."
-              className="h-[42px] w-full rounded-lg border border-line bg-surface-secondary pl-10 pr-4 text-sm text-fg-strong outline-none transition-colors placeholder:text-fg-disabled focus:border-brand"
+              className="h-8 w-full rounded-lg bg-surface-tertiary px-3 text-xs text-fg-strong outline-none transition-colors placeholder:text-fg-disabled focus:border-brand md:h-[42px] md:border md:border-line md:bg-surface-secondary md:pl-10 md:pr-4 md:text-sm"
             />
           </div>
 
-          {/* figma 135:7863 액션 — 장바구니 + (로그인 후 아이콘 3개 / 로그인 전 로그인 버튼) */}
-          <div className="ml-auto flex shrink-0 items-center gap-1">
-            <CartButton />
+          {/* figma 353:3091 액션 — 장바구니 + (로그인 후 아이콘 3개 / 로그인 전 로그인 버튼) */}
+          {/* figma 353:3091 모바일은 알림·장바구니만 노출(순서도 PC와 반대). 찜·내 정보는 하단 탭으로 접근 */}
+          <div className="flex shrink-0 items-center gap-1 md:ml-auto">
+            <span className="order-2 inline-flex md:order-1">
+              <CartButton />
+            </span>
             {authenticated ? (
               <>
-                <IconButton label="찜">
-                  <HeartIcon />
-                </IconButton>
-                <div className="relative">
+                <span className="hidden md:order-2 md:inline-flex">
+                  <IconButton label="찜">
+                    <HeartIcon />
+                  </IconButton>
+                </span>
+                <div className="relative order-1 md:order-3">
                   <button type="button" onClick={() => toggle("notifications")} aria-label="알림" aria-expanded={panel === "notifications"} className="relative rounded-lg p-2 text-fg-muted transition-colors hover:bg-surface-secondary">
                     <BellIcon />
                     <span className="absolute right-2 top-2 size-2 rounded-full border border-surface bg-brand" />
@@ -62,7 +67,7 @@ export function Header({ authenticated = false }: { authenticated?: boolean }) {
                     </div>
                   )}
                 </div>
-                <div className="relative">
+                <div className="relative hidden md:order-4 md:block">
                   <button type="button" onClick={() => toggle("profile")} aria-label="내 정보" aria-expanded={panel === "profile"} className="rounded-lg p-2 text-fg-muted transition-colors hover:bg-surface-secondary">
                     <UserIcon />
                   </button>
@@ -82,8 +87,8 @@ export function Header({ authenticated = false }: { authenticated?: boolean }) {
           {panel && <button type="button" aria-label="패널 닫기" tabIndex={-1} onClick={() => setPanel(null)} className="fixed inset-0 z-40 cursor-default" />}
         </div>
 
-        {/* figma 135:7882 하단: 주 메뉴 */}
-        <nav className="flex items-center gap-0.5" aria-label="주 메뉴">
+        {/* figma 135:7882 하단: 주 메뉴 — 모바일은 하단 탭(353:3101)이 대체 */}
+        <nav className="hidden items-center gap-0.5 md:flex" aria-label="주 메뉴">
           {NAV_ITEMS.map((item) => {
             const active = isActive(item.href);
             return (
@@ -138,7 +143,7 @@ function CartIcon() {
 function SearchIcon() {
   return (
     <svg
-      className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-fg-disabled"
+      className="hidden text-fg-disabled md:pointer-events-none md:absolute md:left-3.5 md:top-1/2 md:block md:-translate-y-1/2"
       width={18}
       height={18}
       viewBox="0 0 24 24"

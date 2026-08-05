@@ -11,7 +11,8 @@ const POLICIES = ["개인정보처리방침", "이용약관", "쿠키 설정"];
 
 export function Footer() {
   return (
-    <footer className="bg-surface-dark">
+    // 화면설계서 COM-03 — 푸터는 PC 전용(Mobile ✕)
+    <footer className="hidden bg-surface-dark md:block">
       <div className="mx-auto max-w-7xl px-6 py-16">
         {/* figma 250:78 상단 — 브랜드 · 주택 · 쇼핑 (좌·중·우) */}
         <div className="flex flex-col gap-10 md:flex-row md:justify-between">

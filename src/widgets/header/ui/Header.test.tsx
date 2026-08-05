@@ -33,4 +33,39 @@ describe("Header", () => {
     expect(screen.getByText("김민지")).toBeInTheDocument();
     expect(screen.getByRole("link", { name: /설정/ })).toHaveAttribute("href", "/my/profile");
   });
+
+  // figma 353:3077 — 모바일 액션은 알림·장바구니만, 순서는 알림 → 장바구니
+  it("모바일에서는 찜·내 정보를 감춘다", () => {
+    renderHeader(true);
+
+    expect(screen.getByRole("button", { name: "찜" }).parentElement).toHaveClass("hidden", "md:inline-flex");
+    expect(screen.getByRole("button", { name: "내 정보" }).parentElement).toHaveClass("hidden", "md:block");
+  });
+
+  it("모바일 액션 순서는 알림 → 장바구니다", () => {
+    renderHeader(true);
+
+    expect(screen.getByRole("button", { name: "알림" }).parentElement).toHaveClass("order-1", "md:order-3");
+    expect(screen.getByRole("button", { name: "장바구니" }).parentElement).toHaveClass("order-2", "md:order-1");
+  });
+
+  // figma 353:3084 — 모바일 검색은 입력 pill만 노출(돋보기 노드 없음), PC는 입력 내부 아이콘
+  it("검색 아이콘은 모바일에서 감추고 PC에서만 입력 안쪽에 둔다", () => {
+    renderHeader(true);
+
+    const input = screen.getByRole("searchbox", { name: "주택·가구 검색" });
+    const icon = input.previousElementSibling as SVGElement;
+    const iconClass = icon.getAttribute("class") ?? "";
+
+    expect(icon.tagName.toLowerCase()).toBe("svg");
+    expect(iconClass).toContain("hidden");
+    expect(iconClass).toContain("md:block");
+    expect(iconClass).toContain("md:absolute");
+  });
+
+  it("주 메뉴 행은 모바일에서 감춘다(하단 탭이 대체)", () => {
+    renderHeader(true);
+
+    expect(screen.getByRole("navigation", { name: "주 메뉴" })).toHaveClass("hidden", "md:flex");
+  });
 });
