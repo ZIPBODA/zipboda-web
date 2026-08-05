@@ -35,6 +35,7 @@ export interface WishlistItem {
   discount: number;
   price: number;
   originalPrice: number;
+  image: string;
 }
 
 export type OrderStatus = "배송완료" | "배송중" | "준비중";
@@ -46,6 +47,7 @@ export interface Order {
   orderDate: string;
   price: number;
   status: OrderStatus;
+  image: string;
 }
 
 export interface ProfileEditData {

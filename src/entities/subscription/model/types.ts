@@ -18,6 +18,7 @@ export interface Subscription {
   moveIn: string;
   deadline: string;
   dday: number;
+  image: string;
 }
 
 export interface SubscriptionFilter {

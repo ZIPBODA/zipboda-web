@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { AgencyBadge } from "./AgencyBadge";
 import { DdayBadge } from "./DdayBadge";
@@ -16,8 +17,10 @@ export function SubscriptionCard({ item }: { item: Subscription }) {
       href={`/subscriptions/${item.id}`}
       className="flex items-stretch overflow-hidden rounded-xl border border-line-subtle bg-surface transition-shadow hover:shadow-md"
     >
-      {/* figma 135:5670 이미지 컬럼(고정폭). 실 이미지 연동 전 플레이스홀더 */}
-      <div className="w-48 shrink-0 bg-surface-tertiary" />
+      {/* figma 135:5670 이미지 컬럼(고정폭) */}
+      <div className="relative w-48 shrink-0 bg-surface-tertiary">
+        <Image src={item.image} alt="" fill sizes="192px" className="object-cover" />
+      </div>
       <div className="flex flex-1 items-center gap-6 p-6">
         <AgencyBadge agency={item.agency} />
         <div className="flex min-w-0 flex-1 flex-col">

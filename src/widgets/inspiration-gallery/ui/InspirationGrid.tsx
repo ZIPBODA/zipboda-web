@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import type { InspirationItem } from "@/entities/inspiration";
 import { InspirationLightbox } from "./InspirationLightbox";
 
@@ -23,9 +24,11 @@ export function InspirationGrid({ items }: { items: InspirationItem[] }) {
             type="button"
             onClick={() => setSelected(item)}
             aria-label={`${item.category} 집구경 ${item.handle}`}
-            className="mb-5 block w-full break-inside-avoid overflow-hidden rounded-xl border border-line-subtle bg-surface-tertiary transition-opacity hover:opacity-90"
+            className="relative mb-5 block w-full break-inside-avoid overflow-hidden rounded-xl border border-line-subtle bg-surface-tertiary transition-opacity hover:opacity-90"
             style={{ height: item.height }}
-          />
+          >
+            <Image src={item.image} alt="" fill sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw" className="object-cover" />
+          </button>
         ))}
       </div>
       {selected && <InspirationLightbox item={selected} onClose={() => setSelected(null)} />}

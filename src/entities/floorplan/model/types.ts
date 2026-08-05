@@ -16,6 +16,7 @@ export interface FloorplanShowcase {
   summary: string;
   has2d: boolean;
   has3d: boolean;
+  image: string;
 }
 
 export interface Floorplan {

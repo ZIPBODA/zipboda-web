@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import type { InspirationItem } from "@/entities/inspiration";
 
@@ -19,6 +20,7 @@ export function InspirationLightbox({ item, onClose }: { item: InspirationItem; 
           ✕
         </button>
         <div className="relative aspect-[9/4] w-full overflow-hidden rounded-3xl bg-surface-tertiary shadow-2xl">
+          <Image src={item.image} alt={`${item.category} 집구경`} fill sizes="768px" className="object-cover" />
           <div className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-4 bg-gradient-to-t from-black/70 to-transparent p-6">
             <div className="min-w-0">
               <span className="rounded-full bg-brand px-3 py-1 text-xs font-bold text-brand-on">{item.category}</span>
