@@ -17,7 +17,7 @@ export function InspirationGrid({ items }: { items: InspirationItem[] }) {
 
   return (
     <>
-      <div className="columns-1 gap-5 sm:columns-2 lg:columns-3">
+      <div className="columns-2 gap-4 md:gap-5 lg:columns-3">
         {items.map((item) => (
           <button
             key={item.id}
