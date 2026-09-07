@@ -15,13 +15,13 @@ export const HOME_HERO_STATS: { value: string; label: string }[] = [
   { value: "98,000+", label: "가구 상품" }
 ];
 
-// figma 419:10687 모바일 퀵메뉴 — 5개(PC 카테고리 6종과 별개 구성)
-export const HOME_QUICK_MENU: { icon: string; label: string }[] = [
-  { icon: "🏢", label: "청약" },
-  { icon: "🛋️", label: "가구" },
-  { icon: "🏪", label: "쇼핑" },
-  { icon: "📸", label: "인테리어 영감" },
-  { icon: "📊", label: "가점계산" }
+// figma 419:10687 모바일 퀵메뉴 — 5개(PC 카테고리 6종과 별개 구성). href는 앱 라우트로 연결
+export const HOME_QUICK_MENU: { icon: string; label: string; href: string }[] = [
+  { icon: "🏢", label: "청약", href: "/subscriptions" },
+  { icon: "🛋️", label: "가구", href: "/shop" },
+  { icon: "🏪", label: "쇼핑", href: "/shop" },
+  { icon: "📸", label: "인테리어 영감", href: "/inspirations" },
+  { icon: "📊", label: "가점계산", href: "/score" }
 ];
 
 // figma 419:10668 모바일 프로모 캐러셀. 슬라이드1=Figma 확정, 2·3=기존 앱 섹션 카피 재사용
