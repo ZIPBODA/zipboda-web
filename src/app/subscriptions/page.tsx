@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { getSubscriptions, type SubscriptionSort } from "@/entities/subscription";
-import { SubscriptionFilters, SubscriptionListView } from "@/widgets/subscription-list";
+import { SubscriptionFilters, MobileSubscriptionFilters, SubscriptionListView } from "@/widgets/subscription-list";
 
 export const metadata: Metadata = {
   title: "공공주택 청약 | 집보다",
@@ -21,25 +21,36 @@ export default async function SubscriptionsPage({ searchParams }: PageProps) {
   });
 
   return (
-    <main className="mx-auto w-full max-w-7xl px-6 pb-20 pt-10">
-      {/* figma 135:5603 헤더(타이틀 + 뷰 토글) */}
+    <main className="mx-auto w-full max-w-7xl px-4 pb-20 pt-6 md:px-6 md:pt-10">
+      {/* figma PC 413:645 / Mobile 419:10092 헤더(타이틀 + 뷰 토글) */}
       <header className="flex items-end justify-between">
         <div>
-          <h1 className="text-h1 font-bold tracking-[-0.0125em] text-fg-heading">공공주택</h1>
-          <p className="mt-1 text-sm text-fg-muted">진행중 공고 {items.length}건 · 2025년 7월 22일 업데이트</p>
+          <h1 className="text-lg font-bold tracking-[-0.0125em] text-fg-heading md:text-h1">공공주택</h1>
+          <p className="mt-1 text-2xsmall text-fg-muted md:text-sm">진행중 공고 {items.length}건 · 2025년 7월 22일 업데이트</p>
         </div>
-        <div className="flex rounded-lg bg-surface-tertiary p-1">
+        {/* PC: 목록/지도 세그먼트 */}
+        <div className="hidden rounded-lg bg-surface-tertiary p-1 md:flex">
           <span className="rounded-md bg-surface px-4 py-2 text-sm font-semibold text-fg-heading shadow-sm">목록</span>
           <span aria-disabled className="flex cursor-not-allowed items-center gap-1.5 rounded-md px-4 py-2 text-sm font-semibold text-fg-disabled">
             📍 지도
           </span>
         </div>
+        {/* 모바일: 지도 단일 버튼 */}
+        <span aria-disabled className="flex cursor-not-allowed items-center gap-1 rounded-lg bg-surface-tertiary px-3 py-1.5 text-2xsmall font-medium text-fg-muted md:hidden">
+          📍 지도
+        </span>
       </header>
 
-      <div className="mt-8">
-        <SubscriptionFilters />
+      {/* PC 필터 바 / 모바일 칩레일 */}
+      <div className="mt-5 md:mt-8">
+        <div className="hidden md:block">
+          <SubscriptionFilters />
+        </div>
+        <div className="md:hidden">
+          <MobileSubscriptionFilters />
+        </div>
       </div>
-      <div className="mt-8">
+      <div className="mt-5 md:mt-8">
         <SubscriptionListView items={items} />
       </div>
     </main>

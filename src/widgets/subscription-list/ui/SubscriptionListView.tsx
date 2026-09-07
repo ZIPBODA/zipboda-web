@@ -1,6 +1,6 @@
-import { SubscriptionCard, type Subscription } from "@/entities/subscription";
+import { SubscriptionCard, SubscriptionCardMobile, type Subscription } from "@/entities/subscription";
 
-// figma 135:5668 목록 — 가로형 카드 세로 스택
+// figma PC 413:718(가로 카드) / Mobile 419:10136(세로 이미지배경 카드) — 이중 렌더
 export function SubscriptionListView({ items }: { items: Subscription[] }) {
   if (items.length === 0) {
     return (
@@ -11,10 +11,19 @@ export function SubscriptionListView({ items }: { items: Subscription[] }) {
     );
   }
   return (
-    <div className="flex flex-col gap-4">
-      {items.map((item) => (
-        <SubscriptionCard key={item.id} item={item} />
-      ))}
-    </div>
+    <>
+      {/* PC(≥768) 가로 카드 */}
+      <div className="hidden flex-col gap-4 md:flex">
+        {items.map((item) => (
+          <SubscriptionCard key={item.id} item={item} />
+        ))}
+      </div>
+      {/* 모바일(≤767) 세로 카드 */}
+      <div className="flex flex-col gap-3 md:hidden">
+        {items.map((item) => (
+          <SubscriptionCardMobile key={item.id} item={item} />
+        ))}
+      </div>
+    </>
   );
 }
