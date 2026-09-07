@@ -39,9 +39,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <CartProvider>
           {/* 인증 미구현 프로토타입 — 로그인 후 헤더(찜·알림·프로필)를 기본 노출. 로그인 화면은 /login 직접 접근 */}
           <Header authenticated />
-          {/* 모바일은 하단 탭이 고정되므로 콘텐츠 하단에 탭 높이만큼 여백을 둔다 */}
-          <div className="flex-1 pb-16 md:pb-0">{children}</div>
+          <div className="flex-1">{children}</div>
           <Footer />
+          {/* 고정된 모바일 하단 탭이 푸터를 가리지 않도록 탭 높이(h-16)만큼 여백을 둔다 */}
+          <div aria-hidden className="h-16 md:hidden" />
           <MobileBottomNav />
           <CartDrawer />
         </CartProvider>
