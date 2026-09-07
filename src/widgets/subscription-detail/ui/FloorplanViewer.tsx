@@ -20,7 +20,7 @@ export function FloorplanViewer({ floorplan, view, viewpoint, hrefFor }: Props) 
           <Link
             href={hrefFor({ view: "2D" })}
             aria-current={view === "2D" ? "true" : undefined}
-            className={`rounded-md px-5 py-2 text-sm ${
+            className={`rounded-md px-3 py-2 text-sm md:px-5 ${
               view === "2D" ? "bg-surface font-semibold text-fg-heading shadow-sm" : "font-bold text-fg-muted"
             }`}
           >
@@ -29,7 +29,7 @@ export function FloorplanViewer({ floorplan, view, viewpoint, hrefFor }: Props) 
           <Link
             href={hrefFor({ view: "3D" })}
             aria-current={view === "3D" ? "true" : undefined}
-            className={`flex items-center gap-1.5 rounded-md px-5 py-2 text-sm ${
+            className={`flex items-center gap-1.5 rounded-md px-3 py-2 text-sm md:px-5 ${
               view === "3D" ? "bg-surface font-semibold text-fg-heading shadow-sm" : "font-bold text-fg-muted"
             }`}
           >
@@ -40,7 +40,7 @@ export function FloorplanViewer({ floorplan, view, viewpoint, hrefFor }: Props) 
       </div>
 
       {/* figma 135:5037 뷰어 — 자산 렌더는 API-031/032 연동(S4) 전까지 공백 */}
-      <div className="relative mt-5 h-[440px] overflow-hidden rounded-xl border border-line bg-surface-warm">
+      <div className="relative mt-4 h-[280px] overflow-hidden rounded-xl border border-line bg-surface-warm md:mt-5 md:h-[440px]">
         {view === "2D" ? (
           <span className="absolute left-4 top-4 rounded-full border border-line-subtle bg-surface/80 px-3 py-1.5 text-xs font-medium text-fg-muted">
             2D 건축 평면도
@@ -71,7 +71,7 @@ export function FloorplanViewer({ floorplan, view, viewpoint, hrefFor }: Props) 
                   </Link>
                 ))}
               </div>
-              <p className="text-xs text-fg-muted">드래그로 회전 · 스크롤로 확대/축소</p>
+              <p className="hidden text-xs text-fg-muted sm:block">드래그로 회전 · 스크롤로 확대/축소</p>
             </div>
           </div>
         )}

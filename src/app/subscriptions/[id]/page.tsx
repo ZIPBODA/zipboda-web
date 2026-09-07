@@ -73,10 +73,10 @@ export default async function SubscriptionDetailPage({ params, searchParams }: P
         agency={detail.agency}
         agencyLabel={detail.agencyLabel}
       />
-      <main className="mx-auto w-full max-w-7xl px-6 py-10">
-        <div className="flex gap-6">
+      <main className="mx-auto w-full max-w-7xl px-4 py-6 md:px-6 md:py-10">
+        <div className="flex flex-col gap-6 lg:flex-row">
           <FloorplanViewer floorplan={floorplan} view={view} viewpoint={viewpoint} hrefFor={hrefFor} />
-          <div className="flex w-[476px] shrink-0 flex-col">
+          <div className="flex w-full shrink-0 flex-col lg:w-[476px]">
             <DetailInfoPanel detail={detail} selectedSize={selectedUnit.size} hrefFor={hrefFor} />
             <FurnitureSuggestions products={products} />
           </div>
