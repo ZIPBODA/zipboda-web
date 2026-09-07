@@ -35,7 +35,7 @@ export function MobilePromoCarousel() {
         <span className="absolute right-3 top-3 rounded-full bg-black/35 px-2 py-0.5 text-caption text-fg-ondark">
           {index + 1}/{count}
         </span>
-        <div className="absolute bottom-3 left-4 flex gap-1.5">
+        <div className="absolute bottom-3 right-4 flex gap-1.5">
           {HOME_PROMO_SLIDES.map((item, dot) => (
             <button
               key={item.title}
