@@ -16,8 +16,20 @@ export default async function ProductDetailPage({ params }: { params: { id: stri
   if (!product) notFound();
 
   return (
-    <main className="mx-auto max-w-7xl px-6 pb-20 pt-8">
-      <nav aria-label="위치" className="flex items-center gap-2 text-sm">
+    <main className="mx-auto max-w-7xl px-4 pb-20 pt-0 md:px-6 md:pt-8">
+      {/* 모바일 상단바(←/상품명) — figma 419:8541 */}
+      <div className="-mx-4 flex items-center gap-3 border-b border-line-subtle bg-surface px-4 py-3 md:hidden">
+        <Link href="/shop" aria-label="뒤로" className="flex size-5 items-center justify-center text-base text-fg-strong">
+          ←
+        </Link>
+        <div className="min-w-0 flex-1 text-center">
+          <p className="truncate text-compact font-bold text-fg-heading">{product.name}</p>
+          <p className="truncate text-caption text-fg-disabled">{product.brand}</p>
+        </div>
+        <span aria-hidden className="size-5" />
+      </div>
+
+      <nav aria-label="위치" className="hidden items-center gap-2 text-sm md:flex">
         <Link href="/shop" className="text-fg-disabled hover:text-fg-body">
           쇼핑
         </Link>
@@ -31,7 +43,7 @@ export default async function ProductDetailPage({ params }: { params: { id: stri
         <span className="font-medium text-fg-heading">{product.name}</span>
       </nav>
 
-      <div className="mt-8 flex flex-col gap-12 lg:flex-row">
+      <div className="mt-4 flex flex-col gap-6 md:mt-8 lg:flex-row lg:gap-12">
         <div className="lg:flex-1">
           <ProductGallery name={product.name} image={product.image} />
         </div>
