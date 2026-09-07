@@ -16,12 +16,13 @@ export const HOME_HERO_STATS: { value: string; label: string }[] = [
 ];
 
 // figma 419:10687 모바일 퀵메뉴 — 5개(PC 카테고리 6종과 별개 구성). href는 앱 라우트로 연결
+// '가구'는 '쇼핑'과 동일 페이지(/shop)라 제거하고, '가점계산' 우측에 '커뮤니티' 추가
 export const HOME_QUICK_MENU: { icon: string; label: string; href: string }[] = [
   { icon: "🏢", label: "청약", href: "/subscriptions" },
-  { icon: "🛋️", label: "가구", href: "/shop" },
   { icon: "🏪", label: "쇼핑", href: "/shop" },
   { icon: "📸", label: "인테리어 영감", href: "/inspirations" },
-  { icon: "📊", label: "가점계산", href: "/score" }
+  { icon: "📊", label: "가점계산", href: "/score" },
+  { icon: "💬", label: "커뮤니티", href: "/community" }
 ];
 
 // figma 419:10668 모바일 프로모 캐러셀. 슬라이드1=Figma 확정, 2·3=기존 앱 섹션 카피 재사용
