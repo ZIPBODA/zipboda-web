@@ -7,31 +7,42 @@ import { COMMUNITY_CATEGORIES } from "@/entities/community";
 interface Props {
   mode: "create" | "edit";
   initial?: { category?: string; title?: string; body?: string; imageCount?: number };
+  /** 지정 시 모달 컨텍스트(PC): 카드/브레드크럼 없이 본문만, 완료·취소는 onDone. 미지정 시 라우트 페이지(모바일) */
+  onDone?: () => void;
 }
 
-// figma 199:60(글쓰기) / 208:30(글 수정) 공유 폼 — 수정은 프리필 + 삭제 버튼
-export function CommunityPostForm({ mode, initial }: Props) {
+// figma PC 199:60(글쓰기)·208:30(글 수정) / Mobile 419:11488·419:11681 공유 폼
+export function CommunityPostForm({ mode, initial, onDone }: Props) {
   const router = useRouter();
   const [category, setCategory] = useState(initial?.category ?? "전체");
   const [title, setTitle] = useState(initial?.title ?? "");
   const [body, setBody] = useState(initial?.body ?? "");
   const isEdit = mode === "edit";
+  const isModal = !!onDone;
   const imageCount = initial?.imageCount ?? 0;
 
+  const finish = () => (onDone ? onDone() : router.push("/community"));
   const submit = (ev: React.FormEvent) => {
     ev.preventDefault();
     // TODO(COMMUNITY): 글 등록/수정 API 연동
-    router.push("/community");
+    finish();
   };
 
   return (
-    <form onSubmit={submit} className="mx-auto max-w-4xl rounded-3xl bg-surface p-10 shadow-sm">
-      <nav aria-label="위치" className="flex items-center gap-1.5 text-[13px]">
-        <span className="text-fg-muted">커뮤니티</span>
-        <span className="text-fg-disabled">/</span>
-        <span className="font-semibold text-fg-heading">{isEdit ? "글 수정" : "새 글 작성"}</span>
-      </nav>
-      <h1 className="mt-3 text-h1 font-bold text-fg-heading">{isEdit ? "글 수정" : "새 글 작성"}</h1>
+    <form
+      onSubmit={submit}
+      className={isModal ? "flex flex-col p-6" : "mx-auto flex max-w-4xl flex-col bg-surface p-4 md:rounded-3xl md:p-10 md:shadow-sm"}
+    >
+      {!isModal && (
+        <>
+          <nav aria-label="위치" className="hidden items-center gap-1.5 text-[13px] md:flex">
+            <span className="text-fg-muted">커뮤니티</span>
+            <span className="text-fg-disabled">/</span>
+            <span className="font-semibold text-fg-heading">{isEdit ? "글 수정" : "새 글 작성"}</span>
+          </nav>
+          <h1 className="text-h2 font-bold text-fg-heading md:mt-3 md:text-h1">{isEdit ? "글 수정" : "새 글 작성"}</h1>
+        </>
+      )}
 
       <div className="mt-6 flex flex-col gap-6">
         <Field label="카테고리 선택">
@@ -80,12 +91,12 @@ export function CommunityPostForm({ mode, initial }: Props) {
 
       <div className="mt-8 flex items-center justify-between pt-4">
         <div className="flex gap-3">
-          <button type="button" onClick={() => router.push("/community")} className="rounded-xl border border-fg-disabled px-6 py-3 text-sm font-semibold text-fg-body">
+          <button type="button" onClick={finish} className="rounded-xl border border-fg-disabled px-6 py-3 text-sm font-semibold text-fg-body">
             취소
           </button>
           {isEdit && (
             // TODO(COMMUNITY): 글 삭제 API 연동
-            <button type="button" onClick={() => router.push("/community")} className="rounded-xl border border-status-error px-6 py-3 text-sm font-semibold text-status-error">
+            <button type="button" onClick={finish} className="rounded-xl border border-status-error px-6 py-3 text-sm font-semibold text-status-error">
               삭제하기
             </button>
           )}

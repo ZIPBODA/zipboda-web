@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getCommunityPost } from "@/entities/community";
 import { CommunityDetailView } from "@/widgets/community-detail";
+import { CommunityEditLauncher } from "@/widgets/community-editor";
 
 export async function generateMetadata({ params }: { params: { id: string } }): Promise<Metadata> {
   const post = await getCommunityPost(params.id);
@@ -17,7 +18,15 @@ export default async function CommunityPostPage({ params }: { params: { id: stri
   return (
     <main className="bg-surface md:bg-surface-secondary">
       <div className="mx-auto max-w-7xl px-0 pb-20 pt-0 md:px-6 md:pt-10">
-        <CommunityDetailView post={post} />
+        <CommunityDetailView
+          post={post}
+          editSlot={
+            <CommunityEditLauncher
+              postId={post.id}
+              initial={{ category: post.category, title: post.title, body: post.body.join("\n\n"), imageCount: post.bodyImages.length }}
+            />
+          }
+        />
       </div>
     </main>
   );

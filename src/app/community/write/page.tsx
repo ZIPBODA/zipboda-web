@@ -9,8 +9,8 @@ export const metadata: Metadata = {
 // figma 199:60 커뮤니티 글쓰기(ZB-U-COMM-03, PC)
 export default function CommunityWritePage() {
   return (
-    <main className="bg-surface-secondary">
-      <div className="mx-auto max-w-7xl px-6 pb-20 pt-10">
+    <main className="bg-surface md:bg-surface-secondary">
+      <div className="mx-auto max-w-7xl px-0 pb-20 pt-0 md:px-6 md:pt-10">
         <CommunityPostForm mode="create" />
       </div>
     </main>

@@ -7,7 +7,8 @@ import { useRouter } from "next/navigation";
 import type { CommunityPostDetail } from "@/entities/community";
 
 // figma PC 199:216 / Mobile 419:11567 커뮤니티 글 상세 — 좋아요 토글·댓글 입력은 클라이언트 상태
-export function CommunityDetailView({ post }: { post: CommunityPostDetail }) {
+// editSlot: 글 수정 진입(app에서 CommunityEditLauncher 주입 — PC 모달/모바일 페이지)
+export function CommunityDetailView({ post, editSlot }: { post: CommunityPostDetail; editSlot?: React.ReactNode }) {
   const router = useRouter();
   const [liked, setLiked] = useState(false);
   const [comment, setComment] = useState("");
@@ -49,6 +50,7 @@ export function CommunityDetailView({ post }: { post: CommunityPostDetail }) {
               {post.date} · 조회 {post.views.toLocaleString()}
             </p>
           </div>
+          {editSlot && <div className="ml-auto">{editSlot}</div>}
         </div>
 
         <div className="mt-6 flex flex-col gap-5 md:mt-7 md:gap-6">

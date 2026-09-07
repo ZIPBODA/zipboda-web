@@ -1,8 +1,11 @@
+"use client";
+
 import Link from "next/link";
 import type { MyProfile } from "../model/types";
 
 // figma PC 135:1519 / Mobile 419:9003 프로필 — PC는 인라인 통계 카드, 모바일은 컴팩트 카드 + 별도 통계 바
-export function ProfileCard({ profile }: { profile: MyProfile }) {
+// 편집: PC(≥md)는 onEdit로 모달 오픈, 모바일은 /my/profile 전체화면 페이지로 이동
+export function ProfileCard({ profile, onEdit }: { profile: MyProfile; onEdit: () => void }) {
   return (
     <div>
       {/* 모바일(≤767) */}
@@ -21,7 +24,7 @@ export function ProfileCard({ profile }: { profile: MyProfile }) {
             </div>
             <p className="mt-0.5 truncate text-caption text-fg-disabled">{profile.email}</p>
           </div>
-          <Link href="/my/profile" className="shrink-0 rounded-xl border border-line px-3 py-1.5 text-caption font-semibold text-fg-body">
+          <Link href="/my/profile" className="shrink-0 rounded-xl border border-line px-3 py-1.5 text-caption font-semibold text-fg-body md:hidden">
             수정
           </Link>
         </div>
@@ -62,9 +65,9 @@ export function ProfileCard({ profile }: { profile: MyProfile }) {
           </dl>
         </div>
 
-        <Link href="/my/profile" className="shrink-0 rounded-xl border-2 border-line px-5 py-2.5 text-sm font-semibold text-gray-700 hover:bg-surface-secondary">
+        <button type="button" onClick={onEdit} className="shrink-0 rounded-xl border-2 border-line px-5 py-2.5 text-sm font-semibold text-gray-700 hover:bg-surface-secondary">
           프로필 수정
-        </Link>
+        </button>
       </div>
     </div>
   );

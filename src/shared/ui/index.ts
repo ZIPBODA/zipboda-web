@@ -5,3 +5,4 @@
  * web 전용 래퍼/조합이 필요하면 이 레이어에 추가한다.
  */
 export * from "@zipboda/ui";
+export { FormModal } from "./FormModal";

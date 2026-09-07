@@ -7,36 +7,46 @@ import type { ProfileEditData } from "../model/types";
 
 const INPUT_CLASS = "w-full rounded-xl border border-line px-4 py-3 text-sm text-fg-heading outline-none transition-colors focus:border-brand";
 
-// figma 208:205 프로필 수정 폼 — 비밀번호·알림 섹션은 Figma에 없어 미구현(D2)
-export function ProfileEditForm({ data }: { data: ProfileEditData }) {
+// figma 208:205(PC) / 419:9384(Mobile) 프로필 수정 폼.
+// onDone 지정 시 모달 컨텍스트(PC): 카드/브레드크럼 없이 본문만, 취소·저장은 onDone. 미지정 시 라우트 페이지(모바일 전체화면).
+export function ProfileEditForm({ data, onDone }: { data: ProfileEditData; onDone?: () => void }) {
   const router = useRouter();
   const [nickname, setNickname] = useState(data.nickname);
   const [phone, setPhone] = useState(data.phone);
   const [bio, setBio] = useState(data.bio);
   const [interests, setInterests] = useState<string[]>(data.interests);
+  const isModal = !!onDone;
 
   const toggleInterest = (value: string) =>
     setInterests((prev) => (prev.includes(value) ? prev.filter((v) => v !== value) : [...prev, value]));
 
+  const finish = () => (onDone ? onDone() : router.push("/my"));
   const save = (ev: React.FormEvent) => {
     ev.preventDefault();
     // TODO(API): 프로필 저장(닉네임·전화·자기소개·관심분야) 연동
-    router.push("/my");
+    finish();
   };
 
   return (
-    <form onSubmit={save} className="mx-auto max-w-3xl rounded-3xl bg-surface p-10 shadow-sm">
-      <nav aria-label="위치" className="flex items-center gap-1 text-[13px]">
-        <span className="text-fg-muted">마이페이지</span>
-        <span className="text-fg-disabled">&gt;</span>
-        <span className="font-semibold text-fg-heading">프로필 수정</span>
-      </nav>
-      <h1 className="mt-3 text-h1 font-bold text-fg-heading">프로필 수정</h1>
+    <form
+      onSubmit={save}
+      className={isModal ? "flex flex-col p-6" : "mx-auto flex max-w-3xl flex-col bg-surface p-4 md:rounded-3xl md:p-10 md:shadow-sm"}
+    >
+      {!isModal && (
+        <>
+          <nav aria-label="위치" className="hidden items-center gap-1 text-[13px] md:flex">
+            <span className="text-fg-muted">마이페이지</span>
+            <span className="text-fg-disabled">&gt;</span>
+            <span className="font-semibold text-fg-heading">프로필 수정</span>
+          </nav>
+          <h1 className="text-h2 font-bold text-fg-heading md:mt-3 md:text-h1">프로필 수정</h1>
+        </>
+      )}
 
-      <div className="mt-7 flex flex-col items-center gap-3">
+      <div className="mt-6 flex flex-col items-center gap-3 md:mt-7">
         <div className="relative">
-          <div className="h-[120px] w-[120px] rounded-2xl bg-surface-tertiary" />
-          <span className="absolute bottom-1 right-1 flex h-8 w-8 items-center justify-center rounded-full bg-surface text-sm shadow-md" aria-hidden>
+          <div className="size-24 rounded-2xl bg-surface-tertiary md:size-[120px]" />
+          <span className="absolute bottom-1 right-1 flex size-8 items-center justify-center rounded-full bg-surface text-sm shadow-md" aria-hidden>
             📷
           </span>
         </div>
@@ -45,7 +55,7 @@ export function ProfileEditForm({ data }: { data: ProfileEditData }) {
         </button>
       </div>
 
-      <div className="mt-7 flex flex-col gap-5">
+      <div className="mt-6 flex flex-col gap-5 md:mt-7">
         <Field label="닉네임">
           <input value={nickname} onChange={(e) => setNickname(e.target.value)} className={INPUT_CLASS} />
         </Field>
@@ -78,8 +88,8 @@ export function ProfileEditForm({ data }: { data: ProfileEditData }) {
         </Field>
       </div>
 
-      <div className="mt-4 flex items-center justify-between pt-4">
-        <button type="button" onClick={() => router.push("/my")} className="rounded-xl border border-fg-disabled px-6 py-3 text-sm font-semibold text-fg-body">
+      <div className="mt-6 flex items-center justify-between pt-2 md:mt-4 md:pt-4">
+        <button type="button" onClick={finish} className="rounded-xl border border-fg-disabled px-6 py-3 text-sm font-semibold text-fg-body">
           취소
         </button>
         <button type="submit" className="rounded-xl bg-brand px-8 py-3 text-sm font-bold text-brand-on">

@@ -13,8 +13,8 @@ export default async function CommunityEditPage({ params }: { params: { id: stri
   if (!post) notFound();
 
   return (
-    <main className="bg-surface-secondary">
-      <div className="mx-auto max-w-7xl px-6 pb-20 pt-10">
+    <main className="bg-surface md:bg-surface-secondary">
+      <div className="mx-auto max-w-7xl px-0 pb-20 pt-0 md:px-6 md:pt-10">
         <CommunityPostForm mode="edit" initial={{ category: post.category, title: post.title, body: post.body.join("\n\n"), imageCount: 2 }} />
       </div>
     </main>
