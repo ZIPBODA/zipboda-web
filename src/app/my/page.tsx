@@ -11,7 +11,7 @@ export default async function MyPage() {
   const [{ profile, listings }, wishlist, orders] = await Promise.all([getMyPage(), getWishlist(), getOrders()]);
 
   return (
-    <main className="mx-auto max-w-5xl px-6 pb-20 pt-10">
+    <main className="mx-auto max-w-5xl px-4 pb-20 pt-6 md:px-6 md:pt-10">
       <h1 className="sr-only">마이페이지</h1>
       <ProfileCard profile={profile} />
       <MyPageContent listings={listings} wishlist={wishlist} orders={orders} />
