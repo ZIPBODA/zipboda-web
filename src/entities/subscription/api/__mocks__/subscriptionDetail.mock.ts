@@ -22,5 +22,6 @@ export const MOCK_SUBSCRIPTION_DETAIL: SubscriptionDetail = {
     { size: 114, type: "A" }
   ],
   defaultUnitSize: 84,
+  image: "/mock/subscriptions/subscriptions-list-1.png",
   applyUrl: "https://apply.lh.or.kr"
 };

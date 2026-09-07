@@ -51,6 +51,8 @@ export interface SubscriptionDetail {
   units: SubscriptionUnit[];
   /** 상세 진입 시 기본 선택 평형 */
   defaultUnitSize: number;
+  /** 상세 히어로 배너 이미지 */
+  image: string;
   /** 공급기관 신청 페이지. 집보다는 신청을 대행하지 않고 이 주소로 이동시킨다(REQ-US-001) */
   applyUrl: string;
 }
