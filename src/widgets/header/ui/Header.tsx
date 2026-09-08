@@ -65,7 +65,8 @@ export function Header({ authenticated = false }: { authenticated?: boolean }) {
                     <span className="absolute right-2 top-2 size-2 rounded-full border border-surface bg-brand" />
                   </button>
                   {panel === "notifications" && (
-                    <div className="absolute right-0 top-full z-50 mt-2">
+                    // 모바일: 뷰포트 기준 고정(좌우 16px)로 화면 이탈 방지 / PC: 버튼 우측 앵커 드롭다운
+                    <div className="fixed inset-x-4 top-14 z-50 md:absolute md:left-auto md:right-0 md:top-full md:mt-2">
                       <NotificationPanel />
                     </div>
                   )}
