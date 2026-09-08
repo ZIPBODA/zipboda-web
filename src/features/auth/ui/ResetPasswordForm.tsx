@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { AuthBrandLogo } from "./AuthBrandLogo";
 import { AuthCard } from "./AuthCard";
 import { AuthField } from "./AuthField";
 
@@ -27,7 +26,7 @@ export function ResetPasswordForm() {
   }
 
   return (
-    <AuthCard title="새 비밀번호 설정" description="새로운 비밀번호를 입력해주세요." mobileHeader={<AuthBrandLogo />}>
+    <AuthCard title="새 비밀번호 설정" description="새로운 비밀번호를 입력해주세요.">
       <form
         onSubmit={(e) => {
           e.preventDefault();
