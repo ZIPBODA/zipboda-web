@@ -27,8 +27,13 @@ export function AuthCard({
       <div className="flex w-full max-w-[480px] flex-col gap-8 md:rounded-3xl md:border md:border-line md:bg-surface md:p-10 md:shadow-[0_4px_20px_0_rgba(0,0,0,0.04)]">
         {icon && <div className="flex justify-center">{icon}</div>}
         {mobileHeader && <div className="flex justify-center md:hidden">{mobileHeader}</div>}
-        <header className={`flex-col items-center gap-2 text-center ${hideTitleOnMobile ? "hidden md:flex" : "flex"}`}>
-          <h1 className="text-h1 font-bold tracking-[-0.0125em] text-fg-heading">{title}</h1>
+        {/* 모바일: 폼 화면은 좌측 정렬(figma 419:11189·419:11135), 완료 화면(icon)은 중앙. PC(md:)는 항상 중앙 */}
+        <header
+          className={`flex-col gap-2 ${hideTitleOnMobile ? "hidden md:flex" : "flex"} ${
+            icon ? "items-center text-center" : "items-start text-left md:items-center md:text-center"
+          }`}
+        >
+          <h1 className="text-h2 font-bold tracking-[-0.0125em] text-fg-heading md:text-h1">{title}</h1>
           <p className="whitespace-pre-line text-sm text-fg-muted">{description}</p>
         </header>
         {children}
