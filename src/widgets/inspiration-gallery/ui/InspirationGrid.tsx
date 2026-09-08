@@ -17,7 +17,7 @@ export function InspirationGrid({ items }: { items: InspirationItem[] }) {
 
   return (
     <>
-      <div className="columns-2 gap-4 md:gap-5 lg:columns-3">
+      <div className="columns-1 gap-4 md:columns-2 md:gap-5 lg:columns-3">
         {items.map((item) => (
           <button
             key={item.id}
@@ -27,7 +27,7 @@ export function InspirationGrid({ items }: { items: InspirationItem[] }) {
             className="relative mb-5 block w-full break-inside-avoid overflow-hidden rounded-xl border border-line-subtle bg-surface-tertiary transition-opacity hover:opacity-90"
             style={{ height: item.height }}
           >
-            <Image src={item.image} alt="" fill sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw" className="object-cover" />
+            <Image src={item.image} alt="" fill sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw" className="object-cover" />
           </button>
         ))}
       </div>
