@@ -4,9 +4,9 @@
   "version": "0.1.0",
   "description": "집보다 사용자 웹 (Next.js App Router · FSD · Tailwind)",
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev -p 3001",
     "build": "next build",
-    "start": "next start",
+    "start": "next start -p 3001",
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
     "test": "vitest run"
