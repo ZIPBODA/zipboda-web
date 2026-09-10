@@ -17,16 +17,16 @@ export default async function InspirationsPage({ searchParams }: PageProps) {
   const items = await getInspirations(category);
 
   return (
-    <main className="mx-auto max-w-7xl px-6 pb-20 pt-10">
-      <header className="flex flex-wrap items-end justify-between gap-4">
+    <main className="mx-auto max-w-7xl px-4 pb-20 pt-6 md:px-6 md:pt-10">
+      <header className="flex flex-wrap items-end justify-between gap-3 md:gap-4">
         <div>
-          <h1 className="text-h1 font-bold tracking-[-0.0125em] text-fg-heading">집구경</h1>
-          <p className="mt-1 text-sm text-fg-muted">커뮤니티가 꾸민 실제 집</p>
+          <h1 className="text-h2 font-bold tracking-[-0.0125em] text-fg-heading md:text-h1">집구경</h1>
+          <p className="mt-1 text-xs text-fg-muted md:text-sm">커뮤니티가 꾸민 실제 집</p>
         </div>
         <InspirationFilters />
       </header>
 
-      <div className="mt-6">
+      <div className="mt-5 md:mt-6">
         <InspirationGrid items={items} />
       </div>
     </main>

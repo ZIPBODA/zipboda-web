@@ -13,7 +13,12 @@ export function MyPageContent({ listings, wishlist, orders }: { listings: MyList
 
   return (
     <>
-      <div role="tablist" aria-label="마이페이지" className="mt-10 flex gap-1 border-b border-line-subtle">
+      {/* figma PC 135:1556(언더라인) / Mobile 419:9037(pill 세그먼트) 탭 */}
+      <div
+        role="tablist"
+        aria-label="마이페이지"
+        className="mt-6 flex gap-1 rounded-xl bg-surface-tertiary p-1 md:mt-10 md:rounded-none md:border-b md:border-line-subtle md:bg-transparent md:p-0"
+      >
         {MY_TABS.map((t) => {
           const active = tab === t.id;
           return (
@@ -25,8 +30,10 @@ export function MyPageContent({ listings, wishlist, orders }: { listings: MyList
               aria-selected={active}
               aria-controls={`my-panel-${t.id}`}
               onClick={() => setTab(t.id)}
-              className={`border-b-2 px-5 py-3 text-sm font-medium transition-colors ${
-                active ? "border-brand text-fg-heading" : "border-transparent text-fg-disabled hover:text-fg-body"
+              className={`flex-1 rounded-lg px-3 py-2 text-xs font-medium transition-colors md:flex-none md:rounded-none md:border-b-2 md:px-5 md:py-3 md:text-sm ${
+                active
+                  ? "bg-surface text-fg-heading shadow-sm md:border-brand md:bg-transparent md:shadow-none"
+                  : "text-fg-disabled md:border-transparent md:hover:text-fg-body"
               }`}
             >
               {t.label}

@@ -1,0 +1,55 @@
+import type { RoomLabel } from "@/entities/floorplan";
+
+// 벽 마스크 — LH/SH 도면의 벽은 굵은 검정 실선, 치수선·글자는 가는 선이라 임계+형태학으로 분리된다
+export const WALL_DARK_THRESHOLD = 90;
+export const THIN_LINE_OPEN_KERNEL_PX = 3;
+export const WALL_CLOSE_KERNEL_PX = 5;
+export const MIN_WALL_RUN_PX = 20;
+/** 런 길이가 두께의 이 배수 이하면 벽 단면(교차 방향 런)으로 보고 버린다 */
+export const WALL_CROSS_SECTION_RATIO = 2;
+
+// 방 영역
+export const ROOM_MIN_AREA_RATIO = 0.01;
+
+// OCR
+export const OCR_UPSCALE = 3;
+export const OCR_DIGIT_WHITELIST = "0123456789";
+export const OCR_LANGS = "kor+eng";
+
+// 라벨 매핑
+export const LABEL_PRIORITY: RoomLabel[] = ["현관", "욕실", "주방", "식당", "거실", "침실", "발코니", "반침", "드레스룸", "기타"];
+export const LABEL_ALIASES: Record<RoomLabel, string[]> = {
+  현관: ["현관", "입구", "entrance"],
+  욕실: ["욕실", "화장실", "bath", "toilet"],
+  주방: ["주방", "키친", "kitchen"],
+  식당: ["식당", "다이닝", "dining"],
+  거실: ["거실", "리빙", "living"],
+  침실: ["침실", "안방", "bed", "방"],
+  발코니: ["발코니", "베란다", "balcony"],
+  반침: ["반침", "수납", "창고", "closet"],
+  드레스룸: ["드레스룸", "dress"],
+  기타: []
+};
+export const LABEL_EXACT_CONFIDENCE = 1;
+export const LABEL_PARTIAL_CONFIDENCE = 0.75;
+export const LABEL_TYPO_CONFIDENCE = 0.6;
+export const LABEL_UNKNOWN_CONFIDENCE = 0.2;
+export const LABEL_TYPO_MAX_DISTANCE = 1;
+export const LABEL_MIN_ALIAS_LENGTH_FOR_TYPO = 2;
+
+// 스케일(치수 체인)
+export const DIMENSION_CHAIN_SUM_TOLERANCE = 0.01;
+export const DIMENSION_SUBSET_MAX = 8;
+export const SCALE_CHAIN_CONFIDENCE = 0.95;
+export const SCALE_MAX_FALLBACK_CONFIDENCE = 0.6;
+
+// 기하
+export const DOUGLAS_PEUCKER_EPSILON_PX = 4;
+export const DEFAULT_EXTERIOR_WALL_MM = 150;
+export const DEFAULT_INTERIOR_WALL_MM = 100;
+/** 세그먼트 양끝이 크롭 가장자리에서 이 거리 이내면 외벽으로 본다 */
+export const EXTERIOR_EDGE_TOLERANCE_PX = 6;
+/** 치수 숫자 OCR을 위해 유닛 bbox 바깥으로 확장해 읽는 띠의 폭(크롭 크기 대비 비율) */
+export const DIMENSION_BAND_RATIO = 0.25;
+export const MASK_ON_VALUE = 255;
+export const MAX_GRAY = 255;

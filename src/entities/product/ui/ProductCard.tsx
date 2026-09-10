@@ -43,9 +43,11 @@ export function ProductCard({ item, href }: { item: Product; href?: string }) {
           </div>
           <button
             type="button"
+            aria-label="장바구니 담기"
             className="relative z-20 shrink-0 rounded-lg bg-brand px-3 py-2 text-xs font-bold text-brand-on transition-colors hover:bg-brand-hover"
           >
-            장바구니 담기
+            <span aria-hidden className="md:hidden">+ 담기</span>
+            <span aria-hidden className="hidden md:inline">장바구니 담기</span>
           </button>
         </div>
       </div>

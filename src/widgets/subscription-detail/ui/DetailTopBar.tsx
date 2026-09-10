@@ -13,23 +13,24 @@ interface Props {
 export function DetailTopBar({ title, unitLabel, dday, agency, agencyLabel }: Props) {
   return (
     <div className="border-b border-line-subtle bg-surface">
-      <div className="mx-auto flex w-full max-w-7xl items-center gap-4 px-6 py-4">
+      <div className="mx-auto flex w-full max-w-7xl items-center gap-3 px-4 py-3 md:gap-4 md:px-6 md:py-4">
         <Link
           href="/subscriptions"
+          aria-label="목록으로 돌아가기"
           className="flex shrink-0 items-center gap-2 text-sm font-medium text-fg-muted transition-colors hover:text-fg-body"
         >
           <ArrowLeftIcon />
-          목록으로 돌아가기
+          <span className="hidden sm:inline">목록으로 돌아가기</span>
         </Link>
-        <span aria-hidden className="text-lg text-line">
+        <span aria-hidden className="hidden text-lg text-line sm:inline">
           |
         </span>
-        <p className="truncate text-sm text-fg-disabled">
+        <p className="min-w-0 truncate text-sm text-fg-disabled">
           {title} · {unitLabel}
         </p>
         <div className="ml-auto flex shrink-0 items-center gap-2">
-          <span className="rounded-md bg-brand px-3 py-1.5 text-xs font-bold text-brand-on">D-{dday}</span>
-          <span className={`rounded-md px-3 py-1.5 text-xs font-semibold ${AGENCY_TAG_TONE[agency]}`}>{agencyLabel}</span>
+          <span className="rounded-md bg-brand px-2.5 py-1 text-xs font-bold text-brand-on md:px-3 md:py-1.5">D-{dday}</span>
+          <span className={`hidden rounded-md px-3 py-1.5 text-xs font-semibold sm:inline ${AGENCY_TAG_TONE[agency]}`}>{agencyLabel}</span>
         </div>
       </div>
     </div>

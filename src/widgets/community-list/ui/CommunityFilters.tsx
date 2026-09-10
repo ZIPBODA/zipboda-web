@@ -27,7 +27,7 @@ export function CommunityFilters() {
             type="button"
             aria-pressed={active}
             onClick={() => select(c)}
-            className={`rounded-full px-4 py-1.5 text-sm font-medium transition-colors ${active ? "bg-brand text-brand-on" : "bg-surface-tertiary text-fg-muted hover:bg-line"}`}
+            className={`rounded-full px-3 py-1 text-caption font-medium transition-colors md:px-4 md:py-1.5 md:text-sm ${active ? "bg-brand text-brand-on" : "bg-surface-tertiary text-fg-muted hover:bg-line"}`}
           >
             {c}
           </button>

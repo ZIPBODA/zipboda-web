@@ -8,7 +8,7 @@ import type { MyListing } from "../model/types";
 // figma 135:1564 관심/구독 공고 리스트 — 신청함 토글은 클라이언트 상태
 export function MySubscriptionList({ items }: { items: MyListing[] }) {
   return (
-    <div className="mt-7 flex flex-col gap-5">
+    <div className="mt-5 flex flex-col gap-3 md:mt-7 md:gap-5">
       {items.map((item) => (
         <ListingRow key={item.id} item={item} />
       ))}
@@ -21,14 +21,14 @@ function ListingRow({ item }: { item: MyListing }) {
   const urgent = item.dday <= DDAY_URGENT_THRESHOLD;
 
   return (
-    <div className="flex items-center gap-5 rounded-xl border border-line-subtle bg-surface p-5">
-      <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-surface-secondary text-xl" aria-hidden>
+    <div className="flex items-center gap-3 rounded-xl border border-line-subtle bg-surface p-4 md:gap-5 md:p-5">
+      <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-surface-secondary text-lg md:size-12 md:text-xl" aria-hidden>
         🏢
       </span>
 
       <div className="min-w-0 flex-1">
-        <p className="text-base font-semibold text-fg-heading">{item.title}</p>
-        <p className="mt-0.5 text-sm text-fg-disabled">평형: {item.size}㎡</p>
+        <p className="text-sm font-semibold text-fg-heading md:text-base">{item.title}</p>
+        <p className="mt-0.5 text-xs text-fg-disabled md:text-sm">평형: {item.size}㎡</p>
 
         <div className="mt-2 flex flex-wrap items-center gap-3">
           <span className={`rounded-md px-3 py-1.5 text-xs font-semibold ${MY_STATUS_BADGE[item.status]}`}>{item.status}</span>
@@ -58,7 +58,7 @@ function ListingRow({ item }: { item: MyListing }) {
       </div>
 
       <span
-        className={`flex h-14 w-14 shrink-0 items-center justify-center rounded-xl text-sm font-bold ${
+        className={`flex size-11 shrink-0 items-center justify-center rounded-xl text-xs font-bold md:size-14 md:text-sm ${
           urgent ? "bg-brand text-fg-heading" : "bg-surface-tertiary text-fg-disabled"
         }`}
       >

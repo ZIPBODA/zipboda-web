@@ -16,7 +16,7 @@ export function ProductInfoPanel({ product }: { product: ProductDetail }) {
   return (
     <div>
       <p className="text-sm text-fg-disabled">{product.brand}</p>
-      <h1 className="mt-1 text-[30px] font-bold leading-tight tracking-[-0.0167em] text-fg-heading">{product.name}</h1>
+      <h1 className="mt-1 text-h2 font-bold leading-tight tracking-[-0.0167em] text-fg-heading md:text-[30px]">{product.name}</h1>
 
       <div className="mt-3 flex items-center gap-3">
         <Rating value={product.rating} />
@@ -27,7 +27,7 @@ export function ProductInfoPanel({ product }: { product: ProductDetail }) {
       </div>
 
       <div className="mt-5 flex items-end gap-3">
-        <span className="text-[30px] font-bold text-fg-heading">{product.price.toLocaleString()}원</span>
+        <span className="text-h2 font-bold text-fg-heading md:text-[30px]">{product.price.toLocaleString()}원</span>
         {product.originalPrice !== undefined && <span className="pb-0.5 text-base text-line-strong line-through">{product.originalPrice.toLocaleString()}원</span>}
         {product.discountRate !== undefined && <span className="mb-1 rounded-full bg-brand px-2.5 py-1 text-sm font-bold text-brand-on">-{product.discountRate}%</span>}
       </div>
@@ -64,8 +64,8 @@ export function ProductInfoPanel({ product }: { product: ProductDetail }) {
         </div>
       </div>
 
-      {/* figma 135:3948 액션 */}
-      <div className="mt-6 flex gap-3">
+      {/* figma 135:3948(PC 인라인) / 419:8696(모바일 하단 고정) 액션 */}
+      <div className="sticky bottom-0 z-10 -mx-4 mt-6 flex gap-3 border-t border-line-subtle bg-surface px-4 py-3 md:static md:mx-0 md:border-0 md:bg-transparent md:px-0 md:py-0">
         <button
           type="button"
           onClick={() => add({ id: product.id, brand: product.brand, name: product.name, price: product.price }, qty)}
@@ -78,8 +78,8 @@ export function ProductInfoPanel({ product }: { product: ProductDetail }) {
         </button>
       </div>
 
-      {/* figma 135:3954 혜택 */}
-      <div className="mt-6 flex gap-3">
+      {/* figma 135:3954 혜택 — 모바일 미노출(419:8539) */}
+      <div className="mt-6 hidden gap-3 md:flex">
         {PRODUCT_BENEFITS.map((b) => (
           <div key={b.label} className="flex flex-1 items-center gap-1.5 rounded-xl bg-surface-secondary px-3 py-2 text-xs text-fg-body">
             <span aria-hidden>{b.icon}</span>

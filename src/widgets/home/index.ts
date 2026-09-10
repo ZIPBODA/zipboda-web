@@ -3,3 +3,8 @@ export { HomeCategories } from "./ui/HomeCategories";
 export { HomeSubscriptions } from "./ui/HomeSubscriptions";
 export { HomeFloorplans } from "./ui/HomeFloorplans";
 export { HomeFurniture } from "./ui/HomeFurniture";
+export { MobilePromoCarousel } from "./ui/MobilePromoCarousel";
+export { MobileQuickMenu } from "./ui/MobileQuickMenu";
+export { MobileSubscriptions } from "./ui/MobileSubscriptions";
+export { MobileFloorplans } from "./ui/MobileFloorplans";
+export { MobileFurniture } from "./ui/MobileFurniture";

@@ -6,6 +6,7 @@ export function AuthCard({
   description,
   mobileHeader,
   hideTitleOnMobile,
+  mobileFlushTop,
   children
 }: {
   icon?: React.ReactNode;
@@ -15,15 +16,24 @@ export function AuthCard({
   mobileHeader?: React.ReactNode;
   /** true면 모바일에서 title/description을 감춘다(로고만 노출 — 로그인). 기본 false(로고+제목 함께 — 비번찾기 등) */
   hideTitleOnMobile?: boolean;
+  /** true면 모바일 상단 여백을 줄인다(위에 MobileAuthTopBar가 있을 때 — 회원가입) */
+  mobileFlushTop?: boolean;
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex justify-center bg-surface px-6 pb-10 pt-14 md:bg-surface-secondary md:px-6 md:pb-[100px] md:pt-20">
+    <div
+      className={`flex justify-center bg-surface px-6 pb-10 md:bg-surface-secondary md:px-6 md:pb-[100px] md:pt-20 ${mobileFlushTop ? "pt-4" : "pt-14"}`}
+    >
       <div className="flex w-full max-w-[480px] flex-col gap-8 md:rounded-3xl md:border md:border-line md:bg-surface md:p-10 md:shadow-[0_4px_20px_0_rgba(0,0,0,0.04)]">
         {icon && <div className="flex justify-center">{icon}</div>}
         {mobileHeader && <div className="flex justify-center md:hidden">{mobileHeader}</div>}
-        <header className={`flex-col items-center gap-2 text-center ${hideTitleOnMobile ? "hidden md:flex" : "flex"}`}>
-          <h1 className="text-h1 font-bold tracking-[-0.0125em] text-fg-heading">{title}</h1>
+        {/* 모바일: 폼 화면은 좌측 정렬(figma 419:11189·419:11135), 완료 화면(icon)은 중앙. PC(md:)는 항상 중앙 */}
+        <header
+          className={`flex-col gap-2 ${hideTitleOnMobile ? "hidden md:flex" : "flex"} ${
+            icon ? "items-center text-center" : "items-start text-left md:items-center md:text-center"
+          }`}
+        >
+          <h1 className="text-h2 font-bold tracking-[-0.0125em] text-fg-heading md:text-h1">{title}</h1>
           <p className="whitespace-pre-line text-sm text-fg-muted">{description}</p>
         </header>
         {children}

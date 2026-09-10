@@ -9,10 +9,27 @@ export function ProductGallery({ name, image }: { name: string; image?: string }
 
   return (
     <div>
-      <div className="relative h-[460px] overflow-hidden rounded-3xl border border-line-subtle bg-surface-secondary" role="img" aria-label={name}>
+      {/* figma PC 135:3891(460+썸네일) / Mobile 419:8555(260+도트) */}
+      <div className="relative h-[260px] overflow-hidden rounded-2xl border border-line-subtle bg-surface-secondary md:h-[460px] md:rounded-3xl" role="img" aria-label={name}>
         {image && <Image src={image} alt="" fill sizes="(min-width: 1024px) 620px, 100vw" priority className="object-cover" />}
       </div>
-      <div className="mt-3 flex gap-3">
+
+      {/* 모바일: 도트 인디케이터 */}
+      <div className="mt-3 flex justify-center gap-1.5 md:hidden">
+        {[0, 1, 2].map((i) => (
+          <button
+            key={i}
+            type="button"
+            onClick={() => setSelected(i)}
+            aria-label={`${name} 이미지 ${i + 1}`}
+            aria-pressed={selected === i}
+            className={`h-1.5 rounded-full transition-all ${selected === i ? "w-4 bg-brand" : "w-1.5 bg-line-strong"}`}
+          />
+        ))}
+      </div>
+
+      {/* PC: 썸네일 */}
+      <div className="mt-3 hidden gap-3 md:flex">
         {[0, 1, 2].map((i) => (
           <button
             key={i}

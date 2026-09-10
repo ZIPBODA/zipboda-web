@@ -5,7 +5,7 @@ export function NotificationPanel() {
   const unread = MOCK_NOTIFICATIONS.filter((n) => n.unread).length;
 
   return (
-    <div className="w-[360px] overflow-hidden rounded-3xl border border-line-subtle bg-surface shadow-xl">
+    <div className="w-full overflow-hidden rounded-3xl border border-line-subtle bg-surface shadow-xl md:w-[360px]">
       <header className="flex items-center justify-between border-b border-line-subtle px-5 py-4">
         <div className="flex items-center gap-2">
           <h2 className="text-base font-bold text-fg-heading">알림</h2>

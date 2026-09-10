@@ -6,7 +6,7 @@ import { useState } from "react";
 import { usePathname } from "next/navigation";
 import icon from "@/shared/assets/brand/icon.png";
 import { useCart } from "@/features/cart";
-import { NAV_ITEMS } from "../config/nav";
+import { NAV_ITEMS, MOBILE_CONTEXTUAL_HEADER_ROUTES } from "../config/nav";
 import { NotificationPanel } from "./NotificationPanel";
 import { ProfilePanel } from "./ProfilePanel";
 
@@ -19,8 +19,11 @@ export function Header({ authenticated = false }: { authenticated?: boolean }) {
   const [panel, setPanel] = useState<HeaderPanel>(null);
   const toggle = (next: Exclude<HeaderPanel, null>) => setPanel((p) => (p === next ? null : next));
 
+  // 모바일 컨텍스트 헤더 라우트(청약 상세 등)에서는 전역 검색 헤더를 숨기고 PC만 노출
+  const hideOnMobile = MOBILE_CONTEXTUAL_HEADER_ROUTES.some((re) => re.test(pathname));
+
   return (
-    <header className="sticky top-0 z-40 border-b border-line-subtle bg-surface">
+    <header className={`sticky top-0 z-40 border-b border-line-subtle bg-surface ${hideOnMobile ? "hidden md:block" : ""}`}>
       <div className="mx-auto max-w-7xl px-4 md:px-6">
         {/* figma 353:3077(모바일 56) / 135:7849(PC 64) 상단: 로고 · 검색 · 액션 */}
         <div className="flex h-14 items-center gap-2.5 md:h-16 md:gap-6">
@@ -62,7 +65,8 @@ export function Header({ authenticated = false }: { authenticated?: boolean }) {
                     <span className="absolute right-2 top-2 size-2 rounded-full border border-surface bg-brand" />
                   </button>
                   {panel === "notifications" && (
-                    <div className="absolute right-0 top-full z-50 mt-2">
+                    // 모바일: 뷰포트 기준 고정(좌우 16px)로 화면 이탈 방지 / PC: 버튼 우측 앵커 드롭다운
+                    <div className="fixed inset-x-4 top-14 z-50 md:absolute md:left-auto md:right-0 md:top-full md:mt-2">
                       <NotificationPanel />
                     </div>
                   )}

@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { getSubscriptionDetail } from "@/entities/subscription";
+import { getSubscriptionDetail, getSubscriptions } from "@/entities/subscription";
 import {
   getFloorplan,
   DEFAULT_VIEW_MODE,
@@ -16,12 +16,18 @@ import {
   FloorplanViewer,
   DetailInfoPanel,
   FurnitureSuggestions,
-  createDetailHrefBuilder
+  MobileSubscriptionDetail,
+  createDetailHrefBuilder,
+  DEFAULT_MOBILE_DETAIL_TAB,
+  MOBILE_DETAIL_TAB_KEYS,
+  type MobileDetailTab
 } from "@/widgets/subscription-detail";
+
+const NEARBY_COUNT = 2;
 
 interface PageProps {
   params: { id: string };
-  searchParams: { unit?: string; view?: string; viewpoint?: string };
+  searchParams: { unit?: string; view?: string; viewpoint?: string; tab?: string };
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
@@ -50,11 +56,16 @@ export default async function SubscriptionDetailPage({ params, searchParams }: P
   const viewpoint = VIEWPOINTS.includes(searchParams.viewpoint as Viewpoint)
     ? (searchParams.viewpoint as Viewpoint)
     : DEFAULT_VIEWPOINT;
+  const activeTab = MOBILE_DETAIL_TAB_KEYS.includes(searchParams.tab as MobileDetailTab)
+    ? (searchParams.tab as MobileDetailTab)
+    : DEFAULT_MOBILE_DETAIL_TAB;
 
-  const [floorplan, products] = await Promise.all([
+  const [floorplan, products, subscriptions] = await Promise.all([
     getFloorplan(detail.id, selectedUnit.size),
-    getRecommendedProducts()
+    getRecommendedProducts(),
+    getSubscriptions()
   ]);
+  const nearby = subscriptions.filter((s) => s.id !== detail.id).slice(0, NEARBY_COUNT);
 
   const hrefFor = createDetailHrefBuilder({
     id: detail.id,
@@ -66,22 +77,36 @@ export default async function SubscriptionDetailPage({ params, searchParams }: P
 
   return (
     <>
-      <DetailTopBar
-        title={detail.title}
-        unitLabel={`${selectedUnit.size}㎡ ${selectedUnit.type}타입`}
-        dday={detail.dday}
-        agency={detail.agency}
-        agencyLabel={detail.agencyLabel}
-      />
-      <main className="mx-auto w-full max-w-7xl px-6 py-10">
-        <div className="flex gap-6">
-          <FloorplanViewer floorplan={floorplan} view={view} viewpoint={viewpoint} hrefFor={hrefFor} />
-          <div className="flex w-[476px] shrink-0 flex-col">
-            <DetailInfoPanel detail={detail} selectedSize={selectedUnit.size} hrefFor={hrefFor} />
-            <FurnitureSuggestions products={products} />
+      {/* PC — 기존 2단 레이아웃 유지 */}
+      <div className="hidden md:block">
+        <DetailTopBar
+          title={detail.title}
+          unitLabel={`${selectedUnit.size}㎡ ${selectedUnit.type}타입`}
+          dday={detail.dday}
+          agency={detail.agency}
+          agencyLabel={detail.agencyLabel}
+        />
+        <main className="mx-auto w-full max-w-7xl px-4 py-6 md:px-6 md:py-10">
+          <div className="flex flex-col gap-6 lg:flex-row">
+            <FloorplanViewer floorplan={floorplan} subscriptionId={detail.id} unitSize={selectedUnit.size} />
+            <div className="flex w-full shrink-0 flex-col lg:w-[476px]">
+              <DetailInfoPanel detail={detail} selectedSize={selectedUnit.size} hrefFor={hrefFor} />
+              <FurnitureSuggestions products={products} />
+            </div>
           </div>
-        </div>
-      </main>
+        </main>
+      </div>
+
+      {/* Mobile — figma 419:10352 전용 구조 */}
+      <div className="md:hidden">
+        <MobileSubscriptionDetail
+          detail={detail}
+          floorplan={floorplan}
+          selectedUnit={selectedUnit}
+          activeTab={activeTab}
+          nearby={nearby}
+        />
+      </div>
     </>
   );
 }

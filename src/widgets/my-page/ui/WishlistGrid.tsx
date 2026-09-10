@@ -7,7 +7,7 @@ import type { WishlistItem } from "../model/types";
 // figma 135:1818 찜 목록 — 3열 상품 그리드(찜 하트 토글은 클라이언트 상태)
 export function WishlistGrid({ items }: { items: WishlistItem[] }) {
   return (
-    <div className="mt-7 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+    <div className="mt-5 grid grid-cols-2 gap-3 sm:gap-8 md:mt-7 lg:grid-cols-3">
       {items.map((item) => (
         <WishlistCard key={item.id} item={item} />
       ))}

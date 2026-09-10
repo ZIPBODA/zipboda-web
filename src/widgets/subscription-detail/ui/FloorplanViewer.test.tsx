@@ -9,41 +9,25 @@ const floorplan: Floorplan = {
   size: 84,
   type: "A",
   has3d: true,
+  image2dUrl: "/mock/floorplans/fp-1-84a.png",
   rooms: [{ name: "거실 / 식당", dimensions: "5.2 × 4.8m", area: "24.96㎡" }]
 };
 
-const hrefFor = () => "/subscriptions/1";
-
 describe("FloorplanViewer", () => {
-  it("2D 모드에서는 도면 라벨만 노출하고 3D 조작 UI는 감춘다", () => {
-    render(<FloorplanViewer floorplan={floorplan} view="2D" viewpoint="1인칭" hrefFor={hrefFor} />);
-
-    expect(screen.getByText("2D 건축 평면도")).toBeInTheDocument();
-    expect(screen.queryByText("전체화면")).not.toBeInTheDocument();
-    expect(screen.queryByText("드래그로 회전 · 스크롤로 확대/축소")).not.toBeInTheDocument();
-  });
-
-  it("3D 모드에서는 시점 전환·전체화면·조작 안내를 노출한다", () => {
-    render(<FloorplanViewer floorplan={floorplan} view="3D" viewpoint="1인칭" hrefFor={hrefFor} />);
-
-    expect(screen.getByText("전체화면")).toBeInTheDocument();
-    expect(screen.getByText("1인칭")).toBeInTheDocument();
-    expect(screen.getByText("3인칭")).toBeInTheDocument();
-    expect(screen.getByText("드래그로 회전 · 스크롤로 확대/축소")).toBeInTheDocument();
-    expect(screen.queryByText("2D 건축 평면도")).not.toBeInTheDocument();
-  });
-
-  it("선택된 시점을 aria-current로 표시한다", () => {
-    render(<FloorplanViewer floorplan={floorplan} view="3D" viewpoint="3인칭" hrefFor={hrefFor} />);
-
-    expect(screen.getByText("3인칭")).toHaveAttribute("aria-current", "true");
-    expect(screen.getByText("1인칭")).not.toHaveAttribute("aria-current");
-  });
-
-  it("평면도가 없으면 방별 치수를 렌더하지 않는다", () => {
-    render(<FloorplanViewer floorplan={null} view="2D" viewpoint="1인칭" hrefFor={hrefFor} />);
+  it("평면도가 있으면 2D·3D 뷰어 진입 링크를 노출한다", () => {
+    render(<FloorplanViewer floorplan={floorplan} subscriptionId="1" unitSize={84} />);
 
     expect(screen.getByText("평면도 뷰어")).toBeInTheDocument();
+    expect(screen.getByText("2D 크게 보기").closest("a")).toHaveAttribute("href", "/subscriptions/1/floorplan?unit=84&view=2d");
+    expect(screen.getByText("3D·1인칭 집구경 ↗").closest("a")).toHaveAttribute("href", "/subscriptions/1/floorplan?unit=84&view=3d");
+    expect(screen.getByText("거실 / 식당")).toBeInTheDocument();
+  });
+
+  it("평면도가 없으면 준비 중 안내를 노출하고 방별 치수·링크를 감춘다", () => {
+    render(<FloorplanViewer floorplan={null} subscriptionId="1" unitSize={84} />);
+
+    expect(screen.getByText("평면도 준비 중")).toBeInTheDocument();
+    expect(screen.queryByText("3D·1인칭 집구경 ↗")).not.toBeInTheDocument();
     expect(screen.queryByText("거실 / 식당")).not.toBeInTheDocument();
   });
 });

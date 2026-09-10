@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { AuthBrandLogo } from "./AuthBrandLogo";
 import { AuthCard } from "./AuthCard";
 import { AuthField } from "./AuthField";
 
@@ -29,7 +28,7 @@ export function ForgotPasswordForm() {
   }
 
   return (
-    <AuthCard title="비밀번호 찾기" description={"가입 시 사용한 이메일을 입력해주세요.\n비밀번호 재설정 링크를 보내드립니다."} mobileHeader={<AuthBrandLogo />}>
+    <AuthCard title="비밀번호 찾기" description={"가입 시 사용한 이메일을 입력해주세요.\n비밀번호 재설정 링크를 보내드립니다."}>
       <form
         onSubmit={(e) => {
           e.preventDefault();
