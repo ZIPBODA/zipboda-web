@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { PageContainer } from "@/shared/ui";
 import { getMyPage, getWishlist, getOrders, getProfileEdit, MyProfileSection, MyPageContent } from "@/widgets/my-page";
 
 export const metadata: Metadata = {
@@ -16,10 +17,10 @@ export default async function MyPage() {
   ]);
 
   return (
-    <main className="mx-auto max-w-5xl px-4 pb-20 pt-6 md:px-6 md:pt-10">
+    <PageContainer>
       <h1 className="sr-only">마이페이지</h1>
       <MyProfileSection profile={profile} editData={profileEdit} />
       <MyPageContent listings={listings} wishlist={wishlist} orders={orders} />
-    </main>
+    </PageContainer>
   );
 }

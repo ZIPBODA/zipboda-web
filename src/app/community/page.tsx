@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { getCommunityPosts, getCommunityHero } from "@/entities/community";
+import { PageContainer, PageHeader } from "@/shared/ui";
 import { CommunityFilters, CommunityHero, CommunityGrid } from "@/widgets/community-list";
 import { CommunityWriteLauncher } from "@/widgets/community-editor";
 
@@ -19,28 +20,26 @@ export default async function CommunityPage({ searchParams }: PageProps) {
   const showHero = category === "전체";
 
   return (
-    <main className="mx-auto max-w-7xl px-4 pb-20 pt-6 md:px-6 md:pt-10">
-      <header className="flex flex-wrap items-center justify-between gap-4 md:items-end">
-        <div>
-          <h1 className="text-h2 font-bold tracking-[-0.0125em] text-fg-heading md:text-h1">커뮤니티</h1>
-          <p className="mt-1 text-xs text-fg-muted md:text-sm">실제 입주민과 인테리어 애호가들의 생생한 이야기</p>
-        </div>
-        <CommunityWriteLauncher />
-      </header>
+    <PageContainer>
+      <PageHeader
+        title="커뮤니티"
+        description="실제 입주민과 인테리어 애호가들의 생생한 이야기"
+        actions={<CommunityWriteLauncher />}
+      />
 
-      <div className="mt-4 md:mt-6">
+      <div className="mt-6 md:mt-8">
         <CommunityFilters />
       </div>
 
       {showHero && (
-        <div className="mt-4 md:mt-7">
+        <div className="mt-4 md:mt-6">
           <CommunityHero hero={hero} />
         </div>
       )}
 
-      <div className="mt-6 md:mt-7">
+      <div className="mt-6 md:mt-8">
         <CommunityGrid posts={posts} />
       </div>
-    </main>
+    </PageContainer>
   );
 }
