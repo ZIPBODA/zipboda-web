@@ -2,10 +2,11 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { AuthBrandLogo } from "./AuthBrandLogo";
 import { AuthCard } from "./AuthCard";
 import { AuthField } from "./AuthField";
 
-const SUBMIT = "block w-full rounded-lg bg-brand px-8 py-3.5 text-center text-base font-bold text-brand-on transition-colors hover:bg-brand-hover";
+const SUBMIT = "block w-full rounded-full bg-brand px-8 py-3.5 text-center text-base font-bold text-brand-on transition-colors hover:bg-brand-hover md:rounded-lg";
 
 // figma 220:30(입력) · 220:143(완료) 비밀번호 재설정
 export function ResetPasswordForm() {
@@ -26,7 +27,7 @@ export function ResetPasswordForm() {
   }
 
   return (
-    <AuthCard title="새 비밀번호 설정" description="새로운 비밀번호를 입력해주세요.">
+    <AuthCard title="새 비밀번호 설정" description="새로운 비밀번호를 입력해주세요." mobileHeader={<AuthBrandLogo />}>
       <form
         onSubmit={(e) => {
           e.preventDefault();

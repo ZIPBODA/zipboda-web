@@ -2,10 +2,11 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { AuthBrandLogo } from "./AuthBrandLogo";
 import { AuthCard } from "./AuthCard";
 import { AuthField } from "./AuthField";
 
-const SUBMIT = "block w-full rounded-lg bg-brand px-8 py-3.5 text-center text-base font-bold text-brand-on transition-colors hover:bg-brand-hover";
+const SUBMIT = "block w-full rounded-full bg-brand px-8 py-3.5 text-center text-base font-bold text-brand-on transition-colors hover:bg-brand-hover md:rounded-lg";
 
 // figma 219:30(입력) · 219:117(전송 완료) 비밀번호 찾기
 export function ForgotPasswordForm() {
@@ -28,7 +29,7 @@ export function ForgotPasswordForm() {
   }
 
   return (
-    <AuthCard title="비밀번호 찾기" description={"가입 시 사용한 이메일을 입력해주세요.\n비밀번호 재설정 링크를 보내드립니다."}>
+    <AuthCard title="비밀번호 찾기" description={"가입 시 사용한 이메일을 입력해주세요.\n비밀번호 재설정 링크를 보내드립니다."} mobileHeader={<AuthBrandLogo />}>
       <form
         onSubmit={(e) => {
           e.preventDefault();

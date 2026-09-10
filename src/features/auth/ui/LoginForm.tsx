@@ -22,7 +22,7 @@ export function LoginForm() {
         <div className="flex flex-col gap-4">
           <button
             type="submit"
-            className="w-full rounded-lg bg-brand px-8 py-3.5 text-base font-bold text-brand-on transition-colors hover:bg-brand-hover"
+            className="w-full rounded-full bg-brand px-8 py-3.5 text-base font-bold text-brand-on transition-colors hover:bg-brand-hover md:rounded-lg"
           >
             로그인
           </button>
