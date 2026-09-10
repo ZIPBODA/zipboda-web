@@ -4,6 +4,7 @@ import { Header } from "@/widgets/header";
 import { Footer } from "@/widgets/footer";
 import { MobileBottomNav } from "@/widgets/mobile-bottom-nav";
 import { CartProvider, CartDrawer } from "@/features/cart";
+import { AppChrome } from "./AppChrome";
 
 export const metadata: Metadata = {
   title: "집보다",
@@ -38,12 +39,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className="flex min-h-screen flex-col bg-surface font-sans text-fg-strong">
         <CartProvider>
           {/* 인증 미구현 프로토타입 — 로그인 후 헤더(찜·알림·프로필)를 기본 노출. 로그인 화면은 /login 직접 접근 */}
-          <Header authenticated />
-          <div className="flex-1">{children}</div>
-          <Footer />
-          {/* 고정된 모바일 하단 탭이 푸터를 가리지 않도록 탭 높이(h-16)만큼 여백을 둔다 */}
-          <div aria-hidden className="h-16 md:hidden" />
-          <MobileBottomNav />
+          {/* AppChrome이 풀스크린 라우트(평면도 뷰어)에서 헤더/푸터/하단탭을 숨긴다 */}
+          <AppChrome header={<Header authenticated />} footer={<Footer />} bottomNav={<MobileBottomNav />}>
+            {children}
+          </AppChrome>
           <CartDrawer />
         </CartProvider>
       </body>

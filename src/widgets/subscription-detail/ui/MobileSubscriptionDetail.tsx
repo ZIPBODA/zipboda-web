@@ -102,7 +102,7 @@ export function MobileSubscriptionDetail({ detail, floorplan, selectedUnit, acti
 
       {/* figma 419:10403 탭 콘텐츠 — 뷰어 · 방 치수 · 평형 · CTA · 링크 */}
       <section className="flex flex-col gap-4 bg-surface p-5">
-        <TabViewer activeTab={activeTab} />
+        <TabViewer activeTab={activeTab} floorplan={floorplan} detailId={detail.id} unitSize={selectedUnit.size} />
 
         {floorplan && (activeTab === "2d" || activeTab === "3d") && (
           <ul className="grid grid-cols-2 gap-2">
@@ -175,13 +175,31 @@ export function MobileSubscriptionDetail({ detail, floorplan, selectedUnit, acti
   );
 }
 
-// figma 419:10404 뷰어 — 자산 렌더는 API-031/032·지도 SDK 도입 전까지 빈 상태(A3)
-function TabViewer({ activeTab }: { activeTab: MobileDetailTab }) {
+// figma 419:10404 뷰어 — 2D는 도면 프리뷰, 3D는 전용 워크스루 라우트 진입(SUBS-08). 단지/위치는 빈 상태(A3)
+function TabViewer({
+  activeTab,
+  floorplan,
+  detailId,
+  unitSize
+}: {
+  activeTab: MobileDetailTab;
+  floorplan: Floorplan | null;
+  detailId: string;
+  unitSize: number;
+}) {
+  const viewerHref = (view: "2d" | "3d") => `/subscriptions/${detailId}/floorplan?view=${view}&unit=${unitSize}`;
+
   if (activeTab === "3d") {
     return (
-      <div className="flex h-[240px] items-center justify-center rounded-xl bg-gray-900 text-sm font-medium text-fg-ondark">
-        3D 집구경 준비 중
-      </div>
+      <Link
+        href={viewerHref("3d")}
+        className="relative flex h-[240px] flex-col items-center justify-center gap-2 overflow-hidden rounded-xl bg-gray-900 text-fg-ondark"
+      >
+        {floorplan && <Image src={floorplan.image2dUrl} alt="" fill sizes="100vw" className="object-cover opacity-30" />}
+        <span className="relative text-2xl" aria-hidden>🧭</span>
+        <span className="relative text-sm font-bold">3D·1인칭 집구경 시작</span>
+        <span className="relative text-caption text-white/70">평면도를 3D로 둘러보세요</span>
+      </Link>
     );
   }
   if (activeTab === "complex") {
@@ -198,10 +216,18 @@ function TabViewer({ activeTab }: { activeTab: MobileDetailTab }) {
       </div>
     );
   }
+  if (!floorplan) {
+    return (
+      <div className="flex h-[240px] items-center justify-center rounded-xl border border-line bg-surface-warm text-sm font-medium text-fg-muted">
+        2D 평면도 준비 중
+      </div>
+    );
+  }
   return (
-    <div className="flex h-[240px] items-center justify-center rounded-xl border border-line bg-surface-warm text-sm font-medium text-fg-muted">
-      2D 건축 평면도
-    </div>
+    <Link href={viewerHref("2d")} className="relative block h-[240px] overflow-hidden rounded-xl border border-line bg-surface-warm">
+      <Image src={floorplan.image2dUrl} alt="2D 평면도" fill sizes="100vw" className="object-contain" />
+      <span className="absolute bottom-3 right-3 rounded-full bg-black/60 px-3 py-1 text-caption font-medium text-white">탭하여 크게 보기</span>
+    </Link>
   );
 }
 
