@@ -76,5 +76,9 @@ export const UNIT_REGION_MIN_FILL = 0.02;
 export const UNIT_REGION_MAX_FILL = 0.35;
 /** 이미지 대비 최소 bbox 면적 */
 export const UNIT_REGION_MIN_AREA_RATIO = 0.02;
-/** 방 분할 전에 메울 최대 벽 틈 = 크롭 짧은 변 × 이 비율. 문·창은 메우고 오픈 플랜 경계는 남긴다 */
-export const SEAL_GAP_RATIO = 0.3;
+/**
+ * 방 분할 전에 메울 최대 벽 틈 = 크롭 짧은 변 × 이 비율.
+ * 벽선 위에 세그먼트가 있다는 건 그 선이 방 경계라는 뜻이므로, 개구부가 넓어도 분할할 때는 닫는다.
+ * (발코니 창 3m·거실 개구부 3.9m 같은 넓은 개구부까지 포함해야 방이 제대로 나뉜다)
+ */
+export const SEAL_GAP_RATIO = 0.9;
