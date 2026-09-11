@@ -148,6 +148,17 @@ export function FloorplanReviewEditor({ onModelChange, preview, autoRun = false 
           />
           {natural && model && toPx && (
             <svg width={natural.w} height={natural.h} className="pointer-events-none absolute left-0 top-0">
+              {/* 치수 숫자를 찾는 영역 — 여기서 못 읽으면 스케일이 추정값으로 떨어진다 */}
+              <rect
+                x={output.dimension.band.x}
+                y={output.dimension.band.y}
+                width={output.dimension.band.width}
+                height={output.dimension.band.height}
+                fill="none"
+                stroke={OVERLAY_COLOR.band}
+                strokeWidth={OVERLAY_STROKE_PX.crop}
+                strokeDasharray="3 5"
+              />
               <rect
                 x={output.geometry.crop.x}
                 y={output.geometry.crop.y}
@@ -237,6 +248,9 @@ export function FloorplanReviewEditor({ onModelChange, preview, autoRun = false 
               ))}
             </ul>
             <div className="mt-2 text-fg-muted">
+              치수 OCR: {output.dimension.numbers.length === 0 ? "읽은 숫자 없음" : output.dimension.numbers.map((n) => n.value).join(", ")}
+            </div>
+            <div className="mt-1 text-fg-muted">
               방 {model?.rooms.length} · 벽 {model?.walls.length} · 문 {model?.openings.filter((o) => o.type === "door").length} · 창 {model?.openings.filter((o) => o.type === "window").length}
             </div>
           </div>

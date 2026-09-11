@@ -49,8 +49,16 @@ export const DEFAULT_EXTERIOR_WALL_MM = 150;
 export const DEFAULT_INTERIOR_WALL_MM = 100;
 /** 세그먼트 양끝이 크롭 가장자리에서 이 거리 이내면 외벽으로 본다 */
 export const EXTERIOR_EDGE_TOLERANCE_PX = 6;
-/** 치수 숫자 OCR을 위해 유닛 bbox 바깥으로 확장해 읽는 띠의 폭(크롭 크기 대비 비율) */
-export const DIMENSION_BAND_RATIO = 0.25;
+/**
+ * 가로 치수 숫자를 읽을 띠의 높이 = 크롭 높이 × 이 비율.
+ * 치수선과 인출선이 도면 위쪽에 여러 단으로 쌓이므로 넉넉해야 숫자에 닿는다.
+ */
+export const DIMENSION_BAND_RATIO = 0.5;
+/**
+ * 띠의 좌우 여유 = 크롭 폭 × 이 비율.
+ * 세로 치수(깊이)는 도면 왼쪽·오른쪽 열에 있으므로 좁게 잡아 섞이지 않게 한다.
+ */
+export const DIMENSION_BAND_X_MARGIN_RATIO = 0.1;
 export const MASK_ON_VALUE = 255;
 export const MAX_GRAY = 255;
 

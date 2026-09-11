@@ -1,6 +1,6 @@
 import { normalizeModel, type NormalizeResult } from "@/entities/floorplan";
-import { DIMENSION_BAND_RATIO, SCALE_MAX_FALLBACK_CONFIDENCE } from "../config/constants";
-import type { CropRect, ExtractProgress, GeometryResult, ScaleEstimate } from "../model/types";
+import { DIMENSION_BAND_RATIO, DIMENSION_BAND_X_MARGIN_RATIO, SCALE_MAX_FALLBACK_CONFIDENCE } from "../config/constants";
+import type { CropRect, ExtractProgress, GeometryResult, OcrNumberToken, ScaleEstimate } from "../model/types";
 import { assembleModel } from "./assembleModel";
 import { assignRegionLabels } from "./labelAssign";
 import { createOcrWorker, readNumbers, readTextTokens } from "./ocr";
@@ -17,6 +17,8 @@ export interface ExtractOptions {
 export interface ExtractOutput {
   result: NormalizeResult;
   geometry: GeometryResult;
+  /** 치수 OCR 결과 — 스케일을 왜 그렇게 잡았는지 검수 화면에서 확인한다 */
+  dimension: { band: CropRect; numbers: OcrNumberToken[] };
 }
 
 function imageToImageData(image: HTMLImageElement): { imageData: ImageData; canvas: HTMLCanvasElement } {
@@ -30,10 +32,13 @@ function imageToImageData(image: HTMLImageElement): { imageData: ImageData; canv
 }
 
 /** 치수 체인은 유닛 바깥 위쪽 띠에 인쇄되므로 크롭 상단 밖 영역을 읽는다 */
-function topDimensionBand(crop: CropRect, imageWidth: number): CropRect {
+/** 도면 바로 위에서 가로 치수 숫자를 찾는 띠. 좌우 세로 치수 열이 섞이지 않도록 폭은 크롭에 붙여 잡는다 */
+export function topDimensionBand(crop: CropRect, imageWidth: number): CropRect {
   const height = Math.round(crop.height * DIMENSION_BAND_RATIO);
   const y = Math.max(0, crop.y - height);
-  return { x: Math.max(0, crop.x - height), y, width: Math.min(imageWidth, crop.width + height * 2), height: crop.y - y };
+  const margin = Math.round(crop.width * DIMENSION_BAND_X_MARGIN_RATIO);
+  const x = Math.max(0, crop.x - margin);
+  return { x, y, width: Math.min(imageWidth - x, crop.width + margin * 2), height: crop.y - y };
 }
 
 const manualScale = (widthMm: number | undefined, cropWidthPx: number): ScaleEstimate | null =>
@@ -64,13 +69,19 @@ export async function extractFloorplan(image: HTMLImageElement, options: Extract
     const labels = assignRegionLabels(geometry.regions, cropTokens);
 
     onProgress?.({ stage: "scale", ratio: 0.9 });
-    const numbers = await readNumbers(ocr, canvas, topDimensionBand(geometry.crop, canvas.width));
+    const band = topDimensionBand(geometry.crop, canvas.width);
+    const numbers = await readNumbers(ocr, canvas, band);
     const scale =
       estimateScale(
         numbers.map((t) => t.value),
         geometry.crop.width
       ) ?? manualScale(fallbackWidthMm, geometry.crop.width);
-    if (!scale) throw new Error("치수를 읽을 수 없어 스케일을 정할 수 없습니다. 실측 폭(mm)을 입력해 주세요.");
+    if (!scale) {
+      const read = numbers.map((t) => t.value).join(", ");
+      throw new Error(
+        `치수를 읽을 수 없어 스케일을 정할 수 없습니다. 실측 폭(mm)을 입력해 주세요. (읽은 숫자: ${read === "" ? "없음" : read})`
+      );
+    }
 
     onProgress?.({ stage: "normalize", ratio: 0.97 });
     const model = assembleModel({
@@ -82,7 +93,7 @@ export async function extractFloorplan(image: HTMLImageElement, options: Extract
       regions: geometry.regions,
       labels
     });
-    return { result: normalizeModel(model), geometry };
+    return { result: normalizeModel(model), geometry, dimension: { band, numbers } };
   } finally {
     await ocr.terminate();
   }
