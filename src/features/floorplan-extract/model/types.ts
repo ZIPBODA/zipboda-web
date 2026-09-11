@@ -6,6 +6,13 @@ export interface PointPx {
   y: number;
 }
 
+/** RGBA 픽셀 버퍼(ImageData와 같은 모양). 바닥 색으로 방 경계를 찾을 때 쓴다 */
+export interface RgbaImage {
+  data: Uint8ClampedArray;
+  width: number;
+  height: number;
+}
+
 /** 이진 마스크. 1=벽(또는 대상), 0=배경. row-major */
 export interface MaskImage {
   data: Uint8Array;

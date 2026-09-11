@@ -109,3 +109,12 @@ export const UNIT_REGION_MIN_AREA_RATIO = 0.02;
  * (발코니 창 3m·거실 개구부 3.9m 같은 넓은 개구부까지 포함해야 방이 제대로 나뉜다)
  */
 export const SEAL_GAP_RATIO = 0.9;
+
+// 바닥 색 경계 — 벽 없이 바닥 마감재만 바뀌는 방 경계(주방/거실 등)를 찾는다
+/** 색 평균을 낼 블록 한 변(px). 나뭇결·타일 무늬를 평균으로 지울 만큼 커야 한다 */
+export const COLOR_BLOCK_PX = 8;
+/**
+ * 이웃 블록의 RGB 거리가 이보다 크면 방 경계로 본다.
+ * 실측(test2.jpg): 주방↔거실 경계 62, 같은 바닥 안쪽 17. 그 사이를 잡는다.
+ */
+export const COLOR_BOUNDARY_THRESHOLD = 55;
