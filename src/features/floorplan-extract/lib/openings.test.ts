@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { detectWallOpenings } from "./openings";
+import { detectWallOpenings, sealWallGaps } from "./openings";
 import type { WallSegmentPx } from "../model/types";
 
 const h = (x1: number, x2: number, y: number, t = 10): WallSegmentPx => ({ a: { x: x1, y }, b: { x: x2, y }, thicknessPx: t });
@@ -73,5 +73,54 @@ describe("detectWallOpenings", () => {
 
   it("세그먼트가 없으면 빈 배열", () => {
     expect(detectWallOpenings([], MIN, MAX)).toEqual([]);
+  });
+});
+
+describe("sealWallGaps", () => {
+  const blank = (w: number, h: number) => ({ data: new Uint8Array(w * h), width: w, height: h });
+  const on = (m: { data: Uint8Array; width: number }, x: number, y: number) => m.data[y * m.width + x] === 1;
+
+  it("벽의 빈 구간을 메워 플러드필이 새지 않게 한다", () => {
+    const mask = blank(200, 60);
+    // y=30 라인에 x 0~79, 120~199 벽(두께 1). 80~119가 틈
+    for (let x = 0; x < 80; x++) mask.data[30 * 200 + x] = 1;
+    for (let x = 120; x < 200; x++) mask.data[30 * 200 + x] = 1;
+    const segments = [h(0, 79, 30, 1), h(120, 199, 30, 1)];
+
+    expect(on(mask, 100, 30)).toBe(false);
+    const sealed = sealWallGaps(mask, segments, 100);
+    expect(on(sealed, 100, 30)).toBe(true);
+    // 원본은 그대로여야 개구부 검출이 가능하다
+    expect(on(mask, 100, 30)).toBe(false);
+  });
+
+  it("최대 폭을 넘는 빈 구간은 메우지 않는다", () => {
+    const mask = blank(400, 60);
+    for (let x = 0; x < 80; x++) mask.data[30 * 400 + x] = 1;
+    for (let x = 300; x < 400; x++) mask.data[30 * 400 + x] = 1;
+    const sealed = sealWallGaps(mask, [h(0, 79, 30, 1), h(300, 399, 30, 1)], 100);
+    expect(on(sealed, 200, 30)).toBe(false);
+  });
+});
+
+describe("sealWallGaps 외벽", () => {
+  const blank = (w: number, h: number) => ({ data: new Uint8Array(w * h), width: w, height: h });
+  const on = (m: { data: Uint8Array; width: number }, x: number, y: number) => m.data[y * m.width + x] === 1;
+
+  it("외벽은 큰 개구부라도 닫아 바깥으로 새지 않게 한다", () => {
+    const mask = blank(400, 200);
+    // y=0 (외벽 라인)에 x 0~79, 300~399 — 220px 틈(maxGap 50보다 훨씬 큼)
+    for (let x = 0; x < 80; x++) mask.data[0 * 400 + x] = 1;
+    for (let x = 300; x < 400; x++) mask.data[0 * 400 + x] = 1;
+    const sealed = sealWallGaps(mask, [h(0, 79, 0, 1), h(300, 399, 0, 1)], 50);
+    expect(on(sealed, 200, 0)).toBe(true);
+  });
+
+  it("내벽의 큰 틈(오픈 플랜)은 그대로 열어 둔다", () => {
+    const mask = blank(400, 200);
+    for (let x = 0; x < 80; x++) mask.data[100 * 400 + x] = 1;
+    for (let x = 300; x < 400; x++) mask.data[100 * 400 + x] = 1;
+    const sealed = sealWallGaps(mask, [h(0, 79, 100, 1), h(300, 399, 100, 1)], 50);
+    expect(on(sealed, 200, 100)).toBe(false);
   });
 });

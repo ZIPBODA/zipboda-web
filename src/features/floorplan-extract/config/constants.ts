@@ -1,7 +1,7 @@
 import type { RoomLabel } from "@/entities/floorplan";
 
 // 벽 마스크 — LH/SH 도면의 벽은 굵은 검정 실선, 치수선·글자는 가는 선이라 임계+형태학으로 분리된다
-export const WALL_DARK_THRESHOLD = 90;
+export const WALL_DARK_THRESHOLD = 128;
 export const THIN_LINE_OPEN_KERNEL_PX = 3;
 export const WALL_CLOSE_KERNEL_PX = 5;
 export const MIN_WALL_RUN_PX = 20;
@@ -65,3 +65,16 @@ export const WALL_LINE_GROUP_TOLERANCE_PX = 4;
 export const ENTRANCE_DOOR_MAX_MM = 1200;
 /** 개구부 중심이 방 bbox에서 이 거리 이내면 그 방에 접한 것으로 본다 */
 export const OPENING_ROOM_ADJACENCY_MM = 300;
+
+// 유닛(도면) 영역 검출 — 카탈로그 페이지에서 도면만 잘라낸다
+/** 격자 칸 크기 = 짧은 변 × 이 비율. 문·창 틈을 건너뛰어 끊긴 벽을 한 덩어리로 묶는다 */
+export const UNIT_REGION_CELL_RATIO = 0.03;
+export const UNIT_REGION_CELL_MIN_PX = 8;
+export const UNIT_REGION_CELL_MAX_PX = 96;
+/** bbox 대비 벽 픽셀 비율 — 벽 네트워크는 성기고, 제목 글자·검은 막대는 꽉 찬다 */
+export const UNIT_REGION_MIN_FILL = 0.02;
+export const UNIT_REGION_MAX_FILL = 0.35;
+/** 이미지 대비 최소 bbox 면적 */
+export const UNIT_REGION_MIN_AREA_RATIO = 0.02;
+/** 방 분할 전에 메울 최대 벽 틈 = 크롭 짧은 변 × 이 비율. 문·창은 메우고 오픈 플랜 경계는 남긴다 */
+export const SEAL_GAP_RATIO = 0.3;

@@ -4,6 +4,8 @@ import type { GeometryWorkerRequest, GeometryWorkerResponse } from "../model/typ
 import { getOpenCv } from "./opencv";
 import { buildWallMask } from "./wallMask";
 import { extractWallSegments } from "./wallSegments";
+import { sealWallGaps } from "./openings";
+import { SEAL_GAP_RATIO } from "../config/constants";
 import { findRoomRegions, interiorRegions } from "./roomRegions";
 
 const post = (message: GeometryWorkerResponse) => self.postMessage(message);
@@ -19,7 +21,9 @@ self.onmessage = async (event: MessageEvent<GeometryWorkerRequest>) => {
     const segments = extractWallSegments(mask);
 
     post({ type: "progress", progress: { stage: "rooms", ratio: 0.7 } });
-    const regions = interiorRegions(findRoomRegions(mask));
+    // 문·창이 열려 있으면 플러드필이 방 사이로 새어 방이 하나로 뭉친다 — 사본에서만 틈을 메워 분할한다
+    const sealed = sealWallGaps(mask, segments, Math.round(Math.min(mask.width, mask.height) * SEAL_GAP_RATIO));
+    const regions = interiorRegions(findRoomRegions(sealed));
 
     post({ type: "geometry", result: { crop, segments, regions } });
   } catch (error) {

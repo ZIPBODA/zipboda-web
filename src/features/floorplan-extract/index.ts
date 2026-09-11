@@ -3,6 +3,7 @@ export { assembleModel, type AssembleInput } from "./lib/assembleModel";
 export { mapRoomLabel } from "./lib/labelMap";
 export { estimateScale, areaDeviation } from "./lib/scaleFromChains";
 export { detectWallOpenings, type OpeningSpanPx, type WallWithOpeningsPx } from "./lib/openings";
+export { findUnitRegion, type UnitRegionOptions } from "./lib/unitRegion";
 export type {
   PointPx,
   MaskImage,
