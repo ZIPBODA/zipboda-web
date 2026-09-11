@@ -69,3 +69,73 @@ describe("assembleModel", () => {
     expect(model.confidence.perRoom).toEqual({ "room-0": 0, "room-1": 0 });
   });
 });
+
+describe("assembleModel 개구부", () => {
+  // 중앙 세로 벽(x=200)을 y 300~390px(=900mm) 구간만 비워 문을 만든다
+  const withInteriorDoor = (): AssembleInput => {
+    const base = input();
+    base.segments = base.segments.filter((s) => !(s.a.x === 200 && s.b.x === 200));
+    base.segments.push(
+      { a: { x: 200, y: 3 }, b: { x: 200, y: 299 }, thicknessPx: 2 },
+      { a: { x: 200, y: 390 }, b: { x: 200, y: 596 }, thicknessPx: 2 }
+    );
+    return base;
+  };
+
+  it("내벽의 빈 구간을 문으로 검출하고 벽은 하나로 잇는다", () => {
+    const model = assembleModel(withInteriorDoor());
+    const doors = model.openings.filter((o) => o.type === "door");
+    expect(doors).toHaveLength(1);
+    expect(doors[0].widthMm).toBe(900);
+
+    const wall = model.walls.find((w) => w.id === doors[0].wallId);
+    expect(wall).toBeDefined();
+    expect(wall?.exterior).toBe(false);
+    expect(wall?.a).toEqual({ x: 2000, z: 30 });
+    expect(wall?.b).toEqual({ x: 2000, z: 5960 });
+  });
+
+  it("개구부는 소속 벽 길이 안에 들어간다", () => {
+    const model = assembleModel(withInteriorDoor());
+    for (const opening of model.openings) {
+      const wall = model.walls.find((w) => w.id === opening.wallId);
+      expect(wall).toBeDefined();
+      if (!wall) continue;
+      const length = Math.hypot(wall.b.x - wall.a.x, wall.b.z - wall.a.z);
+      expect(opening.offsetMm).toBeGreaterThanOrEqual(0);
+      expect(opening.offsetMm + opening.widthMm).toBeLessThanOrEqual(length);
+    }
+  });
+
+  it("외벽의 넓은 빈 구간은 창으로 본다", () => {
+    const base = input();
+    // 하단 외벽(y=598)을 x 150~330px(=1800mm) 비움
+    base.segments = base.segments.filter((s) => !(s.a.y === 598 && s.b.y === 598));
+    base.segments.push(
+      { a: { x: 0, y: 598 }, b: { x: 149, y: 598 }, thicknessPx: 3 },
+      { a: { x: 330, y: 598 }, b: { x: 449, y: 598 }, thicknessPx: 3 }
+    );
+    const model = assembleModel(base);
+    const windows = model.openings.filter((o) => o.type === "window");
+    expect(windows).toHaveLength(1);
+    expect(windows[0].widthMm).toBe(1800);
+  });
+
+  it("현관에 접한 좁은 외벽 개구부는 현관문으로 본다", () => {
+    const base = input();
+    base.labels = { ...base.labels, "region-0": { label: "현관", confidence: 1 } };
+    // 좌측 외벽(x=1)을 y 100~190px(=900mm) 비움 — 현관(region-0) 옆
+    base.segments = base.segments.filter((s) => !(s.a.x === 1 && s.b.x === 1));
+    base.segments.push(
+      { a: { x: 1, y: 0 }, b: { x: 1, y: 99 }, thicknessPx: 3 },
+      { a: { x: 1, y: 190 }, b: { x: 1, y: 599 }, thicknessPx: 3 }
+    );
+    const model = assembleModel(base);
+    const entrance = model.openings.find((o) => o.wallId === model.walls.find((w) => w.a.x === 10 && w.exterior)?.id);
+    expect(entrance?.type).toBe("door");
+  });
+
+  it("개구부가 없으면 빈 배열", () => {
+    expect(assembleModel(input()).openings).toEqual([]);
+  });
+});

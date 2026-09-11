@@ -15,10 +15,12 @@ interface Props {
   onModelChange?: (model: FloorplanModel2D | null) => void;
   /** 결과 섹션 옆에 붙일 미리보기 슬롯(위젯 간 직접 의존 대신 composition) */
   preview?: ReactNode;
+  /** 이미지 로드 직후 추출을 한 번 자동 실행(dev 검증 자동화용) */
+  autoRun?: boolean;
 }
 
 // 도면 이미지에서 자동 추출한 2D 모델을 원본 위에 겹쳐 확인하고 JSON으로 내보내는 검수 화면(dev)
-export function FloorplanReviewEditor({ onModelChange, preview }: Props) {
+export function FloorplanReviewEditor({ onModelChange, preview, autoRun = false }: Props) {
   const imgRef = useRef<HTMLImageElement>(null);
   const [imageUrl, setImageUrl] = useState(DEFAULT_IMAGE_URL);
   const [natural, setNatural] = useState<{ w: number; h: number } | null>(null);
@@ -53,6 +55,24 @@ export function FloorplanReviewEditor({ onModelChange, preview }: Props) {
       setRunning(false);
     }
   };
+
+  // 캐시된 이미지는 React가 붙기 전에 로드가 끝나 onLoad가 오지 않는다 — 완료 상태를 직접 확인해 버튼이 잠기지 않게 한다
+  useEffect(() => {
+    const image = imgRef.current;
+    if (!image || !image.complete || image.naturalWidth === 0) return;
+    setNatural({ w: image.naturalWidth, h: image.naturalHeight });
+  }, [imageUrl]);
+
+  const runRef = useRef(run);
+  runRef.current = run;
+  const autoRanRef = useRef(false);
+
+  // 이미지가 준비되면 1회만 자동 실행. 수동 조작과 충돌하지 않도록 실행 여부를 ref로 고정한다
+  useEffect(() => {
+    if (!autoRun || autoRanRef.current || natural === null) return;
+    autoRanRef.current = true;
+    void runRef.current();
+  }, [autoRun, natural]);
 
   const onFile = (file: File | undefined) => {
     if (!file) return;
@@ -167,6 +187,30 @@ export function FloorplanReviewEditor({ onModelChange, preview }: Props) {
                   />
                 );
               })}
+              {model.openings.map((opening, i) => {
+                const wall = model.walls.find((w) => w.id === opening.wallId);
+                if (!wall) return null;
+                const length = Math.hypot(wall.b.x - wall.a.x, wall.b.z - wall.a.z);
+                if (length === 0) return null;
+                const at = (mm: number) => {
+                  const t = mm / length;
+                  return toPx({ x: wall.a.x + (wall.b.x - wall.a.x) * t, z: wall.a.z + (wall.b.z - wall.a.z) * t });
+                };
+                const s0 = at(opening.offsetMm);
+                const s1 = at(opening.offsetMm + opening.widthMm);
+                return (
+                  <line
+                    key={`${opening.wallId}-${i}`}
+                    x1={s0.x}
+                    y1={s0.y}
+                    x2={s1.x}
+                    y2={s1.y}
+                    stroke={opening.type === "door" ? OVERLAY_COLOR.door : OVERLAY_COLOR.window}
+                    strokeWidth={OVERLAY_STROKE_PX.opening}
+                    strokeLinecap="round"
+                  />
+                );
+              })}
             </svg>
           )}
         </div>
@@ -193,7 +237,7 @@ export function FloorplanReviewEditor({ onModelChange, preview }: Props) {
               ))}
             </ul>
             <div className="mt-2 text-fg-muted">
-              방 {model?.rooms.length} · 벽 {model?.walls.length} · 개구부 {model?.openings.length}
+              방 {model?.rooms.length} · 벽 {model?.walls.length} · 문 {model?.openings.filter((o) => o.type === "door").length} · 창 {model?.openings.filter((o) => o.type === "window").length}
             </div>
           </div>
           <div className="rounded border border-line p-3">

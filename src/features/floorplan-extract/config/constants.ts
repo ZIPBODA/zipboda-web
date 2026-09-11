@@ -53,3 +53,15 @@ export const EXTERIOR_EDGE_TOLERANCE_PX = 6;
 export const DIMENSION_BAND_RATIO = 0.25;
 export const MASK_ON_VALUE = 255;
 export const MAX_GRAY = 255;
+
+// 개구부(문/창) — 같은 축선 위 벽 세그먼트 사이의 빈 구간을 개구부로 본다
+/** 사람이 통과하거나 창이 놓이는 최소 폭. 이보다 좁으면 벽 추출 노이즈로 본다 */
+export const OPENING_MIN_MM = 600;
+/** 이보다 넓은 빈 구간은 개구부가 아니라 서로 다른 벽으로 본다(오픈 플랜 경계) */
+export const OPENING_MAX_MM = 3000;
+/** 중심선이 이 범위 안이면 같은 벽 축선으로 묶는다(벽 두께 변동 흡수) */
+export const WALL_LINE_GROUP_TOLERANCE_PX = 4;
+/** 외벽 개구부 중 이 폭 이하이고 현관에 접하면 현관문으로 본다 */
+export const ENTRANCE_DOOR_MAX_MM = 1200;
+/** 개구부 중심이 방 bbox에서 이 거리 이내면 그 방에 접한 것으로 본다 */
+export const OPENING_ROOM_ADJACENCY_MM = 300;
