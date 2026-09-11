@@ -1,6 +1,6 @@
 import { createWorker, OEM, PSM, type Worker as TesseractWorker } from "tesseract.js";
 import { OCR_DIGIT_WHITELIST, OCR_LANGS, OCR_UPSCALE } from "../config/constants";
-import type { CropRect, OcrNumberToken, PointPx } from "../model/types";
+import type { CropRect, OcrNumberToken, OcrTextToken, PointPx } from "../model/types";
 
 /** Tesseract는 자체 Worker를 띄우므로 메인 스레드에서 생성한다(중첩 Worker 회피) */
 export const createOcrWorker = (): Promise<TesseractWorker> => createWorker(OCR_LANGS, OEM.LSTM_ONLY);
@@ -17,11 +17,6 @@ export function upscaleRegion(source: CanvasImageSource, rect: CropRect, factor 
   return canvas;
 }
 
-export async function readText(worker: TesseractWorker, source: CanvasImageSource, rect: CropRect): Promise<string> {
-  await worker.setParameters({ tessedit_pageseg_mode: PSM.SINGLE_LINE, tessedit_char_whitelist: "" });
-  const { data } = await worker.recognize(upscaleRegion(source, rect));
-  return data.text.trim();
-}
 
 /** 영역 안의 숫자 토큰을 원본 이미지 좌표의 중심점과 함께 읽는다(치수 체인용) */
 export async function readNumbers(worker: TesseractWorker, source: CanvasImageSource, rect: CropRect): Promise<OcrNumberToken[]> {
@@ -41,6 +36,37 @@ export async function readNumbers(worker: TesseractWorker, source: CanvasImageSo
             y: rect.y + (word.bbox.y0 + word.bbox.y1) / 2 / OCR_UPSCALE
           };
           tokens.push({ value, center });
+        }
+      }
+    }
+  }
+  return tokens;
+}
+
+/**
+ * 영역 안의 글자 토큰을 원본 이미지 좌표의 중심점과 함께 읽는다(방 라벨용).
+ * 방마다 따로 한 줄 OCR을 돌리면 큰 방의 bbox에 다른 방 글자까지 들어와 뒤섞인다.
+ * 한 번에 읽고 위치로 방에 배정하는 편이 정확하고 빠르다.
+ */
+export async function readTextTokens(worker: TesseractWorker, source: CanvasImageSource, rect: CropRect): Promise<OcrTextToken[]> {
+  await worker.setParameters({ tessedit_pageseg_mode: PSM.SPARSE_TEXT, tessedit_char_whitelist: "" });
+  const canvas = upscaleRegion(source, rect);
+  const { data } = await worker.recognize(canvas, {}, { blocks: true });
+
+  const tokens: OcrTextToken[] = [];
+  for (const block of data.blocks ?? []) {
+    for (const paragraph of block.paragraphs) {
+      for (const line of paragraph.lines) {
+        for (const word of line.words) {
+          const text = word.text.trim();
+          if (text === "") continue;
+          tokens.push({
+            text,
+            center: {
+              x: rect.x + (word.bbox.x0 + word.bbox.x1) / 2 / OCR_UPSCALE,
+              y: rect.y + (word.bbox.y0 + word.bbox.y1) / 2 / OCR_UPSCALE
+            }
+          });
         }
       }
     }

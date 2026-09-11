@@ -1,9 +1,9 @@
 import { normalizeModel, type NormalizeResult } from "@/entities/floorplan";
 import { DIMENSION_BAND_RATIO, SCALE_MAX_FALLBACK_CONFIDENCE } from "../config/constants";
-import type { CropRect, ExtractProgress, GeometryResult, LabelMatch, ScaleEstimate } from "../model/types";
+import type { CropRect, ExtractProgress, GeometryResult, ScaleEstimate } from "../model/types";
 import { assembleModel } from "./assembleModel";
-import { mapRoomLabel } from "./labelMap";
-import { createOcrWorker, readNumbers, readText } from "./ocr";
+import { assignRegionLabels } from "./labelAssign";
+import { createOcrWorker, readNumbers, readTextTokens } from "./ocr";
 import { runGeometryWorker } from "./runGeometryWorker";
 import { estimateScale } from "./scaleFromChains";
 
@@ -41,12 +41,6 @@ const manualScale = (widthMm: number | undefined, cropWidthPx: number): ScaleEst
     ? { mmPerPx: widthMm / cropWidthPx, totalMm: widthMm, chainMm: [widthMm], confidence: SCALE_MAX_FALLBACK_CONFIDENCE }
     : null;
 
-const toImageRect = (crop: CropRect, region: { minX: number; minY: number; maxX: number; maxY: number }): CropRect => ({
-  x: crop.x + region.minX,
-  y: crop.y + region.minY,
-  width: region.maxX - region.minX + 1,
-  height: region.maxY - region.minY + 1
-});
 
 /**
  * 도면 이미지 → 벽/방 기하(Worker) → 라벨·치수 OCR(메인) → mm 모델 조립 → 정규화·검증.
@@ -61,11 +55,13 @@ export async function extractFloorplan(image: HTMLImageElement, options: Extract
   const ocr = await createOcrWorker();
   try {
     onProgress?.({ stage: "labels", ratio: 0.75 });
-    const labels: Record<string, LabelMatch> = {};
-    for (const region of geometry.regions) {
-      const text = await readText(ocr, canvas, toImageRect(geometry.crop, region.bbox));
-      labels[region.id] = mapRoomLabel(text);
-    }
+    // 크롭 전체를 한 번 읽고 위치로 방에 배정한다 — 방마다 따로 읽으면 큰 방이 남의 글자까지 가져간다
+    const imageTokens = await readTextTokens(ocr, canvas, geometry.crop);
+    const cropTokens = imageTokens.map((t) => ({
+      ...t,
+      center: { x: t.center.x - geometry.crop.x, y: t.center.y - geometry.crop.y }
+    }));
+    const labels = assignRegionLabels(geometry.regions, cropTokens);
 
     onProgress?.({ stage: "scale", ratio: 0.9 });
     const numbers = await readNumbers(ocr, canvas, topDimensionBand(geometry.crop, canvas.width));
