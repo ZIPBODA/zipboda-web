@@ -22,6 +22,8 @@ export interface WallSegmentPx {
 export interface RoomRegion {
   id: string;
   bbox: { minX: number; minY: number; maxX: number; maxY: number };
+  /** 영역의 실제 윤곽(크롭 px, 픽셀 모서리 기준). bbox로는 ㄱ자 방의 면적이 부풀어 방끼리 겹친다 */
+  polygon: PointPx[];
   areaPx: number;
   touchesBorder: boolean;
 }

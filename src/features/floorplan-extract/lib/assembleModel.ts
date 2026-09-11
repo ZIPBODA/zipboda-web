@@ -61,19 +61,25 @@ export function assembleModel(input: AssembleInput): FloorplanModel2D {
   const widthMm = toMm(crop.width, mmPerPx);
   const depthMm = toMm(crop.height, mmPerPx);
 
-  const rooms: Room2D[] = regions.map((region, index) => {
+  // 영역 윤곽을 그대로 실척으로 옮긴다. bbox 사각형으로 만들면 ㄱ자 방의 면적이 부풀고 방끼리 겹친다
+  const bboxPolygon = (region: RoomRegion): PointMm[] => {
     const { minX, minY, maxX, maxY } = region.bbox;
-    return {
-      id: `room-${index}`,
-      label: labels[region.id]?.label ?? "기타",
-      polygon: [
-        { x: toMm(minX, mmPerPx), z: toMm(minY, mmPerPx) },
-        { x: toMm(maxX + 1, mmPerPx), z: toMm(minY, mmPerPx) },
-        { x: toMm(maxX + 1, mmPerPx), z: toMm(maxY + 1, mmPerPx) },
-        { x: toMm(minX, mmPerPx), z: toMm(maxY + 1, mmPerPx) }
-      ]
-    };
-  });
+    return [
+      { x: toMm(minX, mmPerPx), z: toMm(minY, mmPerPx) },
+      { x: toMm(maxX + 1, mmPerPx), z: toMm(minY, mmPerPx) },
+      { x: toMm(maxX + 1, mmPerPx), z: toMm(maxY + 1, mmPerPx) },
+      { x: toMm(minX, mmPerPx), z: toMm(maxY + 1, mmPerPx) }
+    ];
+  };
+
+  const rooms: Room2D[] = regions.map((region, index) => ({
+    id: `room-${index}`,
+    label: labels[region.id]?.label ?? "기타",
+    polygon:
+      region.polygon.length >= 3
+        ? region.polygon.map((p) => ({ x: toMm(p.x, mmPerPx), z: toMm(p.y, mmPerPx) }))
+        : bboxPolygon(region)
+  }));
 
   const entranceRegions = regions.filter((region) => labels[region.id]?.label === "현관");
   const detected = detectWallOpenings(segments, OPENING_MIN_MM / mmPerPx, OPENING_MAX_MM / mmPerPx);

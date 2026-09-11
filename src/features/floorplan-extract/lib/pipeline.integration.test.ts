@@ -17,8 +17,8 @@ const twoRoomWithDoor = (): AssembleInput => ({
     { a: { x: 200, y: 390 }, b: { x: 200, y: 596 }, thicknessPx: 2 }
   ],
   regions: [
-    { id: "region-0", bbox: { minX: 3, minY: 3, maxX: 198, maxY: 596 }, areaPx: 1, touchesBorder: false },
-    { id: "region-1", bbox: { minX: 202, minY: 3, maxX: 446, maxY: 596 }, areaPx: 1, touchesBorder: false }
+    { id: "region-0", bbox: { minX: 3, minY: 3, maxX: 198, maxY: 596 }, polygon: [], areaPx: 1, touchesBorder: false },
+    { id: "region-1", bbox: { minX: 202, minY: 3, maxX: 446, maxY: 596 }, polygon: [], areaPx: 1, touchesBorder: false }
   ],
   labels: { "region-0": { label: "현관", confidence: 1 }, "region-1": { label: "거실", confidence: 1 } }
 });

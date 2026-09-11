@@ -16,8 +16,8 @@ const input = (): AssembleInput => ({
     { a: { x: 200, y: 3 }, b: { x: 200, y: 596 }, thicknessPx: 2 }
   ],
   regions: [
-    { id: "region-0", bbox: { minX: 3, minY: 3, maxX: 198, maxY: 596 }, areaPx: 1, touchesBorder: false },
-    { id: "region-1", bbox: { minX: 202, minY: 3, maxX: 446, maxY: 596 }, areaPx: 1, touchesBorder: false }
+    { id: "region-0", bbox: { minX: 3, minY: 3, maxX: 198, maxY: 596 }, polygon: [], areaPx: 1, touchesBorder: false },
+    { id: "region-1", bbox: { minX: 202, minY: 3, maxX: 446, maxY: 596 }, polygon: [], areaPx: 1, touchesBorder: false }
   ],
   labels: { "region-0": { label: "거실", confidence: 1 }, "region-1": { label: "침실", confidence: 0.75 } }
 });
@@ -137,5 +137,37 @@ describe("assembleModel 개구부", () => {
 
   it("개구부가 없으면 빈 배열", () => {
     expect(assembleModel(input()).openings).toEqual([]);
+  });
+});
+
+describe("assembleModel 방 폴리곤", () => {
+  it("영역 윤곽이 있으면 bbox 대신 윤곽을 실척으로 옮긴다", () => {
+    const base = input();
+    // ㄱ자 윤곽(픽셀 모서리) — bbox라면 200x200px이지만 실제는 한 귀퉁이가 비었다
+    base.regions = [
+      {
+        id: "region-0",
+        bbox: { minX: 0, minY: 0, maxX: 199, maxY: 199 },
+        polygon: [
+          { x: 0, y: 0 },
+          { x: 200, y: 0 },
+          { x: 200, y: 100 },
+          { x: 100, y: 100 },
+          { x: 100, y: 200 },
+          { x: 0, y: 200 }
+        ],
+        areaPx: 30000,
+        touchesBorder: false
+      }
+    ];
+    base.labels = { "region-0": { label: "거실", confidence: 1 } };
+    const model = assembleModel(base);
+    expect(model.rooms[0].polygon).toHaveLength(6);
+    expect(model.rooms[0].polygon[2]).toEqual({ x: 2000, z: 1000 });
+  });
+
+  it("윤곽이 없으면 bbox 사각형으로 되돌린다", () => {
+    const model = assembleModel(input());
+    expect(model.rooms[0].polygon).toHaveLength(4);
   });
 });
