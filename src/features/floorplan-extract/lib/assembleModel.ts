@@ -6,7 +6,7 @@ import {
   OPENING_MIN_MM,
   OPENING_ROOM_ADJACENCY_MM
 } from "../config/constants";
-import { detectWallOpenings, type WallWithOpeningsPx } from "./openings";
+import { detectWallOpenings, wallTouchesEdge, type WallWithOpeningsPx } from "./openings";
 import type { CropRect, LabelMatch, PointPx, RoomRegion, WallSegmentPx } from "../model/types";
 
 export interface AssembleInput {
@@ -25,12 +25,9 @@ const pointToMm = (p: PointPx, mmPerPx: number): PointMm => ({ x: toMm(p.x, mmPe
 /** 벽이 크롭 가장자리 선상에 놓였는지 본다. 양 끝점만 보면 벽-벽 사이 칸막이도 외벽으로 오판된다 */
 function isOnCropEdge(wall: WallWithOpeningsPx, crop: CropRect): boolean {
   const isVertical = Math.abs(wall.a.x - wall.b.x) <= Math.abs(wall.a.y - wall.b.y);
-  if (isVertical) {
-    const x = (wall.a.x + wall.b.x) / 2;
-    return x <= EXTERIOR_EDGE_TOLERANCE_PX || crop.width - 1 - x <= EXTERIOR_EDGE_TOLERANCE_PX;
-  }
-  const y = (wall.a.y + wall.b.y) / 2;
-  return y <= EXTERIOR_EDGE_TOLERANCE_PX || crop.height - 1 - y <= EXTERIOR_EDGE_TOLERANCE_PX;
+  const line = isVertical ? (wall.a.x + wall.b.x) / 2 : (wall.a.y + wall.b.y) / 2;
+  const extent = isVertical ? crop.width : crop.height;
+  return wallTouchesEdge(line, wall.thicknessPx, extent, EXTERIOR_EDGE_TOLERANCE_PX);
 }
 
 const bboxNear = (region: RoomRegion, p: PointMm, mmPerPx: number, padMm: number) => {

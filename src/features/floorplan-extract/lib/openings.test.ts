@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { detectWallOpenings, sealWallGaps } from "./openings";
+import { detectWallOpenings, sealMaskBorder, sealWallGaps, wallTouchesEdge } from "./openings";
 import type { WallSegmentPx } from "../model/types";
 
 const h = (x1: number, x2: number, y: number, t = 10): WallSegmentPx => ({ a: { x: x1, y }, b: { x: x2, y }, thicknessPx: t });
@@ -124,3 +124,57 @@ describe("sealWallGaps 외벽", () => {
     expect(on(sealed, 200, 100)).toBe(false);
   });
 });
+
+describe("wallTouchesEdge", () => {
+  it("두꺼운 벽이 경계에 붙어 있으면 중심선이 허용치를 넘어도 외벽으로 본다", () => {
+    // 두께 15px 벽이 경계에 밀착 → 중심선 7, 가까운 면 -0.5
+    expect(wallTouchesEdge(7, 15, 700, 2)).toBe(true);
+  });
+
+  it("반대쪽 경계도 같게 판단한다", () => {
+    expect(wallTouchesEdge(692, 15, 700, 2)).toBe(true);
+  });
+
+  it("안쪽 칸막이는 외벽이 아니다", () => {
+    expect(wallTouchesEdge(300, 7, 700, 2)).toBe(false);
+  });
+
+  it("얇은 벽은 중심선 기준과 동일하게 동작한다", () => {
+    expect(wallTouchesEdge(1, 1, 700, 2)).toBe(true);
+    expect(wallTouchesEdge(50, 1, 700, 2)).toBe(false);
+  });
+});
+
+describe("sealWallGaps 두께 있는 외벽", () => {
+  const blank = (w: number, h: number) => ({ data: new Uint8Array(w * h), width: w, height: h });
+  const on = (m: { data: Uint8Array; width: number }, x: number, y: number) => m.data[y * m.width + x] === 1;
+
+  it("경계에 밀착한 두꺼운 외벽의 큰 개구부도 닫는다", () => {
+    const mask = blank(400, 200);
+    // 중심선 y=7, 두께 15 — 경계 밀착 외벽. 220px 틈
+    for (let x = 0; x < 80; x++) for (let k = 0; k < 15; k++) mask.data[k * 400 + x] = 1;
+    for (let x = 300; x < 400; x++) for (let k = 0; k < 15; k++) mask.data[k * 400 + x] = 1;
+    const sealed = sealWallGaps(mask, [h(0, 79, 7, 15), h(300, 399, 7, 15)], 50);
+    expect(on(sealed, 200, 7)).toBe(true);
+  });
+});
+
+describe("sealMaskBorder", () => {
+  it("테두리를 벽으로 막아 플러드필이 빠져나가지 못하게 한다", () => {
+    const mask = { data: new Uint8Array(10 * 8), width: 10, height: 8 };
+    const sealed = sealMaskBorder(mask);
+    const at = (x: number, y: number) => sealed.data[y * 10 + x] === 1;
+    expect(at(0, 0)).toBe(true);
+    expect(at(9, 7)).toBe(true);
+    expect(at(5, 0)).toBe(true);
+    expect(at(0, 4)).toBe(true);
+    expect(at(5, 4)).toBe(false);
+  });
+
+  it("원본은 바꾸지 않는다", () => {
+    const mask = { data: new Uint8Array(6 * 6), width: 6, height: 6 };
+    sealMaskBorder(mask);
+    expect(mask.data.every((v) => v === 0)).toBe(true);
+  });
+});
+

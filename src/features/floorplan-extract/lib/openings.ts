@@ -65,6 +65,15 @@ function buildWall(run: AxisSegment[], gaps: OpeningSpanPx[], horizontal: boolea
 }
 
 /**
+ * 벽의 가까운 면이 경계에 닿으면 외벽으로 본다.
+ * 세그먼트는 중심선으로 나오므로 중심만 비교하면 두꺼운 외벽이 내벽으로 오판된다.
+ */
+export function wallTouchesEdge(line: number, thicknessPx: number, extent: number, tolerancePx: number): boolean {
+  const half = thicknessPx / 2;
+  return line - half <= tolerancePx || extent - 1 - (line + half) <= tolerancePx;
+}
+
+/**
  * 같은 축선 위에서 개구부 폭 범위의 빈 구간을 사이에 둔 벽 세그먼트를 하나의 벽으로 잇고,
  * 그 빈 구간을 개구부로 돌려준다. 범위를 벗어난 빈 구간은 서로 다른 벽으로 남긴다.
  * 문·창은 벽선을 끊으므로 런 스캔 결과에 그대로 빈 구간으로 나타난다.
@@ -138,7 +147,7 @@ export function sealWallGaps(
     const horizontal = isHorizontal(segment);
     const line = horizontal ? segment.a.y : segment.a.x;
     const extent = horizontal ? mask.height : mask.width;
-    return line <= edgeTolerancePx || extent - 1 - line <= edgeTolerancePx;
+    return wallTouchesEdge(line, segment.thicknessPx, extent, edgeTolerancePx);
   };
 
   const seal = (group: WallSegmentPx[], gapLimit: number) => {
@@ -160,5 +169,25 @@ export function sealWallGaps(
 
   seal(segments.filter((s) => !onEdge(s)), maxGapPx);
   seal(segments.filter(onEdge), Number.POSITIVE_INFINITY);
+
+  return sealed;
+}
+
+/**
+ * 마스크 테두리를 벽으로 막는다.
+ * 크롭은 유닛 벽의 실제 범위라 테두리 = 건물 외피다. 벽 검출이 일부 누락되면
+ * 그 구멍으로 플러드필이 빠져나가 실내 전체가 '바깥'으로 묶이므로, 경계를 닫아 막는다.
+ */
+export function sealMaskBorder(mask: MaskImage): MaskImage {
+  const sealed: MaskImage = { data: Uint8Array.from(mask.data), width: mask.width, height: mask.height };
+  const { width, height } = sealed;
+  for (let x = 0; x < width; x++) {
+    sealed.data[x] = 1;
+    sealed.data[(height - 1) * width + x] = 1;
+  }
+  for (let y = 0; y < height; y++) {
+    sealed.data[y * width] = 1;
+    sealed.data[y * width + width - 1] = 1;
+  }
   return sealed;
 }
