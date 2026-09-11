@@ -6,6 +6,7 @@ import type { AssembleInput } from "./assembleModel";
 const input = (): AssembleInput => ({
   crop: { x: 100, y: 50, width: 450, height: 600 },
   mmPerPx: 10,
+  scaleSource: "dimension-chain",
   chainMm: [2000, 2500],
   exclusiveAreaM2: 27,
   segments: [
@@ -57,10 +58,14 @@ describe("assembleModel", () => {
     expect(model.printed).toEqual({ exclusiveAreaM2: 27, dimensionChains: [{ axis: "x", values: [2000, 2500] }] });
   });
 
-  it("체인이 단일 값이면 estimated로 표시하고 체인을 기록하지 않는다", () => {
+  it("체인이 단일 값이면 체인을 기록하지 않는다", () => {
     const model = assembleModel({ ...input(), chainMm: [4500] });
-    expect(model.scale.source).toBe("estimated");
     expect(model.printed.dimensionChains).toEqual([]);
+  });
+
+  it("스케일 출처는 호출부가 정한 값을 그대로 싣는다", () => {
+    expect(assembleModel({ ...input(), scaleSource: "area", chainMm: [] }).scale.source).toBe("area");
+    expect(assembleModel({ ...input(), scaleSource: "estimated", chainMm: [] }).scale.source).toBe("estimated");
   });
 
   it("라벨이 없는 영역은 기타·신뢰도 0으로 채운다", () => {

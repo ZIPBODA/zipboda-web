@@ -6,6 +6,7 @@ import { assembleModel, type AssembleInput } from "./assembleModel";
 const twoRoomWithDoor = (): AssembleInput => ({
   crop: { x: 0, y: 0, width: 450, height: 600 },
   mmPerPx: 10,
+  scaleSource: "dimension-chain",
   chainMm: [2000, 2500],
   segments: [
     { a: { x: 0, y: 1 }, b: { x: 449, y: 1 }, thicknessPx: 3 },

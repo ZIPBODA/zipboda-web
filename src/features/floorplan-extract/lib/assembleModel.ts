@@ -1,4 +1,4 @@
-import type { FloorplanModel2D, Opening2D, PointMm, Room2D, Wall2D } from "@/entities/floorplan";
+import type { FloorplanModel2D, Opening2D, PointMm, Room2D, ScaleSource, Wall2D } from "@/entities/floorplan";
 import {
   ENTRANCE_DOOR_MAX_MM,
   EXTERIOR_EDGE_TOLERANCE_PX,
@@ -12,6 +12,7 @@ import type { CropRect, LabelMatch, PointPx, RoomRegion, WallSegmentPx } from ".
 export interface AssembleInput {
   crop: CropRect;
   mmPerPx: number;
+  scaleSource: ScaleSource;
   chainMm: number[];
   exclusiveAreaM2?: number;
   segments: WallSegmentPx[];
@@ -57,7 +58,7 @@ function classifyOpening(
 
 /** 픽셀 기하(크롭 좌표)와 OCR 결과를 실척(mm) 2D 모델로 조립한다. 검증·스냅은 normalizeModel이 담당 */
 export function assembleModel(input: AssembleInput): FloorplanModel2D {
-  const { crop, mmPerPx, chainMm, exclusiveAreaM2, segments, regions, labels } = input;
+  const { crop, mmPerPx, scaleSource, chainMm, exclusiveAreaM2, segments, regions, labels } = input;
   const widthMm = toMm(crop.width, mmPerPx);
   const depthMm = toMm(crop.height, mmPerPx);
 
@@ -117,7 +118,7 @@ export function assembleModel(input: AssembleInput): FloorplanModel2D {
   const hasChain = chainMm.length > 1;
 
   return {
-    scale: { mmPerPx, source: hasChain ? "dimension-chain" : "estimated" },
+    scale: { mmPerPx, source: scaleSource },
     outline: [
       { x: 0, z: 0 },
       { x: widthMm, z: 0 },

@@ -1,11 +1,11 @@
-import { normalizeModel, type NormalizeResult } from "@/entities/floorplan";
+import { normalizeModel, type NormalizeResult, type ScaleSource } from "@/entities/floorplan";
 import { DIMENSION_BAND_RATIO, DIMENSION_BAND_X_MARGIN_RATIO, SCALE_MAX_FALLBACK_CONFIDENCE } from "../config/constants";
 import type { CropRect, ExtractProgress, GeometryResult, OcrNumberToken, ScaleEstimate } from "../model/types";
 import { assembleModel } from "./assembleModel";
 import { assignRegionLabels } from "./labelAssign";
-import { createOcrWorker, readNumbers, readTextTokens } from "./ocr";
+import { computeOcrUpscale, createOcrWorker, readNumbers, readTextTokens } from "./ocr";
 import { runGeometryWorker } from "./runGeometryWorker";
-import { estimateScale } from "./scaleFromChains";
+import { estimateScale, scaleFromArea } from "./scaleFromChains";
 
 export interface ExtractOptions {
   exclusiveAreaM2?: number;
@@ -61,7 +61,8 @@ export async function extractFloorplan(image: HTMLImageElement, options: Extract
   try {
     onProgress?.({ stage: "labels", ratio: 0.75 });
     // 크롭 전체를 한 번 읽고 위치로 방에 배정한다 — 방마다 따로 읽으면 큰 방이 남의 글자까지 가져간다
-    const imageTokens = await readTextTokens(ocr, canvas, geometry.crop);
+    const upscale = computeOcrUpscale(canvas.width);
+    const imageTokens = await readTextTokens(ocr, canvas, geometry.crop, upscale);
     const cropTokens = imageTokens.map((t) => ({
       ...t,
       center: { x: t.center.x - geometry.crop.x, y: t.center.y - geometry.crop.y }
@@ -70,12 +71,15 @@ export async function extractFloorplan(image: HTMLImageElement, options: Extract
 
     onProgress?.({ stage: "scale", ratio: 0.9 });
     const band = topDimensionBand(geometry.crop, canvas.width);
-    const numbers = await readNumbers(ocr, canvas, band);
-    const scale =
-      estimateScale(
-        numbers.map((t) => t.value),
-        geometry.crop.width
-      ) ?? manualScale(fallbackWidthMm, geometry.crop.width);
+    const numbers = await readNumbers(ocr, canvas, band, upscale);
+    // 치수 체인 → 인쇄 전용면적 역산 → 수동 실측 폭 순으로 자동성이 높은 쪽을 먼저 쓴다
+    const chainScale = estimateScale(
+      numbers.map((t) => t.value),
+      geometry.crop.width
+    );
+    const areaScale = scaleFromArea(exclusiveAreaM2, geometry.crop.width * geometry.crop.height);
+    const scale = chainScale ?? areaScale ?? manualScale(fallbackWidthMm, geometry.crop.width);
+    const scaleSource: ScaleSource = chainScale ? "dimension-chain" : areaScale ? "area" : "estimated";
     if (!scale) {
       const read = numbers.map((t) => t.value).join(", ");
       throw new Error(
@@ -87,6 +91,7 @@ export async function extractFloorplan(image: HTMLImageElement, options: Extract
     const model = assembleModel({
       crop: geometry.crop,
       mmPerPx: scale.mmPerPx,
+      scaleSource,
       chainMm: scale.chainMm,
       exclusiveAreaM2,
       segments: geometry.segments,

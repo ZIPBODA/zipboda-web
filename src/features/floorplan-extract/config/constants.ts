@@ -12,8 +12,15 @@ export const WALL_CROSS_SECTION_RATIO = 2;
 export const ROOM_MIN_AREA_RATIO = 0.01;
 
 // OCR
-export const OCR_UPSCALE = 3;
-export const OCR_DIGIT_WHITELIST = "0123456789";
+/**
+ * 확대 배율은 도면 해상도에 맞춘다.
+ * 글자 크기는 이미지 해상도에 비례하므로, 저해상도 도면(예: 558px 폭)은 고정 배율로 확대하면
+ * 치수 글자가 20px에 못 미쳐 Tesseract가 읽지 못한다.
+ */
+export const OCR_REFERENCE_WIDTH_PX = 1600;
+export const OCR_BASE_UPSCALE = 3;
+export const OCR_UPSCALE_MIN = 3;
+export const OCR_UPSCALE_MAX = 8;
 export const OCR_LANGS = "kor+eng";
 
 // 라벨 매핑
@@ -38,10 +45,22 @@ export const LABEL_TYPO_MAX_DISTANCE = 1;
 export const LABEL_MIN_ALIAS_LENGTH_FOR_TYPO = 2;
 
 // 스케일(치수 체인)
+/**
+ * 치수로 인정할 값의 범위(mm).
+ * 도면 옆에는 제목·면적·호수 숫자도 인쇄돼 있고, 숫자 화이트리스트가 한글·소수점을 버리면서
+ * "51형 51.93 (180호)" 가 515193180 한 덩어리로 읽히기도 한다.
+ * 주거 유닛의 한 변은 현실적으로 이 범위 안이므로, 벗어난 값은 치수가 아니다.
+ */
+export const DIMENSION_MIN_MM = 500;
+export const DIMENSION_MAX_MM = 20000;
+/** 분할 치수만 인쇄되고 전체 치수가 없을 때 — 합을 전체로 보되 확신은 낮춘다 */
+export const SCALE_CHAIN_PARTITION_CONFIDENCE = 0.8;
 export const DIMENSION_CHAIN_SUM_TOLERANCE = 0.01;
 export const DIMENSION_SUBSET_MAX = 8;
 export const SCALE_CHAIN_CONFIDENCE = 0.95;
 export const SCALE_MAX_FALLBACK_CONFIDENCE = 0.6;
+/** 인쇄 전용면적에서 역산한 스케일 — 벽·발코니가 섞여 치수 체인보다는 거칠다 */
+export const SCALE_AREA_CONFIDENCE = 0.7;
 
 // 기하
 export const DOUGLAS_PEUCKER_EPSILON_PX = 4;
