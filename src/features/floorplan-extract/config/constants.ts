@@ -31,7 +31,8 @@ export const LABEL_ALIASES: Record<RoomLabel, string[]> = {
   주방: ["주방", "키친", "kitchen"],
   식당: ["식당", "다이닝", "dining"],
   거실: ["거실", "리빙", "living"],
-  침실: ["침실", "안방", "bed", "방"],
+  // "방" 한 글자는 주방·안방·서재 등 어디에나 들어가 오탐을 부른다 — 쓰지 않는다
+  침실: ["침실", "안방", "bed"],
   발코니: ["발코니", "베란다", "balcony"],
   반침: ["반침", "수납", "창고", "closet"],
   드레스룸: ["드레스룸", "dress"],
@@ -123,3 +124,9 @@ export const COLOR_BOUNDARY_THRESHOLD = 35;
  * 방을 가르는 선은 한 변을 가로지르지만, 가구·설비 둘레는 짧게 끊긴다.
  */
 export const COLOR_BOUNDARY_MIN_RUN_RATIO = 0.35;
+
+// 글자 묶기 — Tesseract가 한글을 글자 단위로 쪼개 내놓아 "주방/식당"이 주·방·/·식·당으로 나온다
+/** 같은 줄로 볼 세로 허용치 = 글자 높이 × 이 비율 */
+export const TOKEN_LINE_TOLERANCE_RATIO = 0.6;
+/** 같은 단어로 볼 가로 간격 상한 = 글자 높이 × 이 비율 */
+export const TOKEN_MERGE_GAP_RATIO = 0.8;

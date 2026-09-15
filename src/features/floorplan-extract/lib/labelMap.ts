@@ -44,7 +44,9 @@ export function mapRoomLabel(ocrText: string): LabelMatch {
         best = pickHigher(best, { label, confidence: LABEL_PARTIAL_CONFIDENCE });
         continue;
       }
-      const isTypoEligible = candidate.length >= LABEL_MIN_ALIAS_LENGTH_FOR_TYPO;
+      // 한 글자짜리 입력은 정보가 너무 적다("방"이 주방·안방 어디로든 붙는다) — 퍼지 매칭에서 제외한다
+      const isTypoEligible =
+        candidate.length >= LABEL_MIN_ALIAS_LENGTH_FOR_TYPO && text.length >= LABEL_MIN_ALIAS_LENGTH_FOR_TYPO;
       if (isTypoEligible && levenshtein(text, candidate) <= LABEL_TYPO_MAX_DISTANCE) {
         best = pickHigher(best, { label, confidence: LABEL_TYPO_CONFIDENCE });
       }

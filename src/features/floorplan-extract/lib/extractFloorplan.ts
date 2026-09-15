@@ -1,8 +1,9 @@
 import { normalizeModel, type NormalizeResult, type ScaleSource } from "@/entities/floorplan";
 import { DIMENSION_BAND_RATIO, DIMENSION_BAND_X_MARGIN_RATIO, SCALE_MAX_FALLBACK_CONFIDENCE } from "../config/constants";
-import type { CropRect, ExtractProgress, GeometryResult, OcrNumberToken, ScaleEstimate } from "../model/types";
+import type { CropRect, ExtractProgress, GeometryResult, OcrNumberToken, OcrTextToken, ScaleEstimate } from "../model/types";
 import { assembleModel } from "./assembleModel";
 import { assignRegionLabels } from "./labelAssign";
+import { mergeTextTokens } from "./mergeTokens";
 import { computeOcrUpscale, createOcrWorker, readNumbers, readTextTokens } from "./ocr";
 import { runGeometryWorker } from "./runGeometryWorker";
 import { estimateScale, scaleFromArea } from "./scaleFromChains";
@@ -19,6 +20,8 @@ export interface ExtractOutput {
   geometry: GeometryResult;
   /** 치수 OCR 결과 — 스케일을 왜 그렇게 잡았는지 검수 화면에서 확인한다 */
   dimension: { band: CropRect; numbers: OcrNumberToken[] };
+  /** 방 라벨 OCR 결과(크롭 기준 좌표) — 어떤 글자를 어디서 읽어 라벨을 정했는지 확인한다 */
+  labelTokens: OcrTextToken[];
 }
 
 function imageToImageData(image: HTMLImageElement): { imageData: ImageData; canvas: HTMLCanvasElement } {
@@ -63,10 +66,10 @@ export async function extractFloorplan(image: HTMLImageElement, options: Extract
     // 크롭 전체를 한 번 읽고 위치로 방에 배정한다 — 방마다 따로 읽으면 큰 방이 남의 글자까지 가져간다
     const upscale = computeOcrUpscale(canvas.width);
     const imageTokens = await readTextTokens(ocr, canvas, geometry.crop, upscale);
-    const cropTokens = imageTokens.map((t) => ({
-      ...t,
-      center: { x: t.center.x - geometry.crop.x, y: t.center.y - geometry.crop.y }
-    }));
+    // Tesseract가 한글을 글자 단위로 내놓아 그대로 쓰면 "방" 한 글자가 침실로 잡힌다 — 단어로 되돌린다
+    const cropTokens = mergeTextTokens(
+      imageTokens.map((t) => ({ ...t, center: { x: t.center.x - geometry.crop.x, y: t.center.y - geometry.crop.y } }))
+    );
     const labels = assignRegionLabels(geometry.regions, cropTokens);
 
     onProgress?.({ stage: "scale", ratio: 0.9 });
@@ -98,7 +101,7 @@ export async function extractFloorplan(image: HTMLImageElement, options: Extract
       regions: geometry.regions,
       labels
     });
-    return { result: normalizeModel(model), geometry, dimension: { band, numbers } };
+    return { result: normalizeModel(model), geometry, dimension: { band, numbers }, labelTokens: cropTokens };
   } finally {
     await ocr.terminate();
   }

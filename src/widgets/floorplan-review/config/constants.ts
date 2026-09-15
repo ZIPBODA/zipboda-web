@@ -23,7 +23,8 @@ export const OVERLAY_COLOR = {
   label: "#111111",
   door: "#00BC7D",
   window: "#2B7FFF",
-  band: "#F59E0B"
+  band: "#F59E0B",
+  token: "#FF6467"
 } as const;
 
 export const OVERLAY_STROKE_PX = { crop: 2, exteriorWall: 4, interiorWall: 3, room: 1.5, opening: 5 } as const;

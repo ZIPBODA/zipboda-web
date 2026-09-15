@@ -17,7 +17,7 @@ const region = (id: string, x: number, y: number, w: number, h: number): RoomReg
   touchesBorder: false
 });
 
-const token = (text: string, x: number, y: number): OcrTextToken => ({ text, center: { x, y } });
+const token = (text: string, x: number, y: number): OcrTextToken => ({ text, center: { x, y }, width: 20, height: 12 });
 
 describe("pointInPolygon", () => {
   it("사각형 안팎을 구분한다", () => {

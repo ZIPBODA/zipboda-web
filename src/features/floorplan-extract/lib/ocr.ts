@@ -53,7 +53,9 @@ export async function readTextTokens(worker: TesseractWorker, source: CanvasImag
             center: {
               x: rect.x + (word.bbox.x0 + word.bbox.x1) / 2 / upscale,
               y: rect.y + (word.bbox.y0 + word.bbox.y1) / 2 / upscale
-            }
+            },
+            width: (word.bbox.x1 - word.bbox.x0) / upscale,
+            height: (word.bbox.y1 - word.bbox.y0) / upscale
           });
         }
       }

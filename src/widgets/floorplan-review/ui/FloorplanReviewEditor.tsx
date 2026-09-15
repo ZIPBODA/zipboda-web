@@ -210,6 +210,10 @@ export function FloorplanReviewEditor({ onModelChange, preview, autoRun = false 
                   />
                 );
               })}
+              {output.labelTokens.map((token, i) => {
+                const p = toPx({ x: token.center.x * model.scale.mmPerPx, z: token.center.y * model.scale.mmPerPx });
+                return <circle key={`t-${i}`} cx={p.x} cy={p.y} r={OVERLAY_STROKE_PX.opening} fill={OVERLAY_COLOR.token} />;
+              })}
               {model.openings.map((opening, i) => {
                 const wall = model.walls.find((w) => w.id === opening.wallId);
                 if (!wall) return null;
@@ -260,6 +264,9 @@ export function FloorplanReviewEditor({ onModelChange, preview, autoRun = false 
               ))}
             </ul>
             <div className="mt-2 text-fg-muted">
+              라벨 OCR: {output.labelTokens.length === 0 ? "읽은 글자 없음" : output.labelTokens.map((t) => t.text).join(" · ")}
+            </div>
+            <div className="mt-1 text-fg-muted">
               치수 OCR: {output.dimension.numbers.length === 0 ? "읽은 숫자 없음" : output.dimension.numbers.map((n) => n.value).join(", ")}
             </div>
             <div className="mt-1 text-fg-muted">

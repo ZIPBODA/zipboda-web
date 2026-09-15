@@ -43,6 +43,9 @@ export interface OcrNumberToken {
 export interface OcrTextToken {
   text: string;
   center: PointPx;
+  /** 글자 상자 크기(원본 px). 글자를 단어로 다시 묶을 때 간격 기준이 된다 */
+  width: number;
+  height: number;
 }
 
 export interface LabelMatch {
