@@ -9,7 +9,7 @@ export const MIN_WALL_RUN_PX = 20;
 export const WALL_CROSS_SECTION_RATIO = 2;
 
 // 방 영역
-export const ROOM_MIN_AREA_RATIO = 0.01;
+export const ROOM_MIN_AREA_RATIO = 0.012;
 
 // OCR
 /**
@@ -117,4 +117,9 @@ export const COLOR_BLOCK_PX = 8;
  * 이웃 블록의 RGB 거리가 이보다 크면 방 경계로 본다.
  * 실측(test2.jpg): 주방↔거실 경계 62, 같은 바닥 안쪽 17. 그 사이를 잡는다.
  */
-export const COLOR_BOUNDARY_THRESHOLD = 55;
+export const COLOR_BOUNDARY_THRESHOLD = 35;
+/**
+ * 색 경계로 인정할 최소 길이 = 그 축 블록 수 × 이 비율.
+ * 방을 가르는 선은 한 변을 가로지르지만, 가구·설비 둘레는 짧게 끊긴다.
+ */
+export const COLOR_BOUNDARY_MIN_RUN_RATIO = 0.35;

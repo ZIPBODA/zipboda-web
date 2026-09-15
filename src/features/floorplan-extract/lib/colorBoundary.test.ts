@@ -23,31 +23,31 @@ describe("colorBoundaryMask", () => {
   it("바닥 색이 바뀌는 가로 경계에 선을 긋는다", () => {
     // 위=주방색(224,166,142), 아래=거실색(237,218,173) — 실측 색거리 62
     const image = makeImage(64, 64, (_x, y) => (y < 32 ? [224, 166, 142] : [237, 218, 173]));
-    const mask = colorBoundaryMask(image, crop, 8, 40);
+    const mask = colorBoundaryMask(image, crop, 8, 40, 0.35);
     expect(on(mask, 10, 32)).toBe(true);
     expect(on(mask, 10, 10)).toBe(false);
   });
 
   it("세로 경계도 찾는다", () => {
     const image = makeImage(64, 64, (x) => (x < 32 ? [224, 166, 142] : [237, 218, 173]));
-    const mask = colorBoundaryMask(image, crop, 8, 40);
+    const mask = colorBoundaryMask(image, crop, 8, 40, 0.35);
     expect(on(mask, 32, 10)).toBe(true);
   });
 
   it("무늬 노이즈(색거리 17 수준)로는 경계를 만들지 않는다", () => {
     const image = makeImage(64, 64, (x, y) => [220 + ((x + y) % 10), 170 + ((x * y) % 10), 150 + (x % 8)]);
-    const mask = colorBoundaryMask(image, crop, 8, 40);
+    const mask = colorBoundaryMask(image, crop, 8, 40, 0.35);
     expect(mask.data.every((v) => v === 0)).toBe(true);
   });
 
   it("단색이면 경계가 없다", () => {
-    const mask = colorBoundaryMask(makeImage(64, 64, () => [200, 200, 200]), crop, 8, 40);
+    const mask = colorBoundaryMask(makeImage(64, 64, () => [200, 200, 200]), crop, 8, 40, 0.35);
     expect(mask.data.every((v) => v === 0)).toBe(true);
   });
 
   it("크롭 위치를 반영해 샘플링한다", () => {
     const image = makeImage(128, 128, (_x, y) => (y < 80 ? [224, 166, 142] : [237, 218, 173]));
-    const mask = colorBoundaryMask(image, { x: 0, y: 48, width: 64, height: 64 }, 8, 40);
+    const mask = colorBoundaryMask(image, { x: 0, y: 48, width: 64, height: 64 }, 8, 40, 0.35);
     // 이미지 y=80 → 크롭 기준 y=32
     expect(on(mask, 10, 32)).toBe(true);
   });
@@ -64,5 +64,26 @@ describe("unionMask", () => {
     const a: MaskImage = { data: new Uint8Array([0, 0]), width: 2, height: 1 };
     unionMask(a, { data: new Uint8Array([1, 1]), width: 2, height: 1 });
     expect(Array.from(a.data)).toEqual([0, 0]);
+  });
+});
+
+describe("colorBoundaryMask 길이 필터", () => {
+  it("한 변을 가로지르는 긴 경계는 방 경계로 남긴다", () => {
+    const image = makeImage(64, 64, (_x, y) => (y < 32 ? [224, 166, 142] : [237, 218, 173]));
+    const mask = colorBoundaryMask(image, crop, 8, 40, 0.35);
+    expect(on(mask, 32, 32)).toBe(true);
+  });
+
+  it("가구처럼 짧게 끊긴 색 차이는 경계로 삼지 않는다", () => {
+    // 왼쪽 8px(블록 1칸)에만 색이 다른 사각형 — 전체 8칸 중 1칸이라 비율 미달
+    const image = makeImage(64, 64, (x, y) => (x < 8 && 24 <= y && y < 32 ? [40, 40, 40] : [237, 218, 173]));
+    const mask = colorBoundaryMask(image, crop, 8, 40, 0.35);
+    expect(mask.data.every((v) => v === 0)).toBe(true);
+  });
+
+  it("비율을 0으로 두면 짧은 경계도 남는다", () => {
+    const image = makeImage(64, 64, (x, y) => (x < 8 && 24 <= y && y < 32 ? [40, 40, 40] : [237, 218, 173]));
+    const mask = colorBoundaryMask(image, crop, 8, 40, 0);
+    expect(mask.data.some((v) => v === 1)).toBe(true);
   });
 });

@@ -311,7 +311,12 @@ export function checkReachability(model: FloorplanModel2D): NormalizeFlag[] {
     }
   }
 
-  const entrance = model.rooms.find((r) => r.label === ENTRANCE_LABEL) ?? model.rooms[0];
+  // 현관을 못 읽었으면 가장 넓은 방에서 출발한다. 첫 번째 방은 구석 조각일 수 있어 기준이 되지 못한다
+  const largest = model.rooms.reduce<Room2D | null>(
+    (best, room) => (best === null || polygonAreaMm2(room.polygon) > polygonAreaMm2(best.polygon) ? room : best),
+    null
+  );
+  const entrance = model.rooms.find((r) => r.label === ENTRANCE_LABEL) ?? largest;
   if (!entrance) return [];
   const visited = new Set<string>([entrance.id]);
   const queue = [entrance.id];

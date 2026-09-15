@@ -239,3 +239,23 @@ describe("normalizeModel", () => {
     expect(result.flags.map((f) => f.code)).toEqual(expect.arrayContaining(["no-doors", "area-mismatch"]));
   });
 });
+
+describe("checkReachability 출발점", () => {
+  it("현관이 없으면 가장 넓은 방에서 도달성을 본다", () => {
+    const model = twoRoomModel();
+    // 현관 라벨을 지우고, 첫 번째 방을 구석 조각으로 만든다
+    model.rooms = [
+      { id: "r-scrap", label: "기타", polygon: rect(4000, 5500, 500, 500) },
+      { id: "r-living", label: "거실", polygon: rect(0, 1500, 2000, 4500) },
+      { id: "r-bed", label: "침실", polygon: rect(2000, 0, 2500, 6000) }
+    ];
+    const flags = checkReachability(model);
+    // 넓은 방(침실·거실)은 문으로 이어져 있으므로 도달 불가로 잡히지 않는다
+    expect(flags.some((f) => f.detail.includes("거실"))).toBe(false);
+    expect(flags.some((f) => f.detail.includes("침실"))).toBe(false);
+  });
+
+  it("현관이 있으면 현관에서 출발한다", () => {
+    expect(checkReachability(twoRoomModel())).toEqual([]);
+  });
+});
