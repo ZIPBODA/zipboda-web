@@ -167,3 +167,33 @@ describe("buildScene", () => {
     expect(fixture.cz).toBeCloseTo(-2.15);
   });
 });
+
+describe("buildScene 라벨이 없는 도면", () => {
+  /** 방 이름이 인쇄되지 않았거나 OCR이 못 읽어 전부 '기타'인 모델 */
+  const unlabeled = (): FloorplanModel2D => {
+    const model = baseModel();
+    model.rooms = [
+      { id: "small", label: "기타", polygon: rect(0, 0, 1000, 1000) },
+      { id: "big", label: "기타", polygon: rect(0, 1000, 4000, 4000) }
+    ];
+    return model;
+  };
+
+  it("현관이 없으면 가장 넓은 방 안에서 시작한다(벽 속에서 시작하지 않는다)", () => {
+    const scene = buildScene(unlabeled());
+    // 가장 넓은 방(big)의 무게중심 = (2000, 3000)mm → 씬 좌표 (0, 0)
+    expect(scene.spawn.x).toBeCloseTo(0);
+    expect(scene.spawn.z).toBeCloseTo(0);
+  });
+
+  it("라벨이 없어도 벽·바닥·충돌을 모두 만든다", () => {
+    const scene = buildScene(unlabeled());
+    expect(scene.walls.length).toBeGreaterThan(0);
+    expect(scene.floors).toHaveLength(2);
+    expect(scene.collision.length).toBeGreaterThan(0);
+  });
+
+  it("라벨이 없어도 바닥 색이 정해진다", () => {
+    expect(buildScene(unlabeled()).floors.every((f) => Boolean(f.color))).toBe(true);
+  });
+});

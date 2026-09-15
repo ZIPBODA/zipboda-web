@@ -182,18 +182,29 @@ export function yawTowards(dx: number, dz: number): number {
   return Math.atan2(-dx, -dz);
 }
 
-function pickSpawn(model: FloorplanModel2D, toScene: (p: PointMm) => ScenePoint): SceneSpawn {
-  const entrance = model.rooms.find((room) => room.label === ENTRANCE_LABEL);
-  const outlineCenter = polygonCentroid(model.outline);
-  const spawnMm = entrance ? polygonCentroid(entrance.polygon) : outlineCenter;
+const largestOf = (rooms: Room2D[]): Room2D | null =>
+  rooms.reduce<Room2D | null>((best, room) => (best === null || polygonAreaMm2(room.polygon) > polygonAreaMm2(best.polygon) ? room : best), null);
 
-  const others = model.rooms.filter((room) => room !== entrance);
-  const largest = others.reduce<Room2D | null>((best, room) => (best === null || polygonAreaMm2(room.polygon) > polygonAreaMm2(best.polygon) ? room : best), null);
-  const targetMm = largest ? polygonCentroid(largest.polygon) : outlineCenter;
+/**
+ * 1인칭 시작 위치를 고른다. 현관이 있으면 현관에서 가장 넓은 방을 바라보고 선다.
+ *
+ * 방 이름이 인쇄되지 않은 도면도 있고 OCR이 놓치기도 한다. 그때 외곽 무게중심을 쓰면
+ * 벽 속이나 방이 아닌 곳에서 시작할 수 있으므로, 가장 넓은 방 안에서 그다음 방을 바라보게 한다.
+ */
+function pickSpawn(model: FloorplanModel2D, toScene: (p: PointMm) => ScenePoint): SceneSpawn {
+  const outlineCenter = polygonCentroid(model.outline);
+  const entrance = model.rooms.find((room) => room.label === ENTRANCE_LABEL);
+  const largest = largestOf(model.rooms.filter((room) => room !== entrance));
+
+  const origin = entrance ?? largest;
+  const spawnMm = origin ? polygonCentroid(origin.polygon) : outlineCenter;
+
+  const target = largestOf(model.rooms.filter((room) => room !== origin));
+  const targetMm = target ? polygonCentroid(target.polygon) : outlineCenter;
 
   const spawn = toScene(spawnMm);
-  const target = toScene(targetMm);
-  return { x: spawn.x, z: spawn.z, yaw: yawTowards(target.x - spawn.x, target.z - spawn.z) };
+  const look = toScene(targetMm);
+  return { x: spawn.x, z: spawn.z, yaw: yawTowards(look.x - spawn.x, look.z - spawn.z) };
 }
 
 /**

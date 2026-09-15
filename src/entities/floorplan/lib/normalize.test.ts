@@ -259,3 +259,39 @@ describe("checkReachability 출발점", () => {
     expect(checkReachability(twoRoomModel())).toEqual([]);
   });
 });
+
+describe("validateArea 라벨이 없는 도면", () => {
+  /** 방 이름이 인쇄되지 않았거나 OCR이 못 읽어 전부 '기타'인 모델 */
+  const unlabeled = (): FloorplanModel2D => {
+    const model = twoRoomModel();
+    model.rooms = model.rooms.map((r) => ({ ...r, label: "기타" }));
+    return model;
+  };
+
+  it("제외 대상을 못 읽으면 면적이 넘쳐도 걸지 않는다(발코니가 섞인 것일 수 있다)", () => {
+    const model = unlabeled();
+    // 발코니만큼 면적이 더 있는 상황
+    model.rooms.push({ id: "r-extra", label: "기타", polygon: rect(0, 6000, 4500, 1300) });
+    expect(validateArea(model)).toEqual([]);
+  });
+
+  it("제외 대상을 못 읽어도 면적이 모자라면 건다", () => {
+    const model = unlabeled();
+    model.rooms = model.rooms.slice(0, 1);
+    const flags = validateArea(model);
+    expect(flags.map((f) => f.code)).toEqual(["area-mismatch"]);
+    expect(flags[0].detail).toContain("부족분만 검사");
+  });
+
+  it("발코니를 읽었으면 넘치는 쪽도 그대로 건다", () => {
+    const model = twoRoomModel();
+    model.rooms.push({ id: "r-balcony", label: "발코니", polygon: rect(0, 6000, 4500, 1300) });
+    model.rooms.push({ id: "r-extra", label: "침실", polygon: rect(0, 7300, 4500, 2000) });
+    expect(validateArea(model).map((f) => f.code)).toEqual(["area-mismatch"]);
+  });
+
+  it("라벨이 있든 없든 맞으면 통과한다", () => {
+    expect(validateArea(twoRoomModel())).toEqual([]);
+    expect(validateArea(unlabeled())).toEqual([]);
+  });
+});
