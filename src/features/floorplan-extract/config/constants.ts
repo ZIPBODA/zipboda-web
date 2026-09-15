@@ -130,3 +130,11 @@ export const COLOR_BOUNDARY_MIN_RUN_RATIO = 0.35;
 export const TOKEN_LINE_TOLERANCE_RATIO = 0.6;
 /** 같은 단어로 볼 가로 간격 상한 = 글자 높이 × 이 비율 */
 export const TOKEN_MERGE_GAP_RATIO = 0.8;
+
+/**
+ * 방 분할 전에 벽을 깎는 두께 = 검출된 벽 두께 중앙값 × 이 비율.
+ * 방 영역은 벽을 뺀 빈 공간이라 인쇄 면적(벽 중심선 기준)보다 작게 나온다.
+ * 절반을 깎아 방이 벽 중심선에서 만나게 한다.
+ */
+export const WALL_ERODE_RATIO = 0.5;
+export const WALL_ERODE_MAX_PX = 8;
