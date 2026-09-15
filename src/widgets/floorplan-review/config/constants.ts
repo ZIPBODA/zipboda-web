@@ -29,3 +29,5 @@ export const OVERLAY_COLOR = {
 export const OVERLAY_STROKE_PX = { crop: 2, exteriorWall: 4, interiorWall: 3, room: 1.5, opening: 5 } as const;
 export const OVERLAY_LABEL_FONT_PX = 12;
 export const PERCENT = 100;
+/** 내려받은 모델 파일명 — entities/floorplan의 목 자산과 같은 이름으로 맞춘다 */
+export const MODEL_FILE_NAME = "fp-test2.model2d.json";

@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import type { FloorplanModel2D, PointMm } from "@/entities/floorplan";
 import { extractFloorplan, type ExtractOutput, type ExtractProgress } from "@/features/floorplan-extract";
-import { DEFAULT_IMAGE_URL, OVERLAY_COLOR, OVERLAY_LABEL_FONT_PX, OVERLAY_STROKE_PX, PERCENT, STAGE_LABELS } from "../config/constants";
+import { DEFAULT_IMAGE_URL, MODEL_FILE_NAME, OVERLAY_COLOR, OVERLAY_LABEL_FONT_PX, OVERLAY_STROKE_PX, PERCENT, STAGE_LABELS } from "../config/constants";
 
 const parseOptionalNumber = (value: string): number | undefined => {
   const n = Number(value);
@@ -73,6 +73,18 @@ export function FloorplanReviewEditor({ onModelChange, preview, autoRun = false 
     autoRanRef.current = true;
     void runRef.current();
   }, [autoRun, natural]);
+
+  // 검수 통과한 모델을 파일로 내려받아 저장소 자산으로 쓴다(뷰어는 저장된 모델만 읽는다)
+  const downloadModel = () => {
+    if (!model) return;
+    const blob = new Blob([JSON.stringify(model, null, 2)], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = MODEL_FILE_NAME;
+    link.click();
+    URL.revokeObjectURL(url);
+  };
 
   const onFile = (file: File | undefined) => {
     if (!file) return;
@@ -255,7 +267,12 @@ export function FloorplanReviewEditor({ onModelChange, preview, autoRun = false 
             </div>
           </div>
           <div className="rounded border border-line p-3">
-            <div className="font-semibold text-fg-heading">모델 JSON (FloorplanModel2D)</div>
+            <div className="flex items-center justify-between">
+              <span className="font-semibold text-fg-heading">모델 JSON (FloorplanModel2D)</span>
+              <button type="button" onClick={downloadModel} className="rounded border border-line px-2.5 py-1 font-medium text-fg-heading">
+                모델 저장
+              </button>
+            </div>
             <textarea readOnly value={exportJson} className="mt-2 h-64 w-full rounded border border-line p-2 font-mono text-xs" />
           </div>
           {preview && (
