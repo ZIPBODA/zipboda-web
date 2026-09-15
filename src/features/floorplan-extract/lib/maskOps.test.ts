@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { erodeMask } from "./erodeMask";
+import { dilateMask, erodeMask, openMask, subtractMask } from "./maskOps";
 import type { MaskImage } from "../model/types";
 
 const make = (w: number, h: number, on: (x: number, y: number) => boolean): MaskImage => {
@@ -47,3 +47,40 @@ describe("erodeMask", () => {
   });
 });
 
+describe("openMask", () => {
+  it("가는 벽은 지우고 굵은 덩어리만 남긴다", () => {
+    // 가는 벽(두께 5) + 굵은 띠(두께 25)
+    const mask = make(80, 80, (_x, y) => (20 <= y && y <= 24) || (40 <= y && y <= 64));
+    const opened = openMask(mask, 8);
+    expect(at(opened, 40, 22)).toBe(false);
+    expect(at(opened, 40, 52)).toBe(true);
+  });
+
+  it("radius 0이면 그대로 둔다", () => {
+    const mask = make(20, 20, (x) => x < 10);
+    expect(count(openMask(mask, 0))).toBe(count(mask));
+  });
+});
+
+describe("subtractMask", () => {
+  it("빼는 쪽에 있는 픽셀을 지운다", () => {
+    const base = make(4, 1, () => true);
+    const remove = make(4, 1, (x) => x < 2);
+    expect(Array.from(subtractMask(base, remove).data)).toEqual([0, 0, 1, 1]);
+  });
+
+  it("원본은 바꾸지 않는다", () => {
+    const base = make(4, 1, () => true);
+    subtractMask(base, make(4, 1, () => true));
+    expect(count(base)).toBe(4);
+  });
+});
+
+describe("dilateMask", () => {
+  it("마스크를 부풀린다", () => {
+    const mask = make(20, 20, (x, y) => x === 10 && y === 10);
+    const dilated = dilateMask(mask, 2);
+    expect(at(dilated, 10, 12)).toBe(true);
+    expect(at(dilated, 10, 13)).toBe(false);
+  });
+});

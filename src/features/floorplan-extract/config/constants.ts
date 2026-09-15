@@ -144,4 +144,10 @@ export const TOKEN_MERGE_GAP_RATIO = 0.8;
  */
 export const WALL_ERODE_RATIO = 0.5;
 export const WALL_ERODE_MAX_PX = 8;
+/**
+ * 벽이 아닌 "굵은 그림"으로 볼 두께 = 검출된 벽 두께 중앙값 × 이 비율.
+ * 실측(test2.jpg): 벽은 1~17px인데 발코니 난간·창이 28·43px 띠로 잡혀 방 면적을 먹었다.
+ * 주거 벽은 100~300mm이므로 그 두 배를 넘는 덩어리는 벽이 아니라 그림으로 본다.
+ */
+export const THICK_GRAPHIC_RATIO = 4;
 
