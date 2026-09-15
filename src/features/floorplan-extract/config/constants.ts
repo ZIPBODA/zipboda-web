@@ -43,6 +43,12 @@ export const LABEL_PARTIAL_CONFIDENCE = 0.75;
 export const LABEL_TYPO_CONFIDENCE = 0.6;
 export const LABEL_UNKNOWN_CONFIDENCE = 0.2;
 export const LABEL_TYPO_MAX_DISTANCE = 1;
+/**
+ * 자모로 편 뒤 허용할 편집 거리. OCR이 작은 한글의 받침을 자주 놓친다("현관" → "혀과").
+ * 실측상 서로 다른 방 이름은 자모 거리가 3 이상이라 2까지는 오탐 없이 흡수된다.
+ */
+export const LABEL_JAMO_MAX_DISTANCE = 2;
+export const LABEL_JAMO_CONFIDENCE = 0.5;
 export const LABEL_MIN_ALIAS_LENGTH_FOR_TYPO = 2;
 
 // 스케일(치수 체인)
@@ -138,3 +144,4 @@ export const TOKEN_MERGE_GAP_RATIO = 0.8;
  */
 export const WALL_ERODE_RATIO = 0.5;
 export const WALL_ERODE_MAX_PX = 8;
+

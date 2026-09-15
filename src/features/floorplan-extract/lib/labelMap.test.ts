@@ -39,3 +39,27 @@ describe("mapRoomLabel", () => {
     expect(mapRoomLabel("").label).toBe("기타");
   });
 });
+
+describe("mapRoomLabel 자모 보정", () => {
+  it("받침이 빠진 '혀과'를 현관으로 알아본다", () => {
+    const match = mapRoomLabel("혀과");
+    expect(match.label).toBe("현관");
+    expect(match.confidence).toBeLessThan(1);
+  });
+
+  it("받침이 빠진 '욕시'를 욕실로 알아본다", () => {
+    expect(mapRoomLabel("욕시").label).toBe("욕실");
+  });
+
+  it("서로 다른 방 이름을 자모 보정으로 뒤섞지 않는다", () => {
+    expect(mapRoomLabel("욕실").label).toBe("욕실");
+    expect(mapRoomLabel("거실").label).toBe("거실");
+    expect(mapRoomLabel("침실").label).toBe("침실");
+    expect(mapRoomLabel("주방").label).toBe("주방");
+  });
+
+  it("한 글자는 여전히 퍼지 매칭에서 제외한다", () => {
+    expect(mapRoomLabel("방").label).toBe("기타");
+    expect(mapRoomLabel("실").label).toBe("기타");
+  });
+});

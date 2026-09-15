@@ -71,3 +71,4 @@ describe("assignRegionLabels", () => {
     expect(assignRegionLabels([r], [token("침실", 50, 50)])["region-0"].label).toBe("침실");
   });
 });
+

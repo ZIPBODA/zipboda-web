@@ -1,6 +1,8 @@
 import {
   LABEL_ALIASES,
   LABEL_EXACT_CONFIDENCE,
+  LABEL_JAMO_CONFIDENCE,
+  LABEL_JAMO_MAX_DISTANCE,
   LABEL_MIN_ALIAS_LENGTH_FOR_TYPO,
   LABEL_PARTIAL_CONFIDENCE,
   LABEL_PRIORITY,
@@ -9,6 +11,7 @@ import {
   LABEL_UNKNOWN_CONFIDENCE
 } from "../config/constants";
 import type { LabelMatch } from "../model/types";
+import { decomposeHangul } from "./hangul";
 
 const normalizeText = (s: string) => s.replace(/[\s/·.,()\-_]/g, "").toLowerCase();
 
@@ -49,6 +52,11 @@ export function mapRoomLabel(ocrText: string): LabelMatch {
         candidate.length >= LABEL_MIN_ALIAS_LENGTH_FOR_TYPO && text.length >= LABEL_MIN_ALIAS_LENGTH_FOR_TYPO;
       if (isTypoEligible && levenshtein(text, candidate) <= LABEL_TYPO_MAX_DISTANCE) {
         best = pickHigher(best, { label, confidence: LABEL_TYPO_CONFIDENCE });
+        continue;
+      }
+      // 받침이 빠진 한글 오인식은 글자 단위로는 전부 틀려 보인다 — 자모로 펴서 다시 본다
+      if (isTypoEligible && levenshtein(decomposeHangul(text), decomposeHangul(candidate)) <= LABEL_JAMO_MAX_DISTANCE) {
+        best = pickHigher(best, { label, confidence: LABEL_JAMO_CONFIDENCE });
       }
     }
   }
