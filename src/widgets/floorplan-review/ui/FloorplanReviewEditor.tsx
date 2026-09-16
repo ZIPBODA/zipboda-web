@@ -3,7 +3,16 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import type { FloorplanModel2D } from "@/entities/floorplan";
 import { extractFloorplan, type CropRect, type ExtractProgress } from "@/features/floorplan-extract";
-import { BOUNDARY_TOGGLE_KEY, OPENING_PRESETS, TOOL_SHORTCUTS, documentFromModel, emptyDocument, useTraceEditor } from "@/features/floorplan-trace";
+import {
+  BOUNDARY_TOGGLE_KEY,
+  OPENING_PRESETS,
+  TOOL_SHORTCUTS,
+  defaultNameFromImage,
+  documentFromModel,
+  emptyDocument,
+  parseTraceFile,
+  useTraceEditor
+} from "@/features/floorplan-trace";
 import { DEFAULT_IMAGE_URL, MAX_ZOOM, MIN_ZOOM, PERCENT, STAGE_LABELS, ZOOM_STEPS } from "../config/constants";
 import { TraceCanvas } from "./TraceCanvas";
 import { TraceSidePanel } from "./TraceSidePanel";
@@ -25,6 +34,7 @@ export function FloorplanReviewEditor({ onModelChange, preview, autoRun = false 
   const imageRef = useRef<HTMLImageElement>(null);
   const [imageUrl, setImageUrl] = useState(DEFAULT_IMAGE_URL);
   const [urlDraft, setUrlDraft] = useState(DEFAULT_IMAGE_URL);
+  const [name, setName] = useState(() => defaultNameFromImage(DEFAULT_IMAGE_URL));
   const objectUrlRef = useRef<string | null>(null);
   const [natural, setNatural] = useState<{ w: number; h: number } | null>(null);
   const [progress, setProgress] = useState<ExtractProgress | null>(null);
@@ -116,21 +126,40 @@ export function FloorplanReviewEditor({ onModelChange, preview, autoRun = false 
     onModelChange?.(model);
   }, [model, onModelChange]);
 
-  // 다른 도면으로 바꾸면 이전 도면의 벽·스케일은 새 이미지 위에서 엉뚱한 자리에 놓인다 — 문서를 비우고 시작한다
-  const changeImage = (url: string) => {
-    if (url === imageUrl) return;
-    if (document.walls.length > 0 && !window.confirm("그린 벽을 지우고 다른 도면을 열까요?")) {
-      setUrlDraft(imageUrl);
-      return;
-    }
-    if (objectUrlRef.current) URL.revokeObjectURL(objectUrlRef.current);
+  const applyImage = (url: string) => {
+    if (objectUrlRef.current && objectUrlRef.current !== url) URL.revokeObjectURL(objectUrlRef.current);
     objectUrlRef.current = url.startsWith("blob:") ? url : null;
     setImageUrl(url);
     setUrlDraft(url);
     setNatural(null);
     setDraftRects([]);
     setError("");
+  };
+
+  // 다른 도면으로 바꾸면 이전 도면의 벽·스케일은 새 이미지 위에서 엉뚱한 자리에 놓인다 — 문서를 비우고 시작한다
+  const changeImage = (url: string, fileName?: string) => {
+    if (url === imageUrl) return;
+    if (document.walls.length > 0 && !window.confirm("그린 벽을 지우고 다른 도면을 열까요?")) {
+      setUrlDraft(imageUrl);
+      return;
+    }
+    applyImage(url);
+    setName(defaultNameFromImage(fileName ?? url));
     dispatch({ type: "LOAD_DOCUMENT", document: emptyDocument() });
+  };
+
+  const openTraceFile = async (file: File) => {
+    if (document.walls.length > 0 && !window.confirm("그린 벽을 지우고 저장한 작업을 열까요?")) return;
+    try {
+      const saved = parseTraceFile(await file.text());
+      // blob 주소는 다시 열 수 없다 — 그 경우 이미지는 그대로 두고 편집 내용만 되살린다
+      const canReopen = saved.imageUrl !== "" && !saved.imageUrl.startsWith("blob:") && saved.imageUrl !== imageUrl;
+      if (canReopen) applyImage(saved.imageUrl);
+      if (saved.name !== "") setName(saved.name);
+      dispatch({ type: "LOAD_DOCUMENT", document: saved.document });
+    } catch (e) {
+      setError(e instanceof Error ? e.message : String(e));
+    }
   };
 
   return (
@@ -157,7 +186,7 @@ export function FloorplanReviewEditor({ onModelChange, preview, autoRun = false 
             className="hidden"
             onChange={(e) => {
               const file = e.target.files?.[0];
-              if (file) changeImage(URL.createObjectURL(file));
+              if (file) changeImage(URL.createObjectURL(file), file.name);
             }}
           />
         </label>
@@ -212,7 +241,17 @@ export function FloorplanReviewEditor({ onModelChange, preview, autoRun = false 
       </div>
 
       <div className="mt-4">
-        <TraceSidePanel document={document} ui={ui} layout={editor.layout} normalized={editor.normalized} dispatch={dispatch} />
+        <TraceSidePanel
+          document={document}
+          ui={ui}
+          layout={editor.layout}
+          normalized={editor.normalized}
+          name={name}
+          imageUrl={imageUrl}
+          onNameChange={setName}
+          onOpenTraceFile={(file) => void openTraceFile(file)}
+          dispatch={dispatch}
+        />
       </div>
 
       {preview && (

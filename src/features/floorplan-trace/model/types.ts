@@ -38,6 +38,14 @@ export interface TraceDocument {
   seq: number;
 }
 
+/** 저장해 두는 작업 파일. 편집 문서에 어느 도면의 무엇인지를 얹는다 */
+export interface TraceFile {
+  version: number;
+  name: string;
+  imageUrl: string;
+  document: TraceDocument;
+}
+
 export type Selection = { kind: "wall"; id: string } | { kind: "opening"; id: string } | null;
 
 export interface WallDraft {

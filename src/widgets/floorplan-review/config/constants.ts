@@ -50,8 +50,10 @@ export const HIT_RADIUS_PX = 8;
 export const HANDLE_RADIUS_PX = 5;
 export const OPENING_MARKER_RADIUS_PX = 6;
 export const PERCENT = 100;
-/** 내려받은 모델 파일명 — entities/floorplan의 목 자산과 같은 이름으로 맞춘다 */
-export const MODEL_FILE_NAME = "fp-test2.model2d.json";
+// 내려받는 파일 이름 = 도면 이름 + 접미사. 모델은 entities/floorplan 목 자산과 같은 규칙을 쓴다
+export const MODEL_FILE_SUFFIX = ".model2d.json";
+/** 편집 문서. 나중에 다시 열어 고치려면 결과 모델이 아니라 이 파일이 필요하다 */
+export const TRACE_FILE_SUFFIX = ".trace.json";
 /** 캔버스 확대 단계. 원본이 컨테이너보다 크면 시작 배율은 폭 맞춤이다 */
 export const ZOOM_STEPS = [0.25, 0.35, 0.5, 0.75, 1, 1.5, 2] as const;
 export const MIN_ZOOM = ZOOM_STEPS[0];

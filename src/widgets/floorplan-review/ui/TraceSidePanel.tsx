@@ -5,19 +5,27 @@ import type { NormalizeResult } from "@/entities/floorplan";
 import {
   BOUNDARY_THICKNESS_MM,
   CALIBRATION_POINTS,
+  TRACE_FILE_VERSION,
+  sanitizeFileName,
+  serializeTraceFile,
   wallLengthMm,
   type DerivedLayout,
   type TraceAction,
   type TraceDocument,
   type TraceUiState
 } from "@/features/floorplan-trace";
-import { MODEL_FILE_NAME, PERCENT, WALL_THICKNESS_OPTIONS } from "../config/constants";
+import { MODEL_FILE_SUFFIX, PERCENT, TRACE_FILE_SUFFIX, WALL_THICKNESS_OPTIONS } from "../config/constants";
 
 interface Props {
   document: TraceDocument;
   ui: TraceUiState;
   layout: DerivedLayout;
   normalized: NormalizeResult | null;
+  /** 저장 파일 이름의 바탕이 되는 도면 이름 */
+  name: string;
+  imageUrl: string;
+  onNameChange: (name: string) => void;
+  onOpenTraceFile: (file: File) => void;
   dispatch: Dispatch<TraceAction>;
 }
 
@@ -26,22 +34,25 @@ const parseOptionalNumber = (value: string): number | undefined => {
   return value.trim() !== "" && Number.isFinite(n) && n > 0 ? n : undefined;
 };
 
-export function TraceSidePanel({ document, ui, layout, normalized, dispatch }: Props) {
+function download(text: string, fileName: string) {
+  const blob = new Blob([text], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const link = window.document.createElement("a");
+  link.href = url;
+  link.download = fileName;
+  link.click();
+  // 클릭 직후 해제하면 다운로드가 시작되기 전에 주소가 사라지는 브라우저가 있다
+  window.setTimeout(() => URL.revokeObjectURL(url), 0);
+}
+
+export function TraceSidePanel({ document, ui, layout, normalized, name, imageUrl, onNameChange, onOpenTraceFile, dispatch }: Props) {
   const model = normalized?.model ?? null;
   const exportJson = model ? JSON.stringify(model, null, 2) : "";
+  const fileBase = sanitizeFileName(name);
 
-  // 검수 통과한 모델을 파일로 내려받아 저장소 자산으로 쓴다(뷰어는 저장된 모델만 읽는다)
-  const downloadModel = () => {
-    if (!model) return;
-    const blob = new Blob([JSON.stringify(model, null, 2)], { type: "application/json" });
-    const url = URL.createObjectURL(blob);
-    const link = window.document.createElement("a");
-    link.href = url;
-    link.download = MODEL_FILE_NAME;
-    link.click();
-    // 클릭 직후 해제하면 다운로드가 시작되기 전에 주소가 사라지는 브라우저가 있다
-    window.setTimeout(() => URL.revokeObjectURL(url), 0);
-  };
+  // 검수 통과한 모델은 저장소 자산으로 쓰고(뷰어는 저장된 모델만 읽는다), 편집 문서는 나중에 다시 고치려고 따로 남긴다
+  const downloadModel = () => model && download(JSON.stringify(model, null, 2), fileBase + MODEL_FILE_SUFFIX);
+  const downloadTrace = () => download(serializeTraceFile({ version: TRACE_FILE_VERSION, name, imageUrl, document }), fileBase + TRACE_FILE_SUFFIX);
 
   return (
     <section className="grid gap-3 md:grid-cols-2">
@@ -52,12 +63,37 @@ export function TraceSidePanel({ document, ui, layout, normalized, dispatch }: P
         <StatusSection document={document} layout={layout} normalized={normalized} />
       </div>
       <div className="rounded border border-line p-3">
-        <div className="flex items-center justify-between">
-          <span className="font-semibold text-fg-heading">모델 JSON (FloorplanModel2D)</span>
+        <div className="flex flex-wrap items-center gap-2">
+          <label className="flex items-center gap-1">
+            도면 이름
+            <input value={name} onChange={(e) => onNameChange(e.target.value)} className="w-36 rounded border border-line px-2 py-1" placeholder="fp-test2" />
+          </label>
+          <button type="button" onClick={downloadTrace} className="rounded border border-line px-2.5 py-1 font-medium text-fg-heading">
+            작업 저장
+          </button>
+          <label className="cursor-pointer rounded border border-line px-2.5 py-1 font-medium text-fg-heading">
+            작업 열기
+            <input
+              type="file"
+              accept="application/json,.json"
+              className="hidden"
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                if (file) onOpenTraceFile(file);
+                e.target.value = "";
+              }}
+            />
+          </label>
           <button type="button" disabled={!model} onClick={downloadModel} className="rounded border border-line px-2.5 py-1 font-medium text-fg-heading disabled:opacity-40">
             모델 저장
           </button>
         </div>
+        <div className="mt-1 text-2xsmall text-fg-muted">
+          {fileBase}
+          {TRACE_FILE_SUFFIX} · {fileBase}
+          {MODEL_FILE_SUFFIX}
+        </div>
+        <div className="mt-2 font-semibold text-fg-heading">모델 JSON (FloorplanModel2D)</div>
         <textarea readOnly value={exportJson} className="mt-2 h-72 w-full rounded border border-line p-2 font-mono text-xs" />
       </div>
     </section>

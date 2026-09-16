@@ -37,4 +37,7 @@ export const UNLABELED_ROOM_CONFIDENCE = 0.5;
 export const ROOM_LABEL_OPTIONS: readonly RoomLabel[] = ["현관", "욕실", "주방", "식당", "거실", "침실", "발코니", "반침", "드레스룸", "기타"];
 export const TOOL_SHORTCUTS: Record<string, TraceTool> = { v: "select", w: "wall", l: "label", o: "opening", c: "calibrate" };
 export const BOUNDARY_TOGGLE_KEY = "b";
+/** 작업 파일 형식 번호. 문서 모양이 바뀌면 올려서 옛 파일을 조용히 잘못 읽지 않게 한다 */
+export const TRACE_FILE_VERSION = 1;
+export const DEFAULT_TRACE_NAME = "floorplan";
 export const CALIBRATION_POINTS = 2;
