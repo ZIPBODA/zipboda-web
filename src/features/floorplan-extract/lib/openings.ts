@@ -102,12 +102,12 @@ export function detectWallOpenings(
           continue;
         }
         const gap = segment.start - previous.end - 1;
-        if (gap <= 0) {
-          // 겹치거나 맞닿음 — 같은 벽의 연장
+        if (gap < minGapPx) {
+          // 겹치거나 맞닿거나, 사람이 지날 수 없는 작은 틈(설비 표기·잉크 끊김) — 같은 벽의 연장
           previous.end = Math.max(previous.end, segment.end);
           continue;
         }
-        const isOpening = minGapPx <= gap && gap <= maxGapPx;
+        const isOpening = gap <= maxGapPx;
         if (isOpening) {
           gaps.push({ startPx: previous.end + 1 - run[0].start, endPx: segment.start - run[0].start });
           run.push(segment);
@@ -155,6 +155,13 @@ export function sealWallGaps(
       const horizontal = Math.abs(wall.a.y - wall.b.y) <= Math.abs(wall.a.x - wall.b.x);
       const line = horizontal ? wall.a.y : wall.a.x;
       const from = horizontal ? Math.min(wall.a.x, wall.b.x) : Math.min(wall.a.y, wall.b.y);
+      const to = horizontal ? Math.max(wall.a.x, wall.b.x) : Math.max(wall.a.y, wall.b.y);
+      // 같은 축선의 조각들은 중심선이 몇 px씩 어긋나 몸통이 계단처럼 엇갈리고 그 사이로 플러드필이 샌다.
+      // 이어 붙인 벽의 중앙선을 끝에서 끝까지 1px로 그어 조각 사이·개구부를 한 줄로 막는다
+      for (let along = from; along <= to; along++) {
+        if (horizontal) paint(along, line);
+        else paint(line, along);
+      }
       const half = Math.max(1, Math.floor(wall.thicknessPx / 2));
       for (const span of wall.openings) {
         for (let along = from + span.startPx; along <= from + span.endPx; along++) {
@@ -174,20 +181,44 @@ export function sealWallGaps(
 }
 
 /**
- * 마스크 테두리를 벽으로 막는다.
+ * 벽 세그먼트의 중심선을 1px로 그려 넣는다. 양 끝은 extendPx만큼 늘려 맞닿은 벽의 몸통에 닿게 한다.
+ * 방 면적을 벽 중심선에 맞추려고 벽을 깎으면 벽 끝도 같이 물러나, 내벽이 외벽에서 떨어지며
+ * 그 틈으로 플러드필이 옆방으로 샌다. 중심선은 면적을 거의 먹지 않으면서 4-연결 플러드필을 막는다.
+ */
+export function paintWallCenterlines(mask: MaskImage, segments: WallSegmentPx[], extendPx: number): MaskImage {
+  const painted: MaskImage = { data: Uint8Array.from(mask.data), width: mask.width, height: mask.height };
+  const paint = (x: number, y: number) => {
+    if (x < 0 || y < 0 || x >= painted.width || y >= painted.height) return;
+    painted.data[y * painted.width + x] = 1;
+  };
+  for (const segment of segments) {
+    const horizontal = isHorizontal(segment);
+    const line = horizontal ? segment.a.y : segment.a.x;
+    const from = (horizontal ? Math.min(segment.a.x, segment.b.x) : Math.min(segment.a.y, segment.b.y)) - extendPx;
+    const to = (horizontal ? Math.max(segment.a.x, segment.b.x) : Math.max(segment.a.y, segment.b.y)) + extendPx;
+    for (let along = from; along <= to; along++) {
+      if (horizontal) paint(along, line);
+      else paint(line, along);
+    }
+  }
+  return painted;
+}
+
+/**
+ * 마스크 테두리를 bandPx 두께의 벽으로 막는다.
  * 크롭은 유닛 벽의 실제 범위라 테두리 = 건물 외피다. 벽 검출이 일부 누락되면
  * 그 구멍으로 플러드필이 빠져나가 실내 전체가 '바깥'으로 묶이므로, 경계를 닫아 막는다.
+ * 벽을 깎을 때 외벽의 바깥면도 같이 깎여 테두리 안쪽에 몇 px 통로가 생기므로, 깎은 만큼 두껍게 막아야 한다.
  */
-export function sealMaskBorder(mask: MaskImage): MaskImage {
+export function sealMaskBorder(mask: MaskImage, bandPx = 1): MaskImage {
   const sealed: MaskImage = { data: Uint8Array.from(mask.data), width: mask.width, height: mask.height };
   const { width, height } = sealed;
-  for (let x = 0; x < width; x++) {
-    sealed.data[x] = 1;
-    sealed.data[(height - 1) * width + x] = 1;
-  }
+  const band = Math.max(1, Math.min(bandPx, Math.floor(Math.min(width, height) / 2)));
   for (let y = 0; y < height; y++) {
-    sealed.data[y * width] = 1;
-    sealed.data[y * width + width - 1] = 1;
+    for (let x = 0; x < width; x++) {
+      const onBorderBand = x < band || y < band || width - band <= x || height - band <= y;
+      if (onBorderBand) sealed.data[y * width + x] = 1;
+    }
   }
   return sealed;
 }

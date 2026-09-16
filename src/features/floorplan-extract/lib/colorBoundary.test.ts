@@ -87,3 +87,94 @@ describe("colorBoundaryMask 길이 필터", () => {
     expect(mask.data.some((v) => v === 1)).toBe(true);
   });
 });
+
+describe("colorBoundaryMask 벽까지 늘리기", () => {
+  /** 80×40, 위 절반 빨강·아래 절반 파랑. 왼쪽 greyPx만큼은 회색 가구로 위아래 색이 같다 */
+  const build = (greyPx: number) => {
+    const width = 80;
+    const height = 40;
+    const data = new Uint8ClampedArray(width * height * 4);
+    for (let y = 0; y < height; y++)
+      for (let x = 0; x < width; x++) {
+        const i = (y * width + x) * 4;
+        const [r, g, b] = x < greyPx ? [128, 128, 128] : y < 20 ? [220, 40, 40] : [40, 40, 220];
+        data[i] = r;
+        data[i + 1] = g;
+        data[i + 2] = b;
+        data[i + 3] = 255;
+      }
+    const walls: MaskImage = { width, height, data: new Uint8Array(width * height) };
+    for (let y = 0; y < height; y++) walls.data[y * width + 2] = 1;
+    return { image: { data, width, height } as RgbaImage, walls, crop: { x: 0, y: 0, width, height }, width };
+  };
+  const at = (m: MaskImage, x: number, y: number) => m.data[y * m.width + x] === 1;
+
+  it("벽에서 조금 모자라는 색 경계는 벽에 닿을 때까지 늘린다", () => {
+    const { image, walls, crop } = build(8);
+    const extended = colorBoundaryMask(image, crop, 8, 35, 0.35, walls);
+    // 원래 경계는 x=8부터, 벽(x=2) 바로 옆까지 채워진다
+    expect(at(extended, 5, 24)).toBe(true);
+    expect(at(extended, 3, 24)).toBe(true);
+    expect(at(extended, 2, 24)).toBe(false);
+  });
+
+  it("벽이 허용 틈(20%)보다 멀면 늘리지 않는다", () => {
+    const { image, walls, crop } = build(32);
+    const extended = colorBoundaryMask(image, crop, 8, 35, 0.35, walls);
+    expect(at(extended, 20, 24)).toBe(false);
+    expect(at(extended, 40, 24)).toBe(true);
+  });
+});
+
+describe("colorBoundaryMask 벽 옆 색 차이", () => {
+  it("벽 블록과 바닥 블록 사이의 색 차이는 경계로 삼지 않는다", () => {
+    // 80×40: 왼콽 8px은 검정 벽, 나머지는 한 가지 바닥색
+    const width = 80;
+    const height = 40;
+    const data = new Uint8ClampedArray(width * height * 4);
+    const walls: MaskImage = { width, height, data: new Uint8Array(width * height) };
+    for (let y = 0; y < height; y++)
+      for (let x = 0; x < width; x++) {
+        const i = (y * width + x) * 4;
+        const isWall = x < 8;
+        const [r, g, b] = isWall ? [40, 40, 40] : [230, 200, 150];
+        data[i] = r;
+        data[i + 1] = g;
+        data[i + 2] = b;
+        data[i + 3] = 255;
+        if (isWall) walls.data[y * width + x] = 1;
+      }
+    const crop = { x: 0, y: 0, width, height };
+    const bare = colorBoundaryMask({ data, width, height }, crop, 8, 35, 0.35);
+    const aware = colorBoundaryMask({ data, width, height }, crop, 8, 35, 0.35, walls);
+    expect(bare.data.some((v) => v === 1)).toBe(true);
+    expect(aware.data.some((v) => v === 1)).toBe(false);
+  });
+});
+
+describe("colorBoundaryMask 벽에서 벽까지", () => {
+  it("축 비율에 못 미쳐도 양 끝이 벽에 닿는 색 경계는 방 경계다", () => {
+    // 200×60, 10mm/px. 벽 x=50·x=150 사이(100px=1000mm=폭 50%)만 위 타일·아래 마루로 색이 다르다 → 비율 0.6에는 못 미친다
+    const width = 200;
+    const height = 60;
+    const data = new Uint8ClampedArray(width * height * 4);
+    const walls: MaskImage = { width, height, data: new Uint8Array(width * height) };
+    for (let y = 0; y < height; y++)
+      for (let x = 0; x < width; x++) {
+        const i = (y * width + x) * 4;
+        const inside = 50 < x && x < 150;
+        const [r, g, b] = inside && y < 30 ? [200, 200, 210] : [200, 150, 90];
+        data[i] = r;
+        data[i + 1] = g;
+        data[i + 2] = b;
+        data[i + 3] = 255;
+        if (x === 50 || x === 150) walls.data[y * width + x] = 1;
+      }
+    const crop = { x: 0, y: 0, width, height };
+    const byRatio = colorBoundaryMask({ data, width, height }, crop, 8, 35, 0.6, walls);
+    const wallToWall = colorBoundaryMask({ data, width, height }, crop, 8, 35, 0.6, walls, 10);
+    const rowHas = (m: MaskImage) => Array.from({ length: height }, (_, y) => m.data[y * width + 100] === 1).some(Boolean);
+    expect(rowHas(byRatio)).toBe(false);
+    expect(rowHas(wallToWall)).toBe(true);
+  });
+});

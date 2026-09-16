@@ -31,14 +31,42 @@ export function upscaleRegion(source: CanvasImageSource, rect: CropRect, factor:
 }
 
 
+export interface ReadTextOptions {
+  /** 이 밝기 이하만 검정으로, 나머지는 흰색으로 이진화한다. 타일 점무늬·나뭇결 위의 작은 글자를 읽을 때 쓴다 */
+  binarizeBelow?: number;
+}
+
+/** 캔버스를 검정/흰색으로 이진화한다(회색 밝기 기준) */
+function binarizeCanvas(canvas: HTMLCanvasElement, threshold: number): void {
+  const ctx = canvas.getContext("2d");
+  if (!ctx) return;
+  const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+  const { data } = imageData;
+  for (let i = 0; i < data.length; i += 4) {
+    const gray = 0.299 * data[i] + 0.587 * data[i + 1] + 0.114 * data[i + 2];
+    const value = gray <= threshold ? 0 : 255;
+    data[i] = value;
+    data[i + 1] = value;
+    data[i + 2] = value;
+  }
+  ctx.putImageData(imageData, 0, 0);
+}
+
 /**
  * 영역 안의 글자 토큰을 원본 이미지 좌표의 중심점과 함께 읽는다(방 라벨용).
  * 방마다 따로 한 줄 OCR을 돌리면 큰 방의 bbox에 다른 방 글자까지 들어와 뒤섞인다.
  * 한 번에 읽고 위치로 방에 배정하는 편이 정확하고 빠르다.
  */
-export async function readTextTokens(worker: TesseractWorker, source: CanvasImageSource, rect: CropRect, upscale: number): Promise<OcrTextToken[]> {
+export async function readTextTokens(
+  worker: TesseractWorker,
+  source: CanvasImageSource,
+  rect: CropRect,
+  upscale: number,
+  options: ReadTextOptions = {}
+): Promise<OcrTextToken[]> {
   await worker.setParameters({ tessedit_pageseg_mode: PSM.SPARSE_TEXT, tessedit_char_whitelist: "" });
   const canvas = upscaleRegion(source, rect, upscale);
+  if (options.binarizeBelow !== undefined) binarizeCanvas(canvas, options.binarizeBelow);
   const { data } = await worker.recognize(canvas, {}, { blocks: true });
 
   const tokens: OcrTextToken[] = [];

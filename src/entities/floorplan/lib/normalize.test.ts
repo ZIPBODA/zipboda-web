@@ -240,6 +240,33 @@ describe("normalizeModel", () => {
   });
 });
 
+describe("checkReachability 예외", () => {
+  const rect = (x: number, z: number, w: number, d: number) => [
+    { x, z },
+    { x: x + w, z },
+    { x: x + w, z: z + d },
+    { x, z: z + d }
+  ];
+
+  it("문이 없는 반침은 수납이라 도달 불가로 잡지 않는다", () => {
+    const model = twoRoomModel();
+    model.rooms.push({ id: "closet", label: "반침", polygon: rect(3000, 0, 1500, 450) });
+    expect(checkReachability(model)).toEqual([]);
+  });
+
+  it("1.5㎡ 이하의 이름 없는 방은 PS·설비 공간으로 보고 묻지 않는다", () => {
+    const model = twoRoomModel();
+    model.rooms.push({ id: "ps", label: "기타", polygon: rect(3600, 0, 900, 1000) });
+    expect(checkReachability(model)).toEqual([]);
+  });
+
+  it("1.5㎡를 넘는 이름 없는 방은 여전히 도달 불가로 잡는다", () => {
+    const model = twoRoomModel();
+    model.rooms.push({ id: "unknown", label: "기타", polygon: rect(2500, 0, 2000, 1500) });
+    expect(checkReachability(model).map((f) => f.code)).toEqual(["unreachable-room"]);
+  });
+});
+
 describe("checkReachability 출발점", () => {
   it("현관이 없으면 가장 넓은 방에서 도달성을 본다", () => {
     const model = twoRoomModel();

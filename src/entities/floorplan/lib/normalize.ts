@@ -1,5 +1,7 @@
 import {
   AREA_EXCLUDED_LABELS,
+  REACHABILITY_EXEMPT_LABELS,
+  REACHABILITY_EXEMPT_UNLABELED_MAX_M2,
   AREA_TOLERANCE,
   AUTO_ACCEPT_CONFIDENCE,
   CONFIDENCE_PENALTY,
@@ -348,8 +350,15 @@ export function checkReachability(model: FloorplanModel2D): NormalizeFlag[] {
   }
 
   return model.rooms
-    .filter((r) => isAreaCounted(r) && !visited.has(r.id))
+    .filter((r) => isAreaCounted(r) && needsReachability(r) && !visited.has(r.id))
     .map((r) => ({ code: "unreachable-room" as const, detail: `${r.label}(${r.id}) 도달 불가` }));
+}
+
+/** 수납·설비 공간은 사람이 드나드는 문이 없어도 정상이다 */
+function needsReachability(room: Room2D): boolean {
+  if (REACHABILITY_EXEMPT_LABELS.includes(room.label)) return false;
+  const isSmallUnlabeled = room.label === "기타" && polygonAreaMm2(room.polygon) / 1_000_000 <= REACHABILITY_EXEMPT_UNLABELED_MAX_M2;
+  return !isSmallUnlabeled;
 }
 
 export function computeConfidence(flags: NormalizeFlag[]): number {

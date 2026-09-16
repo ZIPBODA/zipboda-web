@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { detectWallOpenings, sealMaskBorder, sealWallGaps, wallTouchesEdge } from "./openings";
+import { detectWallOpenings, paintWallCenterlines, sealMaskBorder, sealWallGaps, wallTouchesEdge } from "./openings";
 import type { WallSegmentPx } from "../model/types";
 
 const h = (x1: number, x2: number, y: number, t = 10): WallSegmentPx => ({ a: { x: x1, y }, b: { x: x2, y }, thicknessPx: t });
@@ -33,10 +33,10 @@ describe("detectWallOpenings", () => {
     expect(walls.every((w) => w.openings.length === 0)).toBe(true);
   });
 
-  it("최소 폭 미만의 빈 구간은 노이즈로 보고 개구부로 잡지 않는다", () => {
-    const walls = detectWallOpenings([h(0, 99, 50), h(105, 199, 50)], MIN, MAX);
-    expect(walls).toHaveLength(2);
-    expect(walls.every((w) => w.openings.length === 0)).toBe(true);
+  it("최소 폭 미만의 빈 구간은 개구부가 아니라 벽 끊김이라 한 벽으로 잇는다", () => {
+    const walls = detectWallOpenings([h(0, 99, 50), h(110, 299, 50)], MIN, MAX);
+    expect(walls).toHaveLength(1);
+    expect(walls[0].openings).toEqual([]);
   });
 
   it("맞닿거나 겹치는 세그먼트는 개구부 없이 하나로 잇는다", () => {
@@ -159,6 +159,19 @@ describe("sealWallGaps 두께 있는 외벽", () => {
   });
 });
 
+describe("sealWallGaps 어긋난 조각", () => {
+  it("중심선이 몇 px 어긋난 두 조각 사이도 축선을 그어 막는다", () => {
+    const mask = { data: new Uint8Array(200 * 100), width: 200, height: 100 };
+    // 왼쪽 조각 y=50(두께 20), 오른쪽 조각 y=44(두께 8) — 몸통이 겹치지 않아 x=100 근처가 뚫린다
+    const sealed = sealWallGaps(mask, [h(0, 99, 50, 20), h(100, 199, 44, 8)], 150, 0);
+    const at = (x: number, y: number) => sealed.data[y * 200 + x] === 1;
+    // 이어 붙인 벽의 중앙선(두 조각 중앙값) 위로 끝에서 끝까지 이어진다
+    const line = [44, 50].find((y) => at(0, y) && at(199, y));
+    expect(line).toBeDefined();
+    for (let x = 0; x < 200; x++) expect(at(x, line as number)).toBe(true);
+  });
+});
+
 describe("sealMaskBorder", () => {
   it("테두리를 벽으로 막아 플러드필이 빠져나가지 못하게 한다", () => {
     const mask = { data: new Uint8Array(10 * 8), width: 10, height: 8 };
@@ -171,6 +184,16 @@ describe("sealMaskBorder", () => {
     expect(at(5, 4)).toBe(false);
   });
 
+  it("띠 두께를 주면 그만큼 안쪽까지 막는다", () => {
+    const mask = { data: new Uint8Array(10 * 8), width: 10, height: 8 };
+    const sealed = sealMaskBorder(mask, 3);
+    const at = (x: number, y: number) => sealed.data[y * 10 + x] === 1;
+    expect(at(2, 4)).toBe(true);
+    expect(at(3, 4)).toBe(false);
+    expect(at(5, 5)).toBe(true);
+    expect(at(5, 4)).toBe(false);
+  });
+
   it("원본은 바꾸지 않는다", () => {
     const mask = { data: new Uint8Array(6 * 6), width: 6, height: 6 };
     sealMaskBorder(mask);
@@ -178,3 +201,22 @@ describe("sealMaskBorder", () => {
   });
 });
 
+describe("paintWallCenterlines", () => {
+  it("중심선을 1px로 그리고 양 끝을 늘려 맞닿은 벽에 닿게 한다", () => {
+    const mask = { data: new Uint8Array(20 * 10), width: 20, height: 10 };
+    const painted = paintWallCenterlines(mask, [h(5, 10, 4)], 2);
+    const at = (x: number, y: number) => painted.data[y * 20 + x] === 1;
+    expect(at(3, 4)).toBe(true);
+    expect(at(12, 4)).toBe(true);
+    expect(at(2, 4)).toBe(false);
+    expect(at(13, 4)).toBe(false);
+    expect(at(7, 3)).toBe(false);
+    expect(at(7, 5)).toBe(false);
+  });
+
+  it("원본은 바꾸지 않는다", () => {
+    const mask = { data: new Uint8Array(20 * 10), width: 20, height: 10 };
+    paintWallCenterlines(mask, [v(0, 9, 5)], 1);
+    expect(mask.data.every((value) => value === 0)).toBe(true);
+  });
+});

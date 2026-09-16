@@ -17,7 +17,8 @@ export {
   WINDOW_SILL_M,
   WINDOW_TOP_M,
   MM_PER_M,
-  ENTRANCE_LABEL
+  ENTRANCE_LABEL,
+  REACHABILITY_EXEMPT_UNLABELED_MAX_M2
 } from "./config/constants";
 export { resolveCollision, type SceneSegment } from "./lib/scene";
 export {

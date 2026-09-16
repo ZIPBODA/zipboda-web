@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { dilateMask, erodeMask, openMask, subtractMask } from "./maskOps";
+import { borderComponentMask, dilateMask, erodeMask, openMask, subtractMask } from "./maskOps";
 import type { MaskImage } from "../model/types";
 
 const make = (w: number, h: number, on: (x: number, y: number) => boolean): MaskImage => {
@@ -82,5 +82,32 @@ describe("dilateMask", () => {
     const dilated = dilateMask(mask, 2);
     expect(at(dilated, 10, 12)).toBe(true);
     expect(at(dilated, 10, 13)).toBe(false);
+  });
+});
+
+describe("borderComponentMask", () => {
+  const build = (rows: string[]): MaskImage => ({
+    width: rows[0].length,
+    height: rows.length,
+    data: Uint8Array.from(rows.join("").split("").map((c) => (c === "#" ? 1 : 0)))
+  });
+  const render = (mask: MaskImage) =>
+    Array.from({ length: mask.height }, (_, y) =>
+      Array.from({ length: mask.width }, (_, x) => (mask.data[y * mask.width + x] === 1 ? "#" : ".")).join("")
+    );
+
+  it("테두리에 닿은 덩어리만 남기고 안쪽 덩어리는 버린다", () => {
+    const mask = build([
+      "#####",
+      "#....",
+      "#.##.",
+      "#.##.",
+      "....."
+    ]);
+    expect(render(borderComponentMask(mask))).toEqual(["#####", "#....", "#....", "#....", "....."]);
+  });
+
+  it("벽이 없으면 빈 마스크를 돌려준다", () => {
+    expect(render(borderComponentMask(build([".."])))).toEqual([".."]);
   });
 });

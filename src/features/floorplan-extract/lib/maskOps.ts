@@ -54,3 +54,38 @@ export function subtractMask(base: MaskImage, remove: MaskImage): MaskImage {
   return out;
 }
 
+/**
+ * 크롭 테두리에 닿는 연결 성분만 남긴다.
+ * 크롭은 유닛 외곽선이라 테두리에 닿은 굵은 덩어리는 장식 그림이 아니라 건물 외피(외벽)다.
+ */
+export function borderComponentMask(mask: MaskImage): MaskImage {
+  const { width, height, data } = mask;
+  const out: MaskImage = { data: new Uint8Array(width * height), width, height };
+  const stack: number[] = [];
+  const push = (index: number) => {
+    if (data[index] !== 1 || out.data[index] === 1) return;
+    out.data[index] = 1;
+    stack.push(index);
+  };
+
+  for (let x = 0; x < width; x++) {
+    push(x);
+    push((height - 1) * width + x);
+  }
+  for (let y = 0; y < height; y++) {
+    push(y * width);
+    push(y * width + width - 1);
+  }
+
+  while (stack.length) {
+    const index = stack.pop();
+    if (index === undefined) break;
+    const x = index % width;
+    const y = (index - x) / width;
+    if (x > 0) push(index - 1);
+    if (x < width - 1) push(index + 1);
+    if (y > 0) push(index - width);
+    if (y < height - 1) push(index + width);
+  }
+  return out;
+}

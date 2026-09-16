@@ -10,11 +10,11 @@ const input = (): AssembleInput => ({
   chainMm: [2000, 2500],
   exclusiveAreaM2: 27,
   segments: [
-    { a: { x: 0, y: 1 }, b: { x: 449, y: 1 }, thicknessPx: 3 },
-    { a: { x: 448, y: 0 }, b: { x: 448, y: 599 }, thicknessPx: 3 },
-    { a: { x: 0, y: 598 }, b: { x: 449, y: 598 }, thicknessPx: 3 },
-    { a: { x: 1, y: 0 }, b: { x: 1, y: 599 }, thicknessPx: 3 },
-    { a: { x: 200, y: 3 }, b: { x: 200, y: 596 }, thicknessPx: 2 }
+    { a: { x: 0, y: 1 }, b: { x: 449, y: 1 }, thicknessPx: 15 },
+    { a: { x: 448, y: 0 }, b: { x: 448, y: 599 }, thicknessPx: 15 },
+    { a: { x: 0, y: 598 }, b: { x: 449, y: 598 }, thicknessPx: 15 },
+    { a: { x: 1, y: 0 }, b: { x: 1, y: 599 }, thicknessPx: 15 },
+    { a: { x: 200, y: 3 }, b: { x: 200, y: 596 }, thicknessPx: 12 }
   ],
   regions: [
     { id: "region-0", bbox: { minX: 3, minY: 3, maxX: 198, maxY: 596 }, polygon: [], areaPx: 1, touchesBorder: false },
@@ -49,7 +49,7 @@ describe("assembleModel", () => {
     const interior = model.walls.filter((w) => !w.exterior);
     expect(exterior).toHaveLength(4);
     expect(interior).toHaveLength(1);
-    expect(interior[0]).toMatchObject({ a: { x: 2000, z: 30 }, b: { x: 2000, z: 5960 }, thicknessMm: 20 });
+    expect(interior[0]).toMatchObject({ a: { x: 2000, z: 30 }, b: { x: 2000, z: 5960 }, thicknessMm: 120 });
   });
 
   it("치수 체인이 있으면 scale.source를 dimension-chain으로, 인쇄 정보를 기록한다", () => {
@@ -81,8 +81,8 @@ describe("assembleModel 개구부", () => {
     const base = input();
     base.segments = base.segments.filter((s) => !(s.a.x === 200 && s.b.x === 200));
     base.segments.push(
-      { a: { x: 200, y: 3 }, b: { x: 200, y: 299 }, thicknessPx: 2 },
-      { a: { x: 200, y: 390 }, b: { x: 200, y: 596 }, thicknessPx: 2 }
+      { a: { x: 200, y: 3 }, b: { x: 200, y: 299 }, thicknessPx: 12 },
+      { a: { x: 200, y: 390 }, b: { x: 200, y: 596 }, thicknessPx: 12 }
     );
     return base;
   };
@@ -117,8 +117,8 @@ describe("assembleModel 개구부", () => {
     // 하단 외벽(y=598)을 x 150~330px(=1800mm) 비움
     base.segments = base.segments.filter((s) => !(s.a.y === 598 && s.b.y === 598));
     base.segments.push(
-      { a: { x: 0, y: 598 }, b: { x: 149, y: 598 }, thicknessPx: 3 },
-      { a: { x: 330, y: 598 }, b: { x: 449, y: 598 }, thicknessPx: 3 }
+      { a: { x: 0, y: 598 }, b: { x: 149, y: 598 }, thicknessPx: 15 },
+      { a: { x: 330, y: 598 }, b: { x: 449, y: 598 }, thicknessPx: 15 }
     );
     const model = assembleModel(base);
     const windows = model.openings.filter((o) => o.type === "window");
@@ -132,12 +132,27 @@ describe("assembleModel 개구부", () => {
     // 좌측 외벽(x=1)을 y 100~190px(=900mm) 비움 — 현관(region-0) 옆
     base.segments = base.segments.filter((s) => !(s.a.x === 1 && s.b.x === 1));
     base.segments.push(
-      { a: { x: 1, y: 0 }, b: { x: 1, y: 99 }, thicknessPx: 3 },
-      { a: { x: 1, y: 190 }, b: { x: 1, y: 599 }, thicknessPx: 3 }
+      { a: { x: 1, y: 0 }, b: { x: 1, y: 99 }, thicknessPx: 15 },
+      { a: { x: 1, y: 190 }, b: { x: 1, y: 599 }, thicknessPx: 15 }
     );
     const model = assembleModel(base);
-    const entrance = model.openings.find((o) => o.wallId === model.walls.find((w) => w.a.x === 10 && w.exterior)?.id);
+    const leftWall = model.walls.find((w) => w.exterior && w.a.x === w.b.x && w.a.x < 100);
+    const entrance = model.openings.find((o) => o.wallId === leftWall?.id);
     expect(entrance?.type).toBe("door");
+  });
+
+  it("현관 방이 없어도 '현관' 글자 근처의 좁은 외벽 개구부는 현관문으로 본다", () => {
+    const base = input();
+    // 상단 외벽(y=1)을 x 150~239px(=900mm) 비움. 현관 방은 없고 글자만 그 아래 60px(600mm)에 있다
+    base.segments = base.segments.filter((s) => !(s.a.y === 1 && s.b.y === 1));
+    base.segments.push(
+      { a: { x: 0, y: 1 }, b: { x: 149, y: 1 }, thicknessPx: 15 },
+      { a: { x: 240, y: 1 }, b: { x: 449, y: 1 }, thicknessPx: 15 }
+    );
+    base.entranceHints = [{ x: 195, y: 60 }];
+    const model = assembleModel(base);
+    const topWall = model.walls.find((w) => w.exterior && w.a.z === w.b.z && w.a.z < 100);
+    expect(model.openings.find((o) => o.wallId === topWall?.id)?.type).toBe("door");
   });
 
   it("개구부가 없으면 빈 배열", () => {
@@ -174,5 +189,78 @@ describe("assembleModel 방 폴리곤", () => {
   it("윤곽이 없으면 bbox 사각형으로 되돌린다", () => {
     const model = assembleModel(input());
     expect(model.rooms[0].polygon).toHaveLength(4);
+  });
+});
+
+describe("assembleModel 가구 윤곽 제외", () => {
+  it("벽으로 보기에 너무 가는 선은 벽으로 만들지 않는다", () => {
+    const base = input();
+    // 10mm/px 기준 두께 3px = 30mm — 침대·가구 윤곽 수준
+    base.segments = [...base.segments, { a: { x: 50, y: 300 }, b: { x: 250, y: 300 }, thicknessPx: 3 }];
+    const model = assembleModel(base);
+    expect(model.walls.every((w) => w.thicknessMm >= 100)).toBe(true);
+  });
+
+  it("가는 선 때문에 개구부가 생기지 않는다", () => {
+    const base = input();
+    base.segments = [
+      { a: { x: 0, y: 100 }, b: { x: 99, y: 100 }, thicknessPx: 2 },
+      { a: { x: 200, y: 100 }, b: { x: 300, y: 100 }, thicknessPx: 2 }
+    ];
+    expect(assembleModel(base).openings).toEqual([]);
+  });
+
+  it("두꺼운 실제 벽은 그대로 남긴다", () => {
+    const model = assembleModel(input());
+    expect(model.walls.length).toBeGreaterThan(0);
+  });
+});
+
+describe("assembleModel 벽 두께 경계", () => {
+  it("외벽은 두께를 300mm로 자르고 중심선을 외곽선에 붙인다", () => {
+    const base = input();
+    // 우측 외벽이 단열·마감까지 60px(=600mm) 덩어리로 읽힌 경우
+    base.segments = base.segments.filter((s) => !(s.a.x === 448 && s.b.x === 448));
+    base.segments.push({ a: { x: 400, y: 0 }, b: { x: 400, y: 599 }, thicknessPx: 60 });
+    const model = assembleModel(base);
+    const right = model.walls.find((w) => w.exterior && w.a.x === w.b.x && w.a.x > 4000);
+    expect(right?.thicknessMm).toBe(300);
+    // 크롭 폭 450px → 마지막 픽셀 449, 두께 30px의 절반 15 → 중심선 434px = 4340mm
+    expect(right?.a.x).toBe(4340);
+  });
+
+  it("400mm를 넘는 실내 덩어리는 벽이 아니다", () => {
+    const base = input();
+    base.segments.push({ a: { x: 100, y: 300 }, b: { x: 300, y: 300 }, thicknessPx: 50 });
+    const model = assembleModel(base);
+    expect(model.walls.some((w) => w.thicknessMm === 500)).toBe(false);
+  });
+});
+
+describe("assembleModel 벽 길이", () => {
+  it("500mm보다 짧은 벽 토막은 버린다", () => {
+    const base = input();
+    base.segments.push({ a: { x: 100, y: 300 }, b: { x: 130, y: 300 }, thicknessPx: 12 });
+    const model = assembleModel(base);
+    expect(model.walls.some((w) => w.a.z === 3000 && w.b.z === 3000)).toBe(false);
+  });
+
+  it("작은 틈으로 끊긴 조각은 이어 붙인 뒤 길이를 본다", () => {
+    const base = input();
+    // 35px(350mm) 조각 두 개가 5px 틈을 두고 이어짐 → 한 벽 750mm
+    base.segments.push({ a: { x: 100, y: 300 }, b: { x: 134, y: 300 }, thicknessPx: 12 }, { a: { x: 140, y: 300 }, b: { x: 174, y: 300 }, thicknessPx: 12 });
+    const model = assembleModel(base);
+    const joined = model.walls.find((w) => w.a.z === 3000 && w.b.z === 3000);
+    expect(joined).toBeDefined();
+    expect(Math.abs(joined!.b.x - joined!.a.x)).toBe(740);
+  });
+});
+
+describe("assembleModel 설비 공간", () => {
+  it("이름 없는 1.5㎡ 이하 영역은 방으로 세우지 않는다", () => {
+    const base = input();
+    base.regions.push({ id: "region-ps", bbox: { minX: 400, minY: 3, maxX: 446, maxY: 60 }, polygon: [], areaPx: 1, touchesBorder: false });
+    const model = assembleModel(base);
+    expect(model.rooms).toHaveLength(2);
   });
 });

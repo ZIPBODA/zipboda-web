@@ -15,12 +15,24 @@ const NEIGHBORS = [
  * 이미지 가장자리에 닿는 성분은 외부 배경이므로 표시만 하고 호출 측에서 제외한다.
  */
 export function findRoomRegions(wallMask: MaskImage, minAreaRatio = ROOM_MIN_AREA_RATIO): RoomRegion[] {
+  return labelRoomRegions(wallMask, minAreaRatio).regions;
+}
+
+export interface LabeledRegions {
+  regions: RoomRegion[];
+  /** 픽셀마다 속한 영역의 인덱스(regions 배열 기준). 벽·너무 작은 성분은 -1 */
+  owner: Int32Array;
+}
+
+/** findRoomRegions와 같되, 어느 픽셀이 어느 방인지도 돌려준다 */
+export function labelRoomRegions(wallMask: MaskImage, minAreaRatio = ROOM_MIN_AREA_RATIO): LabeledRegions {
   const { width, height, data } = wallMask;
   const visited = new Uint8Array(width * height);
   // 영역 번호를 기록해 두면 윤곽 추적에서 "이 픽셀이 이 방인가"를 바로 물을 수 있다
   const labels = new Int32Array(width * height).fill(-1);
   const minArea = width * height * minAreaRatio;
   const regions: RoomRegion[] = [];
+  const owner = new Int32Array(width * height).fill(-1);
   const stack: number[] = [];
 
   for (let seed = 0; seed < data.length; seed++) {
@@ -67,6 +79,7 @@ export function findRoomRegions(wallMask: MaskImage, minAreaRatio = ROOM_MIN_ARE
     if (areaPx >= minArea) {
       const inRegion = (x: number, y: number) =>
         0 <= x && x < width && 0 <= y && y < height && labels[y * width + x] === label;
+      for (let i = 0; i < labels.length; i++) if (labels[i] === label) owner[i] = regions.length;
       regions.push({
         id: `region-${label}`,
         bbox: { minX, minY, maxX, maxY },
@@ -77,7 +90,7 @@ export function findRoomRegions(wallMask: MaskImage, minAreaRatio = ROOM_MIN_ARE
       });
     }
   }
-  return regions;
+  return { regions, owner };
 }
 
 export const interiorRegions = (regions: RoomRegion[]): RoomRegion[] => regions.filter((r) => !r.touchesBorder);

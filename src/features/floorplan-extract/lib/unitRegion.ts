@@ -9,6 +9,11 @@ export interface UnitRegionOptions {
   maxFillRatio: number;
   /** 이미지 대비 bbox 면적 하한 */
   minAreaRatio: number;
+  /**
+   * 굵은 획만 남긴 마스크(열림 결과). 있으면 덩어리 점수와 bbox를 이 픽셀로 잡는다.
+   * 도면은 굵은 벽 획이 많고 표·글자·단지배치도는 가는 선이라 여기서 갈린다.
+   */
+  core?: MaskImage;
 }
 
 interface Component {
@@ -66,6 +71,19 @@ function labelComponents(counts: Int32Array, cols: number, rows: number): number
   return groups;
 }
 
+/** 덩어리에 속한 칸 안의 실제 벽 픽셀 수 */
+function massInCells(mask: MaskImage, cells: number[], cols: number, cellPx: number): number {
+  let mass = 0;
+  for (const cell of cells) {
+    const x0 = (cell % cols) * cellPx;
+    const y0 = Math.floor(cell / cols) * cellPx;
+    const x1 = Math.min(x0 + cellPx, mask.width);
+    const y1 = Math.min(y0 + cellPx, mask.height);
+    for (let y = y0; y < y1; y++) for (let x = x0; x < x1; x++) if (mask.data[y * mask.width + x] === 1) mass++;
+  }
+  return mass;
+}
+
 /** 덩어리에 속한 칸 안의 실제 벽 픽셀로 정확한 bbox를 잡는다(격자 해상도 오차 제거) */
 function preciseBBox(mask: MaskImage, cells: number[], cols: number, cellPx: number): CropRect | null {
   let minX = mask.width;
@@ -95,27 +113,29 @@ function preciseBBox(mask: MaskImage, cells: number[], cols: number, cellPx: num
  * 벽 마스크에서 유닛(도면) 영역을 찾는다.
  * 카탈로그 페이지에는 제목 글자·표·단지배치도가 섞여 있어 단순히 가장 큰 윤곽을 잡으면 엉뚱한 곳이 걸린다.
  * 벽은 문·창에서 끊기므로 윤곽 하나로 이어지지도 않는다.
- * 그래서 격자로 묶어 끊긴 벽을 한 덩어리로 만든 뒤, 속이 찬 덩어리(글자·막대)를 걸러내고 가장 넓은 것을 고른다.
+ * 그래서 격자로 묶어 끊긴 벽을 한 덩어리로 만든 뒤, 속이 찬 덩어리(글자·막대)를 걸러내고
+ * 굵은 획(벽)이 가장 많은 것을 고른다. bbox도 굵은 획으로 잡아 치수선·인출선이 크롭을 넓히지 않게 한다.
+ * (bbox 면적으로 고르면 헤더 막대가 있는 면적표가 도면보다 커서 뽑히는 일이 있었다)
  */
 export function findUnitRegion(mask: MaskImage, options: UnitRegionOptions): CropRect | null {
   if (mask.width === 0 || mask.height === 0) return null;
   const { counts, cols, rows } = buildOccupancy(mask, options.cellPx);
   const imageArea = mask.width * mask.height;
+  const core = options.core ?? mask;
 
   const candidates: Component[] = [];
   for (const cells of labelComponents(counts, cols, rows)) {
-    const bbox = preciseBBox(mask, cells, cols, options.cellPx);
+    const bbox = preciseBBox(core, cells, cols, options.cellPx) ?? preciseBBox(mask, cells, cols, options.cellPx);
     if (bbox === null) continue;
     const mass = cells.reduce((sum, cell) => sum + counts[cell], 0);
     const bboxArea = bbox.width * bbox.height;
     const fillRatio = mass / bboxArea;
     const bigEnough = bboxArea / imageArea >= options.minAreaRatio;
     const sparseEnough = options.minFillRatio <= fillRatio && fillRatio <= options.maxFillRatio;
-    if (bigEnough && sparseEnough) candidates.push({ bbox, mass, fillRatio });
+    if (bigEnough && sparseEnough) candidates.push({ bbox, mass: massInCells(core, cells, cols, options.cellPx), fillRatio });
   }
 
   if (candidates.length === 0) return null;
-  // 면적이 같으면 벽 픽셀이 많은 쪽 — 도면은 글자보다 획이 많다
-  candidates.sort((p, q) => q.bbox.width * q.bbox.height - p.bbox.width * p.bbox.height || q.mass - p.mass);
+  candidates.sort((p, q) => q.mass - p.mass || q.bbox.width * q.bbox.height - p.bbox.width * p.bbox.height);
   return candidates[0].bbox;
 }

@@ -75,16 +75,42 @@ export interface CropRect {
   height: number;
 }
 
-/** Worker가 반환하는 기하 결과. 좌표는 crop 기준 px */
-export interface GeometryResult {
+/** 작업 해상도 프레임 — 크롭을 WORKING_MM_PER_PX로 다시 샘플링한 결과의 크기와 실제 mm/px */
+export interface WorkingFrame {
+  width: number;
+  height: number;
+  mmPerPx: number;
+  /** 이 프레임에서 검정 잉크로 판정한 밝기 상한 */
+  inkGray: number;
+  /** 어두운 픽셀(벽 후보) 상한. 글자 재OCR 때 무늬 바닥을 지우는 이진화 기준 — 가는 글자는 안티에일리어싱으로 잉크보다 밝게 찍힌다 */
+  darkGray: number;
+}
+
+/**
+ * Worker가 반환하는 벽 기하. 세그먼트·마스크 좌표는 작업 프레임 px.
+ * 방 분할은 여기에 넣지 않는다 — 가구 윤곽과 벽을 두께(mm)로 가르려면 스케일을 먼저 알아야 한다.
+ */
+export interface WallGeometry {
+  /** 원본 이미지 기준 유닛 크롭(px) — 검수 오버레이가 이 자리에 결과를 겹쳐 그린다 */
   crop: CropRect;
+  working: WorkingFrame;
   segments: WallSegmentPx[];
+  mask: MaskImage;
+  /** 작업 해상도로 샘플링한 크롭 RGBA — 바닥 색 경계를 찾는 데 쓴다 */
+  image: RgbaImage;
+}
+
+/** 벽 기하 + 스케일을 안 뒤 나눈 방 영역(작업 프레임 px) */
+export interface GeometryResult extends WallGeometry {
   regions: RoomRegion[];
 }
 
-export type GeometryWorkerRequest = { type: "geometry"; imageData: ImageData };
+export type GeometryWorkerRequest =
+  | { type: "crop"; imageData: ImageData }
+  | { type: "walls"; imageData: ImageData; crop: CropRect; mmPerPx: number };
 
 export type GeometryWorkerResponse =
   | { type: "progress"; progress: ExtractProgress }
-  | { type: "geometry"; result: GeometryResult }
+  | { type: "crop"; crop: CropRect }
+  | { type: "walls"; result: WallGeometry }
   | { type: "error"; message: string };

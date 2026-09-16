@@ -42,6 +42,10 @@ export const OPEN_PASSAGE_MIN_MM = 600;
 export const AUTO_ACCEPT_CONFIDENCE = 0.85;
 /** 전용면적·타일링 검증에서 제외하는 방(전용면적표에 미포함) */
 export const AREA_EXCLUDED_LABELS: RoomLabel[] = ["발코니"];
+/** 도달성 검증에서 제외하는 방 — 반침은 벽 개구부가 아니라 미닫이·접이문으로 여는 수납이다 */
+export const REACHABILITY_EXEMPT_LABELS: RoomLabel[] = ["반침"];
+/** 이름 없는 방이 이 면적(㎡) 이하면 PS·실외기실 같은 설비 공간으로 보고 도달성을 묻지 않는다 */
+export const REACHABILITY_EXEMPT_UNLABELED_MAX_M2 = 1.5;
 export const ENTRANCE_LABEL: RoomLabel = "현관";
 export const CONFIDENCE_PENALTY: Record<NormalizeFlagCode, number> = {
   "scale-mismatch": 0.15,

@@ -9,13 +9,13 @@ const twoRoomWithDoor = (): AssembleInput => ({
   scaleSource: "dimension-chain",
   chainMm: [2000, 2500],
   segments: [
-    { a: { x: 0, y: 1 }, b: { x: 449, y: 1 }, thicknessPx: 3 },
-    { a: { x: 448, y: 0 }, b: { x: 448, y: 599 }, thicknessPx: 3 },
-    { a: { x: 0, y: 598 }, b: { x: 449, y: 598 }, thicknessPx: 3 },
-    { a: { x: 1, y: 0 }, b: { x: 1, y: 599 }, thicknessPx: 3 },
+    { a: { x: 0, y: 1 }, b: { x: 449, y: 1 }, thicknessPx: 15 },
+    { a: { x: 448, y: 0 }, b: { x: 448, y: 599 }, thicknessPx: 15 },
+    { a: { x: 0, y: 598 }, b: { x: 449, y: 598 }, thicknessPx: 15 },
+    { a: { x: 1, y: 0 }, b: { x: 1, y: 599 }, thicknessPx: 15 },
     // 중앙 벽 — y 300~389px 구간이 문
-    { a: { x: 200, y: 3 }, b: { x: 200, y: 299 }, thicknessPx: 2 },
-    { a: { x: 200, y: 390 }, b: { x: 200, y: 596 }, thicknessPx: 2 }
+    { a: { x: 200, y: 3 }, b: { x: 200, y: 299 }, thicknessPx: 12 },
+    { a: { x: 200, y: 390 }, b: { x: 200, y: 596 }, thicknessPx: 12 }
   ],
   regions: [
     { id: "region-0", bbox: { minX: 3, minY: 3, maxX: 198, maxY: 596 }, polygon: [], areaPx: 1, touchesBorder: false },
@@ -34,7 +34,7 @@ describe("추출 조립 → 정규화 파이프라인", () => {
     const input = twoRoomWithDoor();
     // 중앙 벽을 문 없이 이어 붙인다
     input.segments = input.segments.filter((s) => !(s.a.x === 200 && s.b.x === 200));
-    input.segments.push({ a: { x: 200, y: 3 }, b: { x: 200, y: 596 }, thicknessPx: 2 });
+    input.segments.push({ a: { x: 200, y: 3 }, b: { x: 200, y: 596 }, thicknessPx: 12 });
     const result = normalizeModel(assembleModel(input));
     expect(result.flags.map((f) => f.code)).toContain("no-doors");
   });
