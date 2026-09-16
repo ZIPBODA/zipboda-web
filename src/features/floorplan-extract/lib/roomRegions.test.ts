@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { findRoomRegions, interiorRegions } from "./roomRegions";
+import { labelRoomRegions, findRoomRegions, interiorRegions } from "./roomRegions";
 import type { MaskImage } from "../model/types";
 
 function makeMask(width: number, height: number, paint: (x: number, y: number) => boolean): MaskImage {
@@ -37,5 +37,27 @@ describe("findRoomRegions", () => {
   it("최소 면적 비율 미만의 작은 구멍은 버린다", () => {
     const mask = makeMask(40, 30, (x, y) => !(10 <= x && x <= 11 && 10 <= y && y <= 11));
     expect(findRoomRegions(mask, 0.01)).toHaveLength(0);
+  });
+});
+
+describe("labelRoomRegions", () => {
+  it("픽셀별 소속 영역을 함께 돌려준다", () => {
+    const width = 20;
+    const height = 10;
+    const data = new Uint8Array(width * height);
+    for (let y = 0; y < height; y++) data[y * width + 10] = 1;
+    for (let x = 0; x < width; x++) {
+      data[x] = 1;
+      data[(height - 1) * width + x] = 1;
+    }
+    for (let y = 0; y < height; y++) {
+      data[y * width] = 1;
+      data[y * width + width - 1] = 1;
+    }
+    const { regions, owner } = labelRoomRegions({ data, width, height }, 0.01);
+    expect(regions).toHaveLength(2);
+    expect(owner[5 * width + 5]).toBe(0);
+    expect(owner[5 * width + 15]).toBe(1);
+    expect(owner[5 * width + 10]).toBe(-1);
   });
 });

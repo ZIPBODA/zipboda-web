@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import type { FloorplanModel2D, PointMm } from "@/entities/floorplan";
 import { extractFloorplan, type ExtractOutput, type ExtractProgress } from "@/features/floorplan-extract";
-import { DEFAULT_IMAGE_URL, OVERLAY_COLOR, OVERLAY_LABEL_FONT_PX, OVERLAY_STROKE_PX, PERCENT, STAGE_LABELS } from "../config/constants";
+import { DEFAULT_IMAGE_URL, MODEL_FILE_NAME, OVERLAY_COLOR, OVERLAY_LABEL_FONT_PX, OVERLAY_STROKE_PX, PERCENT, STAGE_LABELS } from "../config/constants";
 
 const parseOptionalNumber = (value: string): number | undefined => {
   const n = Number(value);
@@ -15,10 +15,12 @@ interface Props {
   onModelChange?: (model: FloorplanModel2D | null) => void;
   /** 결과 섹션 옆에 붙일 미리보기 슬롯(위젯 간 직접 의존 대신 composition) */
   preview?: ReactNode;
+  /** 이미지 로드 직후 추출을 한 번 자동 실행(dev 검증 자동화용) */
+  autoRun?: boolean;
 }
 
 // 도면 이미지에서 자동 추출한 2D 모델을 원본 위에 겹쳐 확인하고 JSON으로 내보내는 검수 화면(dev)
-export function FloorplanReviewEditor({ onModelChange, preview }: Props) {
+export function FloorplanReviewEditor({ onModelChange, preview, autoRun = false }: Props) {
   const imgRef = useRef<HTMLImageElement>(null);
   const [imageUrl, setImageUrl] = useState(DEFAULT_IMAGE_URL);
   const [natural, setNatural] = useState<{ w: number; h: number } | null>(null);
@@ -52,6 +54,36 @@ export function FloorplanReviewEditor({ onModelChange, preview }: Props) {
     } finally {
       setRunning(false);
     }
+  };
+
+  // 캐시된 이미지는 React가 붙기 전에 로드가 끝나 onLoad가 오지 않는다 — 완료 상태를 직접 확인해 버튼이 잠기지 않게 한다
+  useEffect(() => {
+    const image = imgRef.current;
+    if (!image || !image.complete || image.naturalWidth === 0) return;
+    setNatural({ w: image.naturalWidth, h: image.naturalHeight });
+  }, [imageUrl]);
+
+  const runRef = useRef(run);
+  runRef.current = run;
+  const autoRanRef = useRef(false);
+
+  // 이미지가 준비되면 1회만 자동 실행. 수동 조작과 충돌하지 않도록 실행 여부를 ref로 고정한다
+  useEffect(() => {
+    if (!autoRun || autoRanRef.current || natural === null) return;
+    autoRanRef.current = true;
+    void runRef.current();
+  }, [autoRun, natural]);
+
+  // 검수 통과한 모델을 파일로 내려받아 저장소 자산으로 쓴다(뷰어는 저장된 모델만 읽는다)
+  const downloadModel = () => {
+    if (!model) return;
+    const blob = new Blob([JSON.stringify(model, null, 2)], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = MODEL_FILE_NAME;
+    link.click();
+    URL.revokeObjectURL(url);
   };
 
   const onFile = (file: File | undefined) => {
@@ -128,6 +160,17 @@ export function FloorplanReviewEditor({ onModelChange, preview }: Props) {
           />
           {natural && model && toPx && (
             <svg width={natural.w} height={natural.h} className="pointer-events-none absolute left-0 top-0">
+              {/* 치수 숫자를 찾는 영역 — 여기서 못 읽으면 스케일이 추정값으로 떨어진다 */}
+              <rect
+                x={output.dimension.band.x}
+                y={output.dimension.band.y}
+                width={output.dimension.band.width}
+                height={output.dimension.band.height}
+                fill="none"
+                stroke={OVERLAY_COLOR.band}
+                strokeWidth={OVERLAY_STROKE_PX.crop}
+                strokeDasharray="3 5"
+              />
               <rect
                 x={output.geometry.crop.x}
                 y={output.geometry.crop.y}
@@ -167,6 +210,34 @@ export function FloorplanReviewEditor({ onModelChange, preview }: Props) {
                   />
                 );
               })}
+              {output.labelTokens.map((token, i) => {
+                const p = toPx({ x: token.center.x * model.scale.mmPerPx, z: token.center.y * model.scale.mmPerPx });
+                return <circle key={`t-${i}`} cx={p.x} cy={p.y} r={OVERLAY_STROKE_PX.opening} fill={OVERLAY_COLOR.token} />;
+              })}
+              {model.openings.map((opening, i) => {
+                const wall = model.walls.find((w) => w.id === opening.wallId);
+                if (!wall) return null;
+                const length = Math.hypot(wall.b.x - wall.a.x, wall.b.z - wall.a.z);
+                if (length === 0) return null;
+                const at = (mm: number) => {
+                  const t = mm / length;
+                  return toPx({ x: wall.a.x + (wall.b.x - wall.a.x) * t, z: wall.a.z + (wall.b.z - wall.a.z) * t });
+                };
+                const s0 = at(opening.offsetMm);
+                const s1 = at(opening.offsetMm + opening.widthMm);
+                return (
+                  <line
+                    key={`${opening.wallId}-${i}`}
+                    x1={s0.x}
+                    y1={s0.y}
+                    x2={s1.x}
+                    y2={s1.y}
+                    stroke={opening.type === "door" ? OVERLAY_COLOR.door : OVERLAY_COLOR.window}
+                    strokeWidth={OVERLAY_STROKE_PX.opening}
+                    strokeLinecap="round"
+                  />
+                );
+              })}
             </svg>
           )}
         </div>
@@ -193,11 +264,22 @@ export function FloorplanReviewEditor({ onModelChange, preview }: Props) {
               ))}
             </ul>
             <div className="mt-2 text-fg-muted">
-              방 {model?.rooms.length} · 벽 {model?.walls.length} · 개구부 {model?.openings.length}
+              라벨 OCR: {output.labelTokens.length === 0 ? "읽은 글자 없음" : output.labelTokens.map((t) => t.text).join(" · ")}
+            </div>
+            <div className="mt-1 text-fg-muted">
+              치수 OCR: {output.dimension.numbers.length === 0 ? "읽은 숫자 없음" : output.dimension.numbers.map((n) => n.value).join(", ")}
+            </div>
+            <div className="mt-1 text-fg-muted">
+              방 {model?.rooms.length} · 벽 {model?.walls.length} · 문 {model?.openings.filter((o) => o.type === "door").length} · 창 {model?.openings.filter((o) => o.type === "window").length}
             </div>
           </div>
           <div className="rounded border border-line p-3">
-            <div className="font-semibold text-fg-heading">모델 JSON (FloorplanModel2D)</div>
+            <div className="flex items-center justify-between">
+              <span className="font-semibold text-fg-heading">모델 JSON (FloorplanModel2D)</span>
+              <button type="button" onClick={downloadModel} className="rounded border border-line px-2.5 py-1 font-medium text-fg-heading">
+                모델 저장
+              </button>
+            </div>
             <textarea readOnly value={exportJson} className="mt-2 h-64 w-full rounded border border-line p-2 font-mono text-xs" />
           </div>
           {preview && (

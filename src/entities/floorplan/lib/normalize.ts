@@ -1,5 +1,7 @@
 import {
   AREA_EXCLUDED_LABELS,
+  REACHABILITY_EXEMPT_LABELS,
+  REACHABILITY_EXEMPT_UNLABELED_MAX_M2,
   AREA_TOLERANCE,
   AUTO_ACCEPT_CONFIDENCE,
   CONFIDENCE_PENALTY,
@@ -92,12 +94,28 @@ export function validateScale(model: FloorplanModel2D): NormalizeFlag[] {
   return flags;
 }
 
+/**
+ * 방 면적 합과 인쇄 전용면적을 견준다.
+ *
+ * 전용면적은 발코니를 뺀 값이라, 발코니를 알아봐야 같은 기준으로 비교할 수 있다.
+ * 그런데 방 이름이 인쇄되지 않은 도면도 있고, 작은 글씨라 OCR이 놓치기도 한다.
+ * 그럴 때 합계에는 발코니가 섞여 들어가므로 "많다"는 이유로 걸면 거짓 경고가 된다.
+ * 그래서 제외 대상 이름을 하나도 못 읽었으면 "모자란다"만 본다.
+ * 넘치는 쪽은 tiling 검사(커버리지 상한·겹침)가 이미 잡는다.
+ */
 export function validateArea(model: FloorplanModel2D): NormalizeFlag[] {
   const printed = model.printed.exclusiveAreaM2;
   if (printed === undefined) return [];
+
   const sum = model.rooms.filter(isAreaCounted).reduce((acc, r) => acc + roomArea(r), 0);
-  const deviation = Math.abs(sum - printed) / printed;
-  return deviation > AREA_TOLERANCE ? [{ code: "area-mismatch", detail: `방 합 ${sum.toFixed(2)}㎡ vs 전용 ${printed}㎡` }] : [];
+  const knowsExcludedRooms = model.rooms.some((room) => !isAreaCounted(room));
+  const shortfall = (printed - sum) / printed;
+  const tooLittle = shortfall > AREA_TOLERANCE;
+  const tooMuch = knowsExcludedRooms && (sum - printed) / printed > AREA_TOLERANCE;
+
+  if (!tooLittle && !tooMuch) return [];
+  const basis = knowsExcludedRooms ? "" : " (발코니 등 제외 대상을 못 읽어 부족분만 검사)";
+  return [{ code: "area-mismatch", detail: `방 합 ${sum.toFixed(2)}㎡ vs 전용 ${printed}㎡${basis}` }];
 }
 
 /** 직교 폴리곤이 x 구간(midX 기준)에서 덮는 z 구간들 — 수평 변과의 교차 z를 정렬해 짝지음 */
@@ -311,7 +329,12 @@ export function checkReachability(model: FloorplanModel2D): NormalizeFlag[] {
     }
   }
 
-  const entrance = model.rooms.find((r) => r.label === ENTRANCE_LABEL) ?? model.rooms[0];
+  // 현관을 못 읽었으면 가장 넓은 방에서 출발한다. 첫 번째 방은 구석 조각일 수 있어 기준이 되지 못한다
+  const largest = model.rooms.reduce<Room2D | null>(
+    (best, room) => (best === null || polygonAreaMm2(room.polygon) > polygonAreaMm2(best.polygon) ? room : best),
+    null
+  );
+  const entrance = model.rooms.find((r) => r.label === ENTRANCE_LABEL) ?? largest;
   if (!entrance) return [];
   const visited = new Set<string>([entrance.id]);
   const queue = [entrance.id];
@@ -327,8 +350,15 @@ export function checkReachability(model: FloorplanModel2D): NormalizeFlag[] {
   }
 
   return model.rooms
-    .filter((r) => isAreaCounted(r) && !visited.has(r.id))
+    .filter((r) => isAreaCounted(r) && needsReachability(r) && !visited.has(r.id))
     .map((r) => ({ code: "unreachable-room" as const, detail: `${r.label}(${r.id}) 도달 불가` }));
+}
+
+/** 수납·설비 공간은 사람이 드나드는 문이 없어도 정상이다 */
+function needsReachability(room: Room2D): boolean {
+  if (REACHABILITY_EXEMPT_LABELS.includes(room.label)) return false;
+  const isSmallUnlabeled = room.label === "기타" && polygonAreaMm2(room.polygon) / 1_000_000 <= REACHABILITY_EXEMPT_UNLABELED_MAX_M2;
+  return !isSmallUnlabeled;
 }
 
 export function computeConfidence(flags: NormalizeFlag[]): number {

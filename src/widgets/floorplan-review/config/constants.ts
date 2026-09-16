@@ -20,9 +20,15 @@ export const OVERLAY_COLOR = {
   roomFill: "rgba(255, 186, 23, 0.15)",
   exteriorWall: "#111111",
   interiorWall: "#6A7282",
-  label: "#111111"
+  label: "#111111",
+  door: "#00BC7D",
+  window: "#2B7FFF",
+  band: "#F59E0B",
+  token: "#FF6467"
 } as const;
 
-export const OVERLAY_STROKE_PX = { crop: 2, exteriorWall: 4, interiorWall: 3, room: 1.5 } as const;
+export const OVERLAY_STROKE_PX = { crop: 2, exteriorWall: 4, interiorWall: 3, room: 1.5, opening: 5 } as const;
 export const OVERLAY_LABEL_FONT_PX = 12;
 export const PERCENT = 100;
+/** 내려받은 모델 파일명 — entities/floorplan의 목 자산과 같은 이름으로 맞춘다 */
+export const MODEL_FILE_NAME = "fp-test2.model2d.json";

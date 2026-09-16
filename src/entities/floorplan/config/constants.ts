@@ -26,7 +26,13 @@ export const NORMALIZE_GRID_MM = 50;
 export const POINT_MERGE_TOLERANCE_MM = 20;
 export const SCALE_TOLERANCE = 0.02;
 export const AREA_TOLERANCE = 0.05;
-export const TILING_MIN_COVERAGE = 0.9;
+/**
+ * 방 폴리곤이 외곽을 얼마나 채워야 하는지. 추출된 방은 벽과 설비 그림(발코니 난간·욕실
+ * 기구·주방 가구)을 뺀 빈 공간이라 인쇄 면적을 그대로 채울 수 없다.
+ * 실측(test2.jpg): 여섯 공간을 모두 찾은 정상 추출이 74%, 크롭이 어긋난 실패가 1~9%였다.
+ * 초기값 0.9는 사람이 작성한 이상적인 모델을 전제한 값이라 실제 추출에서는 늘 걸렸다.
+ */
+export const TILING_MIN_COVERAGE = 0.6;
 export const TILING_MAX_COVERAGE = 1.02;
 export const TILING_OVERLAP_TOLERANCE_MM2 = 50_000;
 export const OPENING_LENGTH_TOLERANCE_MM = 20;
@@ -36,6 +42,10 @@ export const OPEN_PASSAGE_MIN_MM = 600;
 export const AUTO_ACCEPT_CONFIDENCE = 0.85;
 /** 전용면적·타일링 검증에서 제외하는 방(전용면적표에 미포함) */
 export const AREA_EXCLUDED_LABELS: RoomLabel[] = ["발코니"];
+/** 도달성 검증에서 제외하는 방 — 반침은 벽 개구부가 아니라 미닫이·접이문으로 여는 수납이다 */
+export const REACHABILITY_EXEMPT_LABELS: RoomLabel[] = ["반침"];
+/** 이름 없는 방이 이 면적(㎡) 이하면 PS·실외기실 같은 설비 공간으로 보고 도달성을 묻지 않는다 */
+export const REACHABILITY_EXEMPT_UNLABELED_MAX_M2 = 1.5;
 export const ENTRANCE_LABEL: RoomLabel = "현관";
 export const CONFIDENCE_PENALTY: Record<NormalizeFlagCode, number> = {
   "scale-mismatch": 0.15,
