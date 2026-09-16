@@ -1,3 +1,14 @@
+/** next/constants의 같은 이름 상수값. ESM 설정 파일에서는 next 서브경로를 import할 수 없다(exports 맵 없음) */
+const PHASE_DEVELOPMENT_SERVER = "phase-development-server";
+
+const PAGE_EXTENSIONS = ["tsx", "ts", "jsx", "js"];
+/**
+ * 개발 전용 화면은 `page.dev.tsx`로 둔다.
+ * 운영 빌드에서는 이 확장자를 페이지로 인정하지 않아 라우트도 번들도 생기지 않는다 —
+ * 내부 도구(도면 트레이싱 등)는 로그인 검사가 없어 배포되면 주소만 알면 누구나 열 수 있다.
+ */
+const DEV_PAGE_EXTENSIONS = ["dev.tsx"];
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
@@ -12,4 +23,7 @@ const nextConfig = {
   }
 };
 
-export default nextConfig;
+export default (phase) => ({
+  ...nextConfig,
+  pageExtensions: phase === PHASE_DEVELOPMENT_SERVER ? [...PAGE_EXTENSIONS, ...DEV_PAGE_EXTENSIONS] : PAGE_EXTENSIONS
+});
