@@ -27,7 +27,8 @@ export interface BBox {
   maxZ: number;
 }
 
-export const snapToGrid = (value: number, gridMm = NORMALIZE_GRID_MM): number => Math.round(value / gridMm) * gridMm;
+// `|| 0`은 -0을 0으로 — 음수 좌표를 반올림하면 -0이 나와 좌표 비교가 어긋난다
+export const snapToGrid = (value: number, gridMm = NORMALIZE_GRID_MM): number => Math.round(value / gridMm) * gridMm || 0;
 
 const distance = (a: PointMm, b: PointMm) => Math.hypot(b.x - a.x, b.z - a.z);
 

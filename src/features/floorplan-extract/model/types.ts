@@ -1,10 +1,6 @@
-import type { RoomLabel } from "@/entities/floorplan";
+import type { MaskImage, PointPx, RoomLabel, RoomRegion } from "@/entities/floorplan";
 
-/** 이미지 픽셀 좌표(좌상단 원점) */
-export interface PointPx {
-  x: number;
-  y: number;
-}
+export type { PointPx, MaskImage, RoomRegion } from "@/entities/floorplan";
 
 /** RGBA 픽셀 버퍼(ImageData와 같은 모양). 바닥 색으로 방 경계를 찾을 때 쓴다 */
 export interface RgbaImage {
@@ -13,26 +9,10 @@ export interface RgbaImage {
   height: number;
 }
 
-/** 이진 마스크. 1=벽(또는 대상), 0=배경. row-major */
-export interface MaskImage {
-  data: Uint8Array;
-  width: number;
-  height: number;
-}
-
 export interface WallSegmentPx {
   a: PointPx;
   b: PointPx;
   thicknessPx: number;
-}
-
-export interface RoomRegion {
-  id: string;
-  bbox: { minX: number; minY: number; maxX: number; maxY: number };
-  /** 영역의 실제 윤곽(크롭 px, 픽셀 모서리 기준). bbox로는 ㄱ자 방의 면적이 부풀어 방끼리 겹친다 */
-  polygon: PointPx[];
-  areaPx: number;
-  touchesBorder: boolean;
 }
 
 export interface OcrNumberToken {

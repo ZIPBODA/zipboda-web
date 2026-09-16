@@ -1,5 +1,5 @@
-import { ROOM_MIN_AREA_RATIO } from "../config/constants";
-import type { MaskImage, RoomRegion } from "../model/types";
+import { DOUGLAS_PEUCKER_EPSILON_PX, ROOM_MIN_AREA_RATIO } from "../config/constants";
+import type { LabeledRegions, MaskImage, RoomRegion } from "../model/types";
 import { traceRegionOutline } from "./regionOutline";
 import { simplifyPolyline } from "./douglasPeucker";
 
@@ -18,14 +18,15 @@ export function findRoomRegions(wallMask: MaskImage, minAreaRatio = ROOM_MIN_ARE
   return labelRoomRegions(wallMask, minAreaRatio).regions;
 }
 
-export interface LabeledRegions {
-  regions: RoomRegion[];
-  /** 픽셀마다 속한 영역의 인덱스(regions 배열 기준). 벽·너무 작은 성분은 -1 */
-  owner: Int32Array;
-}
-
-/** findRoomRegions와 같되, 어느 픽셀이 어느 방인지도 돌려준다 */
-export function labelRoomRegions(wallMask: MaskImage, minAreaRatio = ROOM_MIN_AREA_RATIO): LabeledRegions {
+/**
+ * findRoomRegions와 같되, 어느 픽셀이 어느 방인지도 돌려준다.
+ * simplifyEpsilonPx=0이면 윤곽을 단순화하지 않는다 — 격자에 정렬된 마스크(수기 트레이서)는 꼭짓점을 잃으면 안 된다
+ */
+export function labelRoomRegions(
+  wallMask: MaskImage,
+  minAreaRatio = ROOM_MIN_AREA_RATIO,
+  simplifyEpsilonPx = DOUGLAS_PEUCKER_EPSILON_PX
+): LabeledRegions {
   const { width, height, data } = wallMask;
   const visited = new Uint8Array(width * height);
   // 영역 번호를 기록해 두면 윤곽 추적에서 "이 픽셀이 이 방인가"를 바로 물을 수 있다
@@ -34,6 +35,8 @@ export function labelRoomRegions(wallMask: MaskImage, minAreaRatio = ROOM_MIN_AR
   const regions: RoomRegion[] = [];
   const owner = new Int32Array(width * height).fill(-1);
   const stack: number[] = [];
+  // 성분마다 새 번호를 준다. 면적 미달로 버린 성분의 번호를 다음 성분이 물려받으면 그 픽셀까지 같은 방으로 읽힌다
+  let nextLabel = 0;
 
   for (let seed = 0; seed < data.length; seed++) {
     const isFreeUnvisited = data[seed] === 0 && visited[seed] === 0;
@@ -43,10 +46,10 @@ export function labelRoomRegions(wallMask: MaskImage, minAreaRatio = ROOM_MIN_AR
     let minY = height;
     let maxX = -1;
     let maxY = -1;
-    let areaPx = 0;
     let touchesBorder = false;
+    const pixels: number[] = [];
 
-    const label = regions.length;
+    const label = nextLabel++;
     visited[seed] = 1;
     labels[seed] = label;
     stack.push(seed);
@@ -55,7 +58,7 @@ export function labelRoomRegions(wallMask: MaskImage, minAreaRatio = ROOM_MIN_AR
       if (idx === undefined) break;
       const x = idx % width;
       const y = (idx - x) / width;
-      areaPx++;
+      pixels.push(idx);
       minX = Math.min(minX, x);
       minY = Math.min(minY, y);
       maxX = Math.max(maxX, x);
@@ -76,15 +79,16 @@ export function labelRoomRegions(wallMask: MaskImage, minAreaRatio = ROOM_MIN_AR
       }
     }
 
+    const areaPx = pixels.length;
     if (areaPx >= minArea) {
       const inRegion = (x: number, y: number) =>
         0 <= x && x < width && 0 <= y && y < height && labels[y * width + x] === label;
-      for (let i = 0; i < labels.length; i++) if (labels[i] === label) owner[i] = regions.length;
+      for (const idx of pixels) owner[idx] = regions.length;
       regions.push({
-        id: `region-${label}`,
+        id: `region-${regions.length}`,
         bbox: { minX, minY, maxX, maxY },
         // 픽셀 단위 윤곽은 계단처럼 들쭉날쭉하다 — 단순화해 꼭짓점만 남긴다(정규화가 직교로 스냅한다)
-        polygon: simplifyPolyline(traceRegionOutline(inRegion, minX, minY, maxX, maxY)),
+        polygon: simplifyPolyline(traceRegionOutline(inRegion, minX, minY, maxX, maxY), simplifyEpsilonPx),
         areaPx,
         touchesBorder
       });

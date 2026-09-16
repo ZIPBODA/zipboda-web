@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import type { FloorplanModel2D } from "@/entities/floorplan";
-import { buildScene, clampWallsToHeight, polygonCentroid, solidSpans, yawTowards } from "./buildScene";
+import { buildScene, clampWallsToHeight, solidSpans, yawTowards } from "./buildScene";
 
 const rect = (x: number, z: number, w: number, d: number) => [
   { x, z },
@@ -49,25 +49,6 @@ describe("clampWallsToHeight", () => {
       expect(w.height).toBeCloseTo(1.2);
       expect(w.yCenter).toBeCloseTo(0.6);
     }
-  });
-});
-
-describe("polygonCentroid", () => {
-  it("L자 폴리곤의 면적 가중 중심을 계산한다", () => {
-    const c = polygonCentroid([
-      { x: 0, z: 0 },
-      { x: 2, z: 0 },
-      { x: 2, z: 1 },
-      { x: 1, z: 1 },
-      { x: 1, z: 2 },
-      { x: 0, z: 2 }
-    ]);
-    expect(c.x).toBeCloseTo(5 / 6);
-    expect(c.z).toBeCloseTo(5 / 6);
-  });
-
-  it("퇴화 폴리곤은 bbox 중심으로 대체한다", () => {
-    expect(polygonCentroid([{ x: 0, z: 0 }, { x: 4, z: 0 }])).toEqual({ x: 2, z: 0 });
   });
 });
 

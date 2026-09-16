@@ -38,6 +38,16 @@ describe("findRoomRegions", () => {
     const mask = makeMask(40, 30, (x, y) => !(10 <= x && x <= 11 && 10 <= y && y <= 11));
     expect(findRoomRegions(mask, 0.01)).toHaveLength(0);
   });
+
+  it("버린 작은 성분의 픽셀이 다음 방에 섞이지 않는다", () => {
+    // 왼쪽 방 안에 1px 티끌(벽으로 둘러싸임)을 두어 면적 미달 성분이 먼저 나오게 한다
+    const mask = twoRoomMask();
+    for (const [x, y] of [[4, 4], [6, 4], [5, 3], [5, 5]]) mask.data[y * 40 + x] = 1;
+    const { regions, owner } = labelRoomRegions(mask, 0.01);
+    expect(regions).toHaveLength(2);
+    expect(owner[4 * 40 + 5]).toBe(-1);
+    expect(owner[20 * 40 + 30]).toBe(regions.findIndex((r) => r.bbox.minX === 21));
+  });
 });
 
 describe("labelRoomRegions", () => {

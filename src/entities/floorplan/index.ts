@@ -18,9 +18,17 @@ export {
   WINDOW_TOP_M,
   MM_PER_M,
   ENTRANCE_LABEL,
-  REACHABILITY_EXEMPT_UNLABELED_MAX_M2
+  REACHABILITY_EXEMPT_UNLABELED_MAX_M2,
+  NORMALIZE_GRID_MM,
+  POINT_MERGE_TOLERANCE_MM,
+  ROOM_MIN_AREA_RATIO,
+  DOUGLAS_PEUCKER_EPSILON_PX
 } from "./config/constants";
 export { resolveCollision, type SceneSegment } from "./lib/scene";
+export { findRoomRegions, labelRoomRegions, interiorRegions } from "./lib/roomRegions";
+export { traceRegionOutline, type RegionTest } from "./lib/regionOutline";
+export { simplifyPolyline } from "./lib/douglasPeucker";
+export { pointInPolygon, polygonCentroid, polygonInteriorPoint } from "./lib/polygon";
 export {
   normalizeModel,
   snapToGrid,
@@ -47,6 +55,10 @@ export type {
   FloorplanViewMode,
   Viewpoint,
   PointMm,
+  PointPx,
+  MaskImage,
+  RoomRegion,
+  LabeledRegions,
   RoomLabel,
   Room2D,
   Wall2D,

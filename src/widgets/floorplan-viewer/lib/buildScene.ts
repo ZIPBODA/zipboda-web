@@ -7,6 +7,7 @@ import {
   WINDOW_TOP_M,
   polygonAreaMm2,
   polygonBBox,
+  polygonCentroid,
   type FloorplanModel2D,
   type Opening2D,
   type PointMm,
@@ -156,26 +157,6 @@ function openingSpan(opening: Opening2D): Span {
   return { start, end: start + opening.widthMm / MM_PER_M };
 }
 
-/** 면적 가중 무게중심(shoelace). 퇴화 폴리곤은 bbox 중심으로 대체 */
-export function polygonCentroid(polygon: PointMm[]): PointMm {
-  let twiceArea = 0;
-  let cx = 0;
-  let cz = 0;
-  for (let i = 0; i < polygon.length; i++) {
-    const p = polygon[i];
-    const q = polygon[(i + 1) % polygon.length];
-    const cross = p.x * q.z - q.x * p.z;
-    twiceArea += cross;
-    cx += (p.x + q.x) * cross;
-    cz += (p.z + q.z) * cross;
-  }
-  if (twiceArea === 0) {
-    const box = polygonBBox(polygon);
-    return { x: (box.minX + box.maxX) / 2, z: (box.minZ + box.maxZ) / 2 };
-  }
-  const factor = 1 / (3 * twiceArea);
-  return { x: cx * factor, z: cz * factor };
-}
 
 /** three.js 카메라 yaw — 전방 벡터 (-sin yaw, -cos yaw)가 (dx, dz)를 향하도록 */
 export function yawTowards(dx: number, dz: number): number {
