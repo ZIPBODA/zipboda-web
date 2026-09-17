@@ -40,4 +40,6 @@ export const BOUNDARY_TOGGLE_KEY = "b";
 /** 작업 파일 형식 번호. 문서 모양이 바뀌면 올려서 옛 파일을 조용히 잘못 읽지 않게 한다 */
 export const TRACE_FILE_VERSION = 1;
 export const DEFAULT_TRACE_NAME = "floorplan";
+/** 도면별 임시 보관 키 앞자락. 다른 프로젝트·기능과 겹치지 않게 접두사를 둔다 */
+export const DRAFT_STORAGE_PREFIX = "zipboda:trace-draft:";
 export const CALIBRATION_POINTS = 2;

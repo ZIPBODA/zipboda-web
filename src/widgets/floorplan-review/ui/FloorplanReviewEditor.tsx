@@ -7,11 +7,16 @@ import {
   BOUNDARY_TOGGLE_KEY,
   OPENING_PRESETS,
   TOOL_SHORTCUTS,
+  TRACE_FILE_VERSION,
+  clearDraft,
   defaultNameFromImage,
   documentFromModel,
   emptyDocument,
+  loadDraft,
   parseTraceFile,
-  useTraceEditor
+  saveDraft,
+  useTraceEditor,
+  type TraceDraft
 } from "@/features/floorplan-trace";
 import { DEFAULT_IMAGE_URL, MAX_ZOOM, MIN_ZOOM, PERCENT, STAGE_LABELS, ZOOM_STEPS } from "../config/constants";
 import { TraceCanvas } from "./TraceCanvas";
@@ -42,9 +47,32 @@ export function FloorplanReviewEditor({ onModelChange, preview, autoRun = false 
   const [error, setError] = useState("");
   const [running, setRunning] = useState(false);
   const [zoom, setZoom] = useState(1);
+  const [savedWork, setSavedWork] = useState<TraceDraft | null>(null);
   const viewportRef = useRef<HTMLDivElement>(null);
   const editor = useTraceEditor();
   const { document, ui, dispatch } = editor;
+
+  // 새로 고침 한 번에 몇 십 분 작업이 날아가지 않게 그리는 동안 브라우저에 남긴다(보관은 작업 저장 파일이 맡는다)
+  useEffect(() => {
+    if (document.walls.length === 0 && document.labelAnchors.length === 0) return;
+    saveDraft({ version: TRACE_FILE_VERSION, name, imageUrl, document });
+  }, [document, name, imageUrl]);
+
+  useEffect(() => {
+    setSavedWork(loadDraft(imageUrl));
+  }, [imageUrl]);
+
+  const restoreSavedWork = () => {
+    if (!savedWork) return;
+    if (savedWork.file.name !== "") setName(savedWork.file.name);
+    dispatch({ type: "LOAD_DOCUMENT", document: savedWork.file.document });
+  };
+  const discardSavedWork = () => {
+    clearDraft(imageUrl);
+    setSavedWork(null);
+  };
+  // 그리기 시작하면 안내가 스스로 사라진다 — 되살릴 것이 남아 있을 때만 보인다
+  const showSavedWork = savedWork !== null && document.walls.length === 0;
 
   // 큰 스캔(2,000px대)은 컨테이너를 넘치므로 처음엔 폭에 맞춰 보여 준다
   useEffect(() => {
@@ -200,6 +228,20 @@ export function FloorplanReviewEditor({ onModelChange, preview, autoRun = false 
         )}
       </div>
       {error && <div className="mt-2 rounded border border-status-error/40 bg-surface-secondary px-3 py-2 text-status-error">{error}</div>}
+
+      {showSavedWork && savedWork && (
+        <div className="mt-2 flex flex-wrap items-center gap-2 rounded border border-brand/50 bg-surface-secondary px-3 py-2">
+          <span className="text-fg-body">
+            이어서 하던 작업이 있습니다 · {new Date(savedWork.savedAt).toLocaleString("ko-KR")} · 벽 {savedWork.file.document.walls.length}개
+          </span>
+          <button type="button" onClick={restoreSavedWork} className="rounded bg-brand px-2.5 py-1 font-bold text-brand-on">
+            불러오기
+          </button>
+          <button type="button" onClick={discardSavedWork} className="rounded border border-line px-2.5 py-1 text-fg-heading">
+            버리기
+          </button>
+        </div>
+      )}
 
       <div className="mt-3 flex flex-wrap items-center gap-2">
         <TraceToolbar

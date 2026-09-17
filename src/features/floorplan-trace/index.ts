@@ -1,6 +1,7 @@
 export { useTraceEditor } from "./model/useTraceEditor";
 export { documentFromModel, emptyDocument } from "./lib/documentFromModel";
 export { serializeTraceFile, parseTraceFile, sanitizeFileName, defaultNameFromImage } from "./lib/documentFile";
+export { saveDraft, loadDraft, clearDraft, type TraceDraft } from "./lib/draftStorage";
 export { deriveLayout } from "./lib/deriveLayout";
 export { resolveRoomLabels, roomAt } from "./lib/labelAnchors";
 export { createProjection } from "./lib/projection";
