@@ -1,5 +1,5 @@
 import Image from "next/image";
-import icon from "@/shared/assets/brand/icon.png";
+import icon from "@/shared/assets/brand/icon-logo.png";
 
 // figma 419:11103·419:11183 모바일 인증 브랜드 로고(아이콘 + 집보다)
 export function AuthBrandLogo() {
