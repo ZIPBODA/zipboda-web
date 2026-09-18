@@ -10,11 +10,12 @@ const VARIANT_CLASS = {
 } as const;
 
 interface Props {
-  dday: number;
+  dday: number | null;
   variant?: keyof typeof VARIANT_CLASS;
 }
 
 export function DdayBadge({ dday, variant = "tile" }: Props) {
+  if (dday === null) return null;
   const urgent = dday <= DDAY_URGENT_THRESHOLD;
   const tone =
     variant === "tag"

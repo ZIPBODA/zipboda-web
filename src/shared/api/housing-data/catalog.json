@@ -1,0 +1,2862 @@
+[
+  {
+    "id": "gangnam-gaepo",
+    "title": "강남개포동(T&K개포)",
+    "address": "서울특별시 강남구 논현로12길 23-5(개포동,T&K개포) T&K개포",
+    "agency": "LH",
+    "households": 13,
+    "housingType": "도시형생활주택",
+    "sourcePdf": "/reference/현황도_강남구_개포동_논현로12길23-5_T&K개포.pdf",
+    "sourceSha256": "f466f08ae52368ccc6cfe93f764088cc4eb8c727a09d02bc541ecc00141a0f32",
+    "image": "/housing/gangnam-gaepo/exterior.png",
+    "layouts": [
+      {
+        "layoutKey": "gangnam-gaepo-2-3-01",
+        "unitKey": "gangnam-gaepo-2-3-01",
+        "floor": "2-3",
+        "unit": "01",
+        "type": null,
+        "exclusiveAreaM2": 28.81,
+        "balconyAreaM2": null,
+        "page": 2,
+        "cropPolygon": [
+          [
+            179,
+            413
+          ],
+          [
+            274,
+            413
+          ],
+          [
+            274,
+            493
+          ],
+          [
+            317,
+            493
+          ],
+          [
+            317,
+            639
+          ],
+          [
+            179,
+            639
+          ]
+        ],
+        "calibration": [
+          3000,
+          86
+        ],
+        "image2dUrl": "/housing/gangnam-gaepo/gangnam-gaepo-2-3-01.png",
+        "modelStatus": "pending-review",
+        "issue": null,
+        "mmPerPx": 11.337209302325581
+      },
+      {
+        "layoutKey": "gangnam-gaepo-2-3-02",
+        "unitKey": "gangnam-gaepo-2-3-02",
+        "floor": "2-3",
+        "unit": "02",
+        "type": null,
+        "exclusiveAreaM2": 31.99,
+        "balconyAreaM2": null,
+        "page": 2,
+        "cropPolygon": [
+          [
+            179,
+            325
+          ],
+          [
+            394,
+            325
+          ],
+          [
+            394,
+            499
+          ],
+          [
+            268,
+            499
+          ],
+          [
+            268,
+            423
+          ],
+          [
+            179,
+            423
+          ]
+        ],
+        "calibration": [
+          3000,
+          86
+        ],
+        "image2dUrl": "/housing/gangnam-gaepo/gangnam-gaepo-2-3-02.png",
+        "modelStatus": "pending-review",
+        "issue": null,
+        "mmPerPx": 11.337209302325581
+      },
+      {
+        "layoutKey": "gangnam-gaepo-2-3-03",
+        "unitKey": "gangnam-gaepo-2-3-03",
+        "floor": "2-3",
+        "unit": "03",
+        "type": null,
+        "exclusiveAreaM2": 31.99,
+        "balconyAreaM2": null,
+        "page": 2,
+        "cropPolygon": [
+          [
+            389,
+            325
+          ],
+          [
+            600,
+            325
+          ],
+          [
+            600,
+            423
+          ],
+          [
+            505,
+            423
+          ],
+          [
+            505,
+            499
+          ],
+          [
+            389,
+            499
+          ]
+        ],
+        "calibration": [
+          3000,
+          86
+        ],
+        "image2dUrl": "/housing/gangnam-gaepo/gangnam-gaepo-2-3-03.png",
+        "modelStatus": "pending-review",
+        "issue": null,
+        "mmPerPx": 11.337209302325581
+      },
+      {
+        "layoutKey": "gangnam-gaepo-2-3-04",
+        "unitKey": "gangnam-gaepo-2-3-04",
+        "floor": "2-3",
+        "unit": "04",
+        "type": null,
+        "exclusiveAreaM2": 28.81,
+        "balconyAreaM2": null,
+        "page": 2,
+        "cropPolygon": [
+          [
+            505,
+            413
+          ],
+          [
+            600,
+            413
+          ],
+          [
+            600,
+            639
+          ],
+          [
+            460,
+            639
+          ],
+          [
+            460,
+            493
+          ],
+          [
+            505,
+            493
+          ]
+        ],
+        "calibration": [
+          3000,
+          86
+        ],
+        "image2dUrl": "/housing/gangnam-gaepo/gangnam-gaepo-2-3-04.png",
+        "modelStatus": "pending-review",
+        "issue": null,
+        "mmPerPx": 11.337209302325581
+      },
+      {
+        "layoutKey": "gangnam-gaepo-4-401",
+        "unitKey": "gangnam-gaepo-4-401",
+        "floor": "4",
+        "unit": "401",
+        "type": null,
+        "exclusiveAreaM2": 30.76,
+        "balconyAreaM2": null,
+        "page": 2,
+        "cropPolygon": [
+          [
+            953,
+            392
+          ],
+          [
+            1048,
+            392
+          ],
+          [
+            1048,
+            493
+          ],
+          [
+            1092,
+            493
+          ],
+          [
+            1092,
+            639
+          ],
+          [
+            953,
+            639
+          ]
+        ],
+        "calibration": [
+          3000,
+          86
+        ],
+        "image2dUrl": "/housing/gangnam-gaepo/gangnam-gaepo-4-401.png",
+        "modelStatus": "pending-review",
+        "issue": null,
+        "mmPerPx": 11.337209302325581
+      },
+      {
+        "layoutKey": "gangnam-gaepo-4-402",
+        "unitKey": "gangnam-gaepo-4-402",
+        "floor": "4",
+        "unit": "402",
+        "type": null,
+        "exclusiveAreaM2": 26.99,
+        "balconyAreaM2": null,
+        "page": 2,
+        "cropPolygon": [
+          [
+            1039,
+            392
+          ],
+          [
+            1285,
+            392
+          ],
+          [
+            1285,
+            499
+          ],
+          [
+            1039,
+            499
+          ]
+        ],
+        "calibration": [
+          6000,
+          173
+        ],
+        "image2dUrl": "/housing/gangnam-gaepo/gangnam-gaepo-4-402.png",
+        "modelStatus": "pending-review",
+        "issue": null,
+        "mmPerPx": 11.271676300578035
+      },
+      {
+        "layoutKey": "gangnam-gaepo-4-403",
+        "unitKey": "gangnam-gaepo-4-403",
+        "floor": "4",
+        "unit": "403",
+        "type": null,
+        "exclusiveAreaM2": 30.76,
+        "balconyAreaM2": null,
+        "page": 2,
+        "cropPolygon": [
+          [
+            1278,
+            392
+          ],
+          [
+            1375,
+            392
+          ],
+          [
+            1375,
+            639
+          ],
+          [
+            1237,
+            639
+          ],
+          [
+            1237,
+            493
+          ],
+          [
+            1278,
+            493
+          ]
+        ],
+        "calibration": [
+          3000,
+          86
+        ],
+        "image2dUrl": "/housing/gangnam-gaepo/gangnam-gaepo-4-403.png",
+        "modelStatus": "pending-review",
+        "issue": null,
+        "mmPerPx": 11.337209302325581
+      },
+      {
+        "layoutKey": "gangnam-gaepo-5-501",
+        "unitKey": "gangnam-gaepo-5-501",
+        "floor": "5",
+        "unit": "501",
+        "type": null,
+        "exclusiveAreaM2": 31.64,
+        "balconyAreaM2": 4.24,
+        "page": 3,
+        "cropPolygon": [
+          [
+            179,
+            392
+          ],
+          [
+            395,
+            392
+          ],
+          [
+            395,
+            466
+          ],
+          [
+            318,
+            466
+          ],
+          [
+            318,
+            605
+          ],
+          [
+            179,
+            605
+          ]
+        ],
+        "calibration": [
+          6000,
+          172
+        ],
+        "image2dUrl": "/housing/gangnam-gaepo/gangnam-gaepo-5-501.png",
+        "modelStatus": "pending-review",
+        "issue": null,
+        "mmPerPx": 11.337209302325581
+      },
+      {
+        "layoutKey": "gangnam-gaepo-5-502-drawing",
+        "unitKey": "gangnam-gaepo-5-502-drawing",
+        "floor": "5",
+        "unit": "502-drawing",
+        "type": null,
+        "exclusiveAreaM2": null,
+        "balconyAreaM2": null,
+        "page": 3,
+        "cropPolygon": [
+          [
+            389,
+            392
+          ],
+          [
+            601,
+            392
+          ],
+          [
+            601,
+            605
+          ],
+          [
+            461,
+            605
+          ],
+          [
+            461,
+            466
+          ],
+          [
+            389,
+            466
+          ]
+        ],
+        "calibration": [
+          6300,
+          181
+        ],
+        "image2dUrl": "/housing/gangnam-gaepo/gangnam-gaepo-5-502-drawing.png",
+        "modelStatus": "pending-review",
+        "issue": "도면 502호 / 면적표 503호(32.91㎡, 확장 3.08㎡): 대응 미확정",
+        "mmPerPx": 11.312154696132598
+      }
+    ],
+    "issues": []
+  },
+  {
+    "id": "gangseo-hwagok",
+    "title": "강서화곡동",
+    "address": "서울특별시 강서구 초록마을로12길 20(화곡동)",
+    "agency": null,
+    "households": 9,
+    "housingType": "다가구주택",
+    "sourcePdf": "/reference/현황도_강서구_화곡동_초록마을로12길20.pdf",
+    "sourceSha256": "402c9e7306cdebef50acdcf3e009b220fe6ff6e403d59181646b2503785c120a",
+    "image": "/housing/gangseo-hwagok/exterior.png",
+    "layouts": [
+      {
+        "layoutKey": "gangseo-hwagok-2-201",
+        "unitKey": "gangseo-hwagok-2-201",
+        "floor": "2",
+        "unit": "201",
+        "type": "A",
+        "exclusiveAreaM2": 14.69,
+        "balconyAreaM2": null,
+        "page": 2,
+        "cropPolygon": [
+          [
+            191,
+            551
+          ],
+          [
+            332,
+            551
+          ],
+          [
+            332,
+            779
+          ],
+          [
+            191,
+            779
+          ]
+        ],
+        "calibration": [
+          3300,
+          122
+        ],
+        "image2dUrl": "/housing/gangseo-hwagok/gangseo-hwagok-2-201.png",
+        "modelStatus": "pending-review",
+        "issue": null,
+        "mmPerPx": 8.790983606557377
+      },
+      {
+        "layoutKey": "gangseo-hwagok-2-202",
+        "unitKey": "gangseo-hwagok-2-202",
+        "floor": "2",
+        "unit": "202",
+        "type": "A",
+        "exclusiveAreaM2": 14.69,
+        "balconyAreaM2": null,
+        "page": 2,
+        "cropPolygon": [
+          [
+            323,
+            551
+          ],
+          [
+            463,
+            551
+          ],
+          [
+            463,
+            779
+          ],
+          [
+            323,
+            779
+          ]
+        ],
+        "calibration": [
+          3300,
+          122
+        ],
+        "image2dUrl": "/housing/gangseo-hwagok/gangseo-hwagok-2-202.png",
+        "modelStatus": "pending-review",
+        "issue": null,
+        "mmPerPx": 8.790983606557377
+      },
+      {
+        "layoutKey": "gangseo-hwagok-2-203",
+        "unitKey": "gangseo-hwagok-2-203",
+        "floor": "2",
+        "unit": "203",
+        "type": "B",
+        "exclusiveAreaM2": 15.68,
+        "balconyAreaM2": null,
+        "page": 2,
+        "cropPolygon": [
+          [
+            191,
+            317
+          ],
+          [
+            331,
+            317
+          ],
+          [
+            331,
+            512
+          ],
+          [
+            191,
+            512
+          ]
+        ],
+        "calibration": [
+          3300,
+          122
+        ],
+        "image2dUrl": "/housing/gangseo-hwagok/gangseo-hwagok-2-203.png",
+        "modelStatus": "pending-review",
+        "issue": null,
+        "mmPerPx": 8.790983606557377
+      },
+      {
+        "layoutKey": "gangseo-hwagok-2-204",
+        "unitKey": "gangseo-hwagok-2-204",
+        "floor": "2",
+        "unit": "204",
+        "type": "B",
+        "exclusiveAreaM2": 15.68,
+        "balconyAreaM2": null,
+        "page": 2,
+        "cropPolygon": [
+          [
+            323,
+            317
+          ],
+          [
+            453,
+            317
+          ],
+          [
+            453,
+            512
+          ],
+          [
+            323,
+            512
+          ]
+        ],
+        "calibration": [
+          3300,
+          122
+        ],
+        "image2dUrl": "/housing/gangseo-hwagok/gangseo-hwagok-2-204.png",
+        "modelStatus": "pending-review",
+        "issue": null,
+        "mmPerPx": 8.790983606557377
+      },
+      {
+        "layoutKey": "gangseo-hwagok-2-205",
+        "unitKey": "gangseo-hwagok-2-205",
+        "floor": "2",
+        "unit": "205",
+        "type": "B",
+        "exclusiveAreaM2": 15.68,
+        "balconyAreaM2": null,
+        "page": 2,
+        "cropPolygon": [
+          [
+            444,
+            317
+          ],
+          [
+            585,
+            317
+          ],
+          [
+            585,
+            512
+          ],
+          [
+            444,
+            512
+          ]
+        ],
+        "calibration": [
+          3300,
+          122
+        ],
+        "image2dUrl": "/housing/gangseo-hwagok/gangseo-hwagok-2-205.png",
+        "modelStatus": "pending-review",
+        "issue": null,
+        "mmPerPx": 8.790983606557377
+      },
+      {
+        "layoutKey": "gangseo-hwagok-3-301",
+        "unitKey": "gangseo-hwagok-3-301",
+        "floor": "3",
+        "unit": "301",
+        "type": "A",
+        "exclusiveAreaM2": 14.69,
+        "balconyAreaM2": null,
+        "page": 2,
+        "cropPolygon": [
+          [
+            964,
+            551
+          ],
+          [
+            1105,
+            551
+          ],
+          [
+            1105,
+            779
+          ],
+          [
+            964,
+            779
+          ]
+        ],
+        "calibration": [
+          3300,
+          122
+        ],
+        "image2dUrl": "/housing/gangseo-hwagok/gangseo-hwagok-3-301.png",
+        "modelStatus": "pending-review",
+        "issue": null,
+        "mmPerPx": 8.790983606557377
+      },
+      {
+        "layoutKey": "gangseo-hwagok-3-302",
+        "unitKey": "gangseo-hwagok-3-302",
+        "floor": "3",
+        "unit": "302",
+        "type": "A",
+        "exclusiveAreaM2": 14.69,
+        "balconyAreaM2": null,
+        "page": 2,
+        "cropPolygon": [
+          [
+            1097,
+            551
+          ],
+          [
+            1238,
+            551
+          ],
+          [
+            1238,
+            779
+          ],
+          [
+            1097,
+            779
+          ]
+        ],
+        "calibration": [
+          3300,
+          122
+        ],
+        "image2dUrl": "/housing/gangseo-hwagok/gangseo-hwagok-3-302.png",
+        "modelStatus": "pending-review",
+        "issue": null,
+        "mmPerPx": 8.790983606557377
+      },
+      {
+        "layoutKey": "gangseo-hwagok-4-401",
+        "unitKey": "gangseo-hwagok-4-401",
+        "floor": "4",
+        "unit": "401",
+        "type": "A",
+        "exclusiveAreaM2": 14.69,
+        "balconyAreaM2": null,
+        "page": 3,
+        "cropPolygon": [
+          [
+            191,
+            551
+          ],
+          [
+            332,
+            551
+          ],
+          [
+            332,
+            779
+          ],
+          [
+            191,
+            779
+          ]
+        ],
+        "calibration": [
+          3300,
+          122
+        ],
+        "image2dUrl": "/housing/gangseo-hwagok/gangseo-hwagok-4-401.png",
+        "modelStatus": "pending-review",
+        "issue": null,
+        "mmPerPx": 8.790983606557377
+      },
+      {
+        "layoutKey": "gangseo-hwagok-4-402",
+        "unitKey": "gangseo-hwagok-4-402",
+        "floor": "4",
+        "unit": "402",
+        "type": "A",
+        "exclusiveAreaM2": 14.69,
+        "balconyAreaM2": null,
+        "page": 3,
+        "cropPolygon": [
+          [
+            323,
+            551
+          ],
+          [
+            464,
+            551
+          ],
+          [
+            464,
+            779
+          ],
+          [
+            323,
+            779
+          ]
+        ],
+        "calibration": [
+          3300,
+          122
+        ],
+        "image2dUrl": "/housing/gangseo-hwagok/gangseo-hwagok-4-402.png",
+        "modelStatus": "pending-review",
+        "issue": null,
+        "mmPerPx": 8.790983606557377
+      }
+    ],
+    "issues": []
+  },
+  {
+    "id": "gwanak-sillim",
+    "title": "관악신림동2",
+    "address": "서울특별시 관악구 대학2길 6(신림동)",
+    "agency": null,
+    "households": 13,
+    "housingType": "다가구주택",
+    "sourcePdf": "/reference/현황도_관악구_신림동_대학2길6.pdf",
+    "sourceSha256": "b58cb91738b171b38382249930937e23a61c5551533bc4621a1922a9b4cad894",
+    "image": "/housing/gwanak-sillim/exterior.png",
+    "layouts": [
+      {
+        "layoutKey": "gwanak-sillim-2-3-01",
+        "unitKey": "gwanak-sillim-2-3-01",
+        "floor": "2-3",
+        "unit": "01",
+        "type": "가",
+        "exclusiveAreaM2": 15.3,
+        "balconyAreaM2": null,
+        "page": 2,
+        "cropPolygon": [
+          [
+            185,
+            489
+          ],
+          [
+            307,
+            489
+          ],
+          [
+            307,
+            675
+          ],
+          [
+            185,
+            675
+          ]
+        ],
+        "calibration": [
+          3300,
+          100
+        ],
+        "image2dUrl": "/housing/gwanak-sillim/gwanak-sillim-2-3-01.png",
+        "modelStatus": "pending-review",
+        "issue": null,
+        "mmPerPx": 10.725
+      },
+      {
+        "layoutKey": "gwanak-sillim-2-3-02",
+        "unitKey": "gwanak-sillim-2-3-02",
+        "floor": "2-3",
+        "unit": "02",
+        "type": "다",
+        "exclusiveAreaM2": 17.16,
+        "balconyAreaM2": null,
+        "page": 2,
+        "cropPolygon": [
+          [
+            185,
+            332
+          ],
+          [
+            394,
+            332
+          ],
+          [
+            394,
+            445
+          ],
+          [
+            185,
+            445
+          ]
+        ],
+        "calibration": [
+          3300,
+          100
+        ],
+        "image2dUrl": "/housing/gwanak-sillim/gwanak-sillim-2-3-02.png",
+        "modelStatus": "pending-review",
+        "issue": null,
+        "mmPerPx": 10.725
+      },
+      {
+        "layoutKey": "gwanak-sillim-2-3-03",
+        "unitKey": "gwanak-sillim-2-3-03",
+        "floor": "2-3",
+        "unit": "03",
+        "type": "나",
+        "exclusiveAreaM2": 14.85,
+        "balconyAreaM2": null,
+        "page": 2,
+        "cropPolygon": [
+          [
+            381,
+            489
+          ],
+          [
+            491,
+            489
+          ],
+          [
+            491,
+            675
+          ],
+          [
+            381,
+            675
+          ]
+        ],
+        "calibration": [
+          3300,
+          100
+        ],
+        "image2dUrl": "/housing/gwanak-sillim/gwanak-sillim-2-3-03.png",
+        "modelStatus": "pending-review",
+        "issue": null,
+        "mmPerPx": 10.725
+      },
+      {
+        "layoutKey": "gwanak-sillim-2-3-04",
+        "unitKey": "gwanak-sillim-2-3-04",
+        "floor": "2-3",
+        "unit": "04",
+        "type": "나",
+        "exclusiveAreaM2": 14.85,
+        "balconyAreaM2": null,
+        "page": 2,
+        "cropPolygon": [
+          [
+            482,
+            489
+          ],
+          [
+            595,
+            489
+          ],
+          [
+            595,
+            675
+          ],
+          [
+            482,
+            675
+          ]
+        ],
+        "calibration": [
+          3300,
+          100
+        ],
+        "image2dUrl": "/housing/gwanak-sillim/gwanak-sillim-2-3-04.png",
+        "modelStatus": "pending-review",
+        "issue": null,
+        "mmPerPx": 10.725
+      },
+      {
+        "layoutKey": "gwanak-sillim-2-3-05",
+        "unitKey": "gwanak-sillim-2-3-05",
+        "floor": "2-3",
+        "unit": "05",
+        "type": "다",
+        "exclusiveAreaM2": 17.16,
+        "balconyAreaM2": null,
+        "page": 2,
+        "cropPolygon": [
+          [
+            389,
+            332
+          ],
+          [
+            595,
+            332
+          ],
+          [
+            595,
+            445
+          ],
+          [
+            389,
+            445
+          ]
+        ],
+        "calibration": [
+          3300,
+          100
+        ],
+        "image2dUrl": "/housing/gwanak-sillim/gwanak-sillim-2-3-05.png",
+        "modelStatus": "pending-review",
+        "issue": null,
+        "mmPerPx": 10.725
+      },
+      {
+        "layoutKey": "gwanak-sillim-4-401",
+        "unitKey": "gwanak-sillim-4-401",
+        "floor": "4",
+        "unit": "401",
+        "type": "라",
+        "exclusiveAreaM2": 17.64,
+        "balconyAreaM2": null,
+        "page": 2,
+        "cropPolygon": [
+          [
+            960,
+            445
+          ],
+          [
+            1027,
+            445
+          ],
+          [
+            1027,
+            488
+          ],
+          [
+            1078,
+            488
+          ],
+          [
+            1078,
+            675
+          ],
+          [
+            960,
+            675
+          ]
+        ],
+        "calibration": [
+          3300,
+          100
+        ],
+        "image2dUrl": "/housing/gwanak-sillim/gwanak-sillim-4-401.png",
+        "modelStatus": "pending-review",
+        "issue": null,
+        "mmPerPx": 10.725
+      },
+      {
+        "layoutKey": "gwanak-sillim-4-402",
+        "unitKey": "gwanak-sillim-4-402",
+        "floor": "4",
+        "unit": "402",
+        "type": "나",
+        "exclusiveAreaM2": 14.85,
+        "balconyAreaM2": null,
+        "page": 2,
+        "cropPolygon": [
+          [
+            1152,
+            489
+          ],
+          [
+            1261,
+            489
+          ],
+          [
+            1261,
+            675
+          ],
+          [
+            1152,
+            675
+          ]
+        ],
+        "calibration": [
+          3300,
+          100
+        ],
+        "image2dUrl": "/housing/gwanak-sillim/gwanak-sillim-4-402.png",
+        "modelStatus": "pending-review",
+        "issue": null,
+        "mmPerPx": 10.725
+      },
+      {
+        "layoutKey": "gwanak-sillim-4-403",
+        "unitKey": "gwanak-sillim-4-403",
+        "floor": "4",
+        "unit": "403",
+        "type": "마",
+        "exclusiveAreaM2": 17.06,
+        "balconyAreaM2": null,
+        "page": 2,
+        "cropPolygon": [
+          [
+            1302,
+            445
+          ],
+          [
+            1366,
+            445
+          ],
+          [
+            1366,
+            675
+          ],
+          [
+            1254,
+            675
+          ],
+          [
+            1254,
+            489
+          ],
+          [
+            1302,
+            489
+          ]
+        ],
+        "calibration": [
+          3300,
+          100
+        ],
+        "image2dUrl": "/housing/gwanak-sillim/gwanak-sillim-4-403.png",
+        "modelStatus": "pending-review",
+        "issue": null,
+        "mmPerPx": 10.725
+      }
+    ],
+    "issues": []
+  },
+  {
+    "id": "dobong-banghak",
+    "title": "도봉방학동",
+    "address": "서울특별시 도봉구 도당로13다길 15-7(방학동)",
+    "agency": null,
+    "households": 10,
+    "housingType": "다가구주택",
+    "sourcePdf": "/reference/현황도_도봉구_방학동_도당로13다길15-7.pdf",
+    "sourceSha256": "9d8cc99ac65f4f221fabdf8487559e189040e2b1889c4d34b67ca6155c923692",
+    "image": "/housing/dobong-banghak/exterior.png",
+    "layouts": [
+      {
+        "layoutKey": "dobong-banghak-2-3-01",
+        "unitKey": "dobong-banghak-2-3-01",
+        "floor": "2-3",
+        "unit": "01",
+        "type": "A",
+        "exclusiveAreaM2": 13.66,
+        "balconyAreaM2": 4.32,
+        "page": 2,
+        "cropPolygon": [
+          [
+            289,
+            600
+          ],
+          [
+            495,
+            600
+          ],
+          [
+            495,
+            748
+          ],
+          [
+            289,
+            748
+          ]
+        ],
+        "calibration": [
+          3600,
+          133
+        ],
+        "image2dUrl": "/housing/dobong-banghak/dobong-banghak-2-3-01.png",
+        "modelStatus": "pending-review",
+        "issue": null,
+        "mmPerPx": 8.796992481203008
+      },
+      {
+        "layoutKey": "dobong-banghak-2-3-02",
+        "unitKey": "dobong-banghak-2-3-02",
+        "floor": "2-3",
+        "unit": "02",
+        "type": "B",
+        "exclusiveAreaM2": 13.86,
+        "balconyAreaM2": 4.32,
+        "page": 2,
+        "cropPolygon": [
+          [
+            448,
+            347
+          ],
+          [
+            594,
+            347
+          ],
+          [
+            594,
+            558
+          ],
+          [
+            448,
+            558
+          ]
+        ],
+        "calibration": [
+          3600,
+          133
+        ],
+        "image2dUrl": "/housing/dobong-banghak/dobong-banghak-2-3-02.png",
+        "modelStatus": "pending-review",
+        "issue": null,
+        "mmPerPx": 8.796992481203008
+      },
+      {
+        "layoutKey": "dobong-banghak-2-3-03",
+        "unitKey": "dobong-banghak-2-3-03",
+        "floor": "2-3",
+        "unit": "03",
+        "type": "B",
+        "exclusiveAreaM2": 13.86,
+        "balconyAreaM2": 4.32,
+        "page": 2,
+        "cropPolygon": [
+          [
+            314,
+            347
+          ],
+          [
+            460,
+            347
+          ],
+          [
+            460,
+            558
+          ],
+          [
+            314,
+            558
+          ]
+        ],
+        "calibration": [
+          3600,
+          133
+        ],
+        "image2dUrl": "/housing/dobong-banghak/dobong-banghak-2-3-03.png",
+        "modelStatus": "pending-review",
+        "issue": null,
+        "mmPerPx": 8.796992481203008
+      },
+      {
+        "layoutKey": "dobong-banghak-2-3-04",
+        "unitKey": "dobong-banghak-2-3-04",
+        "floor": "2-3",
+        "unit": "04",
+        "type": "B",
+        "exclusiveAreaM2": 13.86,
+        "balconyAreaM2": 4.32,
+        "page": 2,
+        "cropPolygon": [
+          [
+            175,
+            347
+          ],
+          [
+            321,
+            347
+          ],
+          [
+            321,
+            558
+          ],
+          [
+            175,
+            558
+          ]
+        ],
+        "calibration": [
+          3600,
+          133
+        ],
+        "image2dUrl": "/housing/dobong-banghak/dobong-banghak-2-3-04.png",
+        "modelStatus": "pending-review",
+        "issue": null,
+        "mmPerPx": 8.796992481203008
+      },
+      {
+        "layoutKey": "dobong-banghak-4-401",
+        "unitKey": "dobong-banghak-4-401",
+        "floor": "4",
+        "unit": "401",
+        "type": "A",
+        "exclusiveAreaM2": 13.66,
+        "balconyAreaM2": 4.32,
+        "page": 2,
+        "cropPolygon": [
+          [
+            1061,
+            600
+          ],
+          [
+            1267,
+            600
+          ],
+          [
+            1267,
+            747
+          ],
+          [
+            1061,
+            747
+          ]
+        ],
+        "calibration": [
+          3600,
+          133
+        ],
+        "image2dUrl": "/housing/dobong-banghak/dobong-banghak-4-401.png",
+        "modelStatus": "pending-review",
+        "issue": null,
+        "mmPerPx": 8.796992481203008
+      },
+      {
+        "layoutKey": "dobong-banghak-4-402",
+        "unitKey": "dobong-banghak-4-402",
+        "floor": "4",
+        "unit": "402",
+        "type": "A",
+        "exclusiveAreaM2": 13.66,
+        "balconyAreaM2": 4.32,
+        "page": 2,
+        "cropPolygon": [
+          [
+            1061,
+            463
+          ],
+          [
+            1267,
+            463
+          ],
+          [
+            1267,
+            610
+          ],
+          [
+            1061,
+            610
+          ]
+        ],
+        "calibration": [
+          3600,
+          133
+        ],
+        "image2dUrl": "/housing/dobong-banghak/dobong-banghak-4-402.png",
+        "modelStatus": "pending-review",
+        "issue": null,
+        "mmPerPx": 8.796992481203008
+      }
+    ],
+    "issues": []
+  },
+  {
+    "id": "seocho-iris",
+    "title": "서초서초동(아이리스예당)",
+    "address": "서울특별시 서초구 남부순환로315길 34-9(서초동)",
+    "agency": null,
+    "households": 20,
+    "housingType": "도시형생활주택(원룸형)",
+    "sourcePdf": "/reference/현황도_서초구_서초동_남부순환로315길34-9_아이리스예당.pdf",
+    "sourceSha256": "06b1ae16d5f46527b74249f5fdf3530df3500f44d69d6ae9d499d0aed74a539f",
+    "image": "/housing/seocho-iris/exterior.png",
+    "layouts": [
+      {
+        "layoutKey": "seocho-iris-2-3-01",
+        "unitKey": "seocho-iris-2-3-01",
+        "floor": "2-3",
+        "unit": "01",
+        "type": null,
+        "exclusiveAreaM2": null,
+        "balconyAreaM2": null,
+        "page": 2,
+        "cropPolygon": [
+          [
+            280,
+            301
+          ],
+          [
+            398,
+            301
+          ],
+          [
+            398,
+            326
+          ],
+          [
+            429,
+            326
+          ],
+          [
+            429,
+            396
+          ],
+          [
+            280,
+            396
+          ]
+        ],
+        "calibration": null,
+        "image2dUrl": "/housing/seocho-iris/seocho-iris-2-3-01.png",
+        "modelStatus": "pending-review",
+        "issue": "전용면적·실측 치수 없음: 2D 전용",
+        "mmPerPx": null
+      },
+      {
+        "layoutKey": "seocho-iris-2-3-02",
+        "unitKey": "seocho-iris-2-3-02",
+        "floor": "2-3",
+        "unit": "02",
+        "type": null,
+        "exclusiveAreaM2": null,
+        "balconyAreaM2": null,
+        "page": 2,
+        "cropPolygon": [
+          [
+            280,
+            202
+          ],
+          [
+            398,
+            202
+          ],
+          [
+            398,
+            305
+          ],
+          [
+            280,
+            305
+          ]
+        ],
+        "calibration": null,
+        "image2dUrl": "/housing/seocho-iris/seocho-iris-2-3-02.png",
+        "modelStatus": "pending-review",
+        "issue": "전용면적·실측 치수 없음: 2D 전용",
+        "mmPerPx": null
+      },
+      {
+        "layoutKey": "seocho-iris-2-3-03",
+        "unitKey": "seocho-iris-2-3-03",
+        "floor": "2-3",
+        "unit": "03",
+        "type": null,
+        "exclusiveAreaM2": null,
+        "balconyAreaM2": null,
+        "page": 2,
+        "cropPolygon": [
+          [
+            280,
+            136
+          ],
+          [
+            454,
+            136
+          ],
+          [
+            454,
+            259
+          ],
+          [
+            392,
+            259
+          ],
+          [
+            392,
+            207
+          ],
+          [
+            280,
+            207
+          ]
+        ],
+        "calibration": null,
+        "image2dUrl": "/housing/seocho-iris/seocho-iris-2-3-03.png",
+        "modelStatus": "pending-review",
+        "issue": "전용면적·실측 치수 없음: 2D 전용",
+        "mmPerPx": null
+      },
+      {
+        "layoutKey": "seocho-iris-2-3-04",
+        "unitKey": "seocho-iris-2-3-04",
+        "floor": "2-3",
+        "unit": "04",
+        "type": null,
+        "exclusiveAreaM2": null,
+        "balconyAreaM2": null,
+        "page": 2,
+        "cropPolygon": [
+          [
+            453,
+            136
+          ],
+          [
+            603,
+            136
+          ],
+          [
+            603,
+            200
+          ],
+          [
+            530,
+            200
+          ],
+          [
+            530,
+            229
+          ],
+          [
+            508,
+            229
+          ],
+          [
+            508,
+            259
+          ],
+          [
+            453,
+            259
+          ]
+        ],
+        "calibration": null,
+        "image2dUrl": "/housing/seocho-iris/seocho-iris-2-3-04.png",
+        "modelStatus": "pending-review",
+        "issue": "전용면적·실측 치수 없음: 2D 전용",
+        "mmPerPx": null
+      },
+      {
+        "layoutKey": "seocho-iris-2-3-05",
+        "unitKey": "seocho-iris-2-3-05",
+        "floor": "2-3",
+        "unit": "05",
+        "type": null,
+        "exclusiveAreaM2": null,
+        "balconyAreaM2": null,
+        "page": 2,
+        "cropPolygon": [
+          [
+            530,
+            194
+          ],
+          [
+            603,
+            194
+          ],
+          [
+            603,
+            306
+          ],
+          [
+            508,
+            306
+          ],
+          [
+            508,
+            225
+          ],
+          [
+            530,
+            225
+          ]
+        ],
+        "calibration": null,
+        "image2dUrl": "/housing/seocho-iris/seocho-iris-2-3-05.png",
+        "modelStatus": "pending-review",
+        "issue": "전용면적·실측 치수 없음: 2D 전용",
+        "mmPerPx": null
+      },
+      {
+        "layoutKey": "seocho-iris-2-3-06",
+        "unitKey": "seocho-iris-2-3-06",
+        "floor": "2-3",
+        "unit": "06",
+        "type": null,
+        "exclusiveAreaM2": null,
+        "balconyAreaM2": null,
+        "page": 2,
+        "cropPolygon": [
+          [
+            510,
+            301
+          ],
+          [
+            603,
+            301
+          ],
+          [
+            603,
+            368
+          ],
+          [
+            575,
+            396
+          ],
+          [
+            480,
+            396
+          ],
+          [
+            480,
+            326
+          ],
+          [
+            510,
+            326
+          ]
+        ],
+        "calibration": null,
+        "image2dUrl": "/housing/seocho-iris/seocho-iris-2-3-06.png",
+        "modelStatus": "pending-review",
+        "issue": "전용면적·실측 치수 없음: 2D 전용",
+        "mmPerPx": null
+      },
+      {
+        "layoutKey": "seocho-iris-4-01",
+        "unitKey": "seocho-iris-4-01",
+        "floor": "4",
+        "unit": "01",
+        "type": null,
+        "exclusiveAreaM2": null,
+        "balconyAreaM2": null,
+        "page": 2,
+        "cropPolygon": [
+          [
+            304,
+            513
+          ],
+          [
+            364,
+            513
+          ],
+          [
+            364,
+            582
+          ],
+          [
+            398,
+            582
+          ],
+          [
+            398,
+            635
+          ],
+          [
+            429,
+            635
+          ],
+          [
+            429,
+            702
+          ],
+          [
+            304,
+            702
+          ]
+        ],
+        "calibration": null,
+        "image2dUrl": "/housing/seocho-iris/seocho-iris-4-01.png",
+        "modelStatus": "pending-review",
+        "issue": "전용면적·실측 치수 없음: 2D 전용",
+        "mmPerPx": null
+      },
+      {
+        "layoutKey": "seocho-iris-4-02",
+        "unitKey": "seocho-iris-4-02",
+        "floor": "4",
+        "unit": "02",
+        "type": null,
+        "exclusiveAreaM2": null,
+        "balconyAreaM2": null,
+        "page": 2,
+        "cropPolygon": [
+          [
+            304,
+            450
+          ],
+          [
+            455,
+            450
+          ],
+          [
+            455,
+            563
+          ],
+          [
+            429,
+            563
+          ],
+          [
+            429,
+            587
+          ],
+          [
+            360,
+            587
+          ],
+          [
+            360,
+            518
+          ],
+          [
+            304,
+            518
+          ]
+        ],
+        "calibration": null,
+        "image2dUrl": "/housing/seocho-iris/seocho-iris-4-02.png",
+        "modelStatus": "pending-review",
+        "issue": "전용면적·실측 치수 없음: 2D 전용",
+        "mmPerPx": null
+      },
+      {
+        "layoutKey": "seocho-iris-4-03",
+        "unitKey": "seocho-iris-4-03",
+        "floor": "4",
+        "unit": "03",
+        "type": null,
+        "exclusiveAreaM2": null,
+        "balconyAreaM2": null,
+        "page": 2,
+        "cropPolygon": [
+          [
+            452,
+            450
+          ],
+          [
+            603,
+            450
+          ],
+          [
+            603,
+            519
+          ],
+          [
+            550,
+            519
+          ],
+          [
+            550,
+            585
+          ],
+          [
+            480,
+            585
+          ],
+          [
+            480,
+            563
+          ],
+          [
+            452,
+            563
+          ]
+        ],
+        "calibration": null,
+        "image2dUrl": "/housing/seocho-iris/seocho-iris-4-03.png",
+        "modelStatus": "pending-review",
+        "issue": "전용면적·실측 치수 없음: 2D 전용",
+        "mmPerPx": null
+      },
+      {
+        "layoutKey": "seocho-iris-4-04",
+        "unitKey": "seocho-iris-4-04",
+        "floor": "4",
+        "unit": "04",
+        "type": null,
+        "exclusiveAreaM2": null,
+        "balconyAreaM2": null,
+        "page": 2,
+        "cropPolygon": [
+          [
+            547,
+            514
+          ],
+          [
+            603,
+            514
+          ],
+          [
+            603,
+            670
+          ],
+          [
+            573,
+            702
+          ],
+          [
+            480,
+            702
+          ],
+          [
+            480,
+            635
+          ],
+          [
+            510,
+            635
+          ],
+          [
+            510,
+            580
+          ],
+          [
+            547,
+            580
+          ]
+        ],
+        "calibration": null,
+        "image2dUrl": "/housing/seocho-iris/seocho-iris-4-04.png",
+        "modelStatus": "pending-review",
+        "issue": "전용면적·실측 치수 없음: 2D 전용",
+        "mmPerPx": null
+      },
+      {
+        "layoutKey": "seocho-iris-5-01",
+        "unitKey": "seocho-iris-5-01",
+        "floor": "5",
+        "unit": "01",
+        "type": null,
+        "exclusiveAreaM2": null,
+        "balconyAreaM2": null,
+        "page": 2,
+        "cropPolygon": [
+          [
+            309,
+            836
+          ],
+          [
+            382,
+            836
+          ],
+          [
+            382,
+            943
+          ],
+          [
+            412,
+            943
+          ],
+          [
+            412,
+            1016
+          ],
+          [
+            309,
+            1016
+          ]
+        ],
+        "calibration": null,
+        "image2dUrl": "/housing/seocho-iris/seocho-iris-5-01.png",
+        "modelStatus": "pending-review",
+        "issue": "전용면적·실측 치수 없음: 2D 전용",
+        "mmPerPx": null
+      },
+      {
+        "layoutKey": "seocho-iris-5-02",
+        "unitKey": "seocho-iris-5-02",
+        "floor": "5",
+        "unit": "02",
+        "type": null,
+        "exclusiveAreaM2": null,
+        "balconyAreaM2": null,
+        "page": 2,
+        "cropPolygon": [
+          [
+            309,
+            755
+          ],
+          [
+            446,
+            755
+          ],
+          [
+            446,
+            861
+          ],
+          [
+            416,
+            861
+          ],
+          [
+            416,
+            890
+          ],
+          [
+            378,
+            890
+          ],
+          [
+            378,
+            841
+          ],
+          [
+            309,
+            841
+          ]
+        ],
+        "calibration": null,
+        "image2dUrl": "/housing/seocho-iris/seocho-iris-5-02.png",
+        "modelStatus": "pending-review",
+        "issue": "전용면적·실측 치수 없음: 2D 전용",
+        "mmPerPx": null
+      },
+      {
+        "layoutKey": "seocho-iris-5-03",
+        "unitKey": "seocho-iris-5-03",
+        "floor": "5",
+        "unit": "03",
+        "type": null,
+        "exclusiveAreaM2": null,
+        "balconyAreaM2": null,
+        "page": 2,
+        "cropPolygon": [
+          [
+            443,
+            755
+          ],
+          [
+            603,
+            755
+          ],
+          [
+            603,
+            841
+          ],
+          [
+            508,
+            841
+          ],
+          [
+            508,
+            890
+          ],
+          [
+            477,
+            890
+          ],
+          [
+            477,
+            861
+          ],
+          [
+            443,
+            861
+          ]
+        ],
+        "calibration": null,
+        "image2dUrl": "/housing/seocho-iris/seocho-iris-5-03.png",
+        "modelStatus": "pending-review",
+        "issue": "전용면적·실측 치수 없음: 2D 전용",
+        "mmPerPx": null
+      },
+      {
+        "layoutKey": "seocho-iris-5-04",
+        "unitKey": "seocho-iris-5-04",
+        "floor": "5",
+        "unit": "04",
+        "type": null,
+        "exclusiveAreaM2": null,
+        "balconyAreaM2": null,
+        "page": 2,
+        "cropPolygon": [
+          [
+            505,
+            836
+          ],
+          [
+            603,
+            836
+          ],
+          [
+            603,
+            985
+          ],
+          [
+            573,
+            1016
+          ],
+          [
+            477,
+            1016
+          ],
+          [
+            477,
+            943
+          ],
+          [
+            510,
+            943
+          ]
+        ],
+        "calibration": null,
+        "image2dUrl": "/housing/seocho-iris/seocho-iris-5-04.png",
+        "modelStatus": "pending-review",
+        "issue": "전용면적·실측 치수 없음: 2D 전용",
+        "mmPerPx": null
+      }
+    ],
+    "issues": []
+  },
+  {
+    "id": "seongdong-yongdap",
+    "title": "성동용답동(더위일스카이70)",
+    "address": "서울특별시 성동구 자동차시장1길 31(용답동) THE WEAL SKY70",
+    "agency": null,
+    "households": null,
+    "housingType": null,
+    "sourcePdf": "/reference/현황도_성동구_용답동_자동차시장1길31_THE-WEAL-SKY70.pdf",
+    "sourceSha256": "b4109da380d992f0504a1ceb3434b2db5ac72b50035cc787dced2cd212d92518",
+    "image": null,
+    "layouts": [
+      {
+        "layoutKey": "seongdong-yongdap-3-15-1",
+        "unitKey": "seongdong-yongdap-3-15-1",
+        "floor": "3-15",
+        "unit": "1",
+        "type": "A",
+        "exclusiveAreaM2": 34.98,
+        "balconyAreaM2": null,
+        "page": 1,
+        "cropPolygon": [
+          [
+            391,
+            653
+          ],
+          [
+            555,
+            682
+          ],
+          [
+            527,
+            844
+          ],
+          [
+            363,
+            816
+          ]
+        ],
+        "calibration": [
+          3000,
+          79.3
+        ],
+        "image2dUrl": "/housing/seongdong-yongdap/seongdong-yongdap-3-15-1.png",
+        "modelStatus": "pending-review",
+        "issue": "치수 체인(3,200+3,000 / 3,100+3,200)과 크롭 실측 외곽이 2~4% 불일치, 회전·저해상 스캔: 3D 트레이싱 보류",
+        "rotationDegrees": 9.9,
+        "mmPerPx": 12.295081967213116
+      },
+      {
+        "layoutKey": "seongdong-yongdap-3-15-2",
+        "unitKey": "seongdong-yongdap-3-15-2",
+        "floor": "3-15",
+        "unit": "2",
+        "type": "B",
+        "exclusiveAreaM2": 34.78,
+        "balconyAreaM2": null,
+        "page": 1,
+        "cropPolygon": [
+          [
+            181,
+            628
+          ],
+          [
+            343,
+            655
+          ],
+          [
+            313,
+            834
+          ],
+          [
+            229,
+            819
+          ],
+          [
+            234,
+            793
+          ],
+          [
+            153,
+            779
+          ]
+        ],
+        "calibration": [
+          3000,
+          79.3
+        ],
+        "image2dUrl": "/housing/seongdong-yongdap/seongdong-yongdap-3-15-2.png",
+        "modelStatus": "pending-review",
+        "issue": "치수 체인(3,200+3,000 / 3,100+3,200)과 크롭 실측 외곽이 2~4% 불일치, 회전·저해상 스캔: 3D 트레이싱 보류",
+        "rotationDegrees": 9.9,
+        "mmPerPx": 12.295081967213116
+      },
+      {
+        "layoutKey": "seongdong-yongdap-3-15-4",
+        "unitKey": "seongdong-yongdap-3-15-4",
+        "floor": "3-15",
+        "unit": "4",
+        "type": "A",
+        "exclusiveAreaM2": 34.98,
+        "balconyAreaM2": null,
+        "page": 1,
+        "cropPolygon": [
+          [
+            243,
+            267
+          ],
+          [
+            408,
+            296
+          ],
+          [
+            381,
+            457
+          ],
+          [
+            216,
+            429
+          ]
+        ],
+        "calibration": [
+          3000,
+          79.3
+        ],
+        "image2dUrl": "/housing/seongdong-yongdap/seongdong-yongdap-3-15-4.png",
+        "modelStatus": "pending-review",
+        "issue": "치수 체인(3,200+3,000 / 3,100+3,200)과 크롭 실측 외곽이 2~4% 불일치, 회전·저해상 스캔: 3D 트레이싱 보류",
+        "rotationDegrees": 9.9,
+        "mmPerPx": 12.295081967213116
+      }
+    ],
+    "issues": [
+      "공급기관·전체 세대 수 미확인. 호수별 구조가 회전·반전되어 A타입도 별도 layout 유지"
+    ]
+  },
+  {
+    "id": "songpa-ogeum",
+    "title": "송파오금동(더트라이앵글)",
+    "address": "서울특별시 송파구 마천로8길 19-12(오금동) 더트라이앵글",
+    "agency": "LH",
+    "households": 14,
+    "housingType": null,
+    "sourcePdf": "/reference/현황도_송파구_오금동_마천로8길19-12_더트라이앵글.pdf",
+    "sourceSha256": "4218ec58b89a4a747e7cf7557a8278a929a33733b4d9aa79623526889dd2f5d5",
+    "image": "/housing/songpa-ogeum/exterior.png",
+    "layouts": [
+      {
+        "layoutKey": "songpa-ogeum-2-3-01",
+        "unitKey": "songpa-ogeum-2-3-01",
+        "floor": "2-3",
+        "unit": "01",
+        "type": null,
+        "exclusiveAreaM2": 24.43,
+        "balconyAreaM2": null,
+        "page": 2,
+        "cropPolygon": [
+          [
+            481,
+            499
+          ],
+          [
+            656,
+            499
+          ],
+          [
+            656,
+            622
+          ],
+          [
+            436,
+            622
+          ],
+          [
+            436,
+            542
+          ],
+          [
+            481,
+            542
+          ]
+        ],
+        "calibration": [
+          5100,
+          153
+        ],
+        "image2dUrl": "/housing/songpa-ogeum/songpa-ogeum-2-3-01.png",
+        "modelStatus": "pending-review",
+        "issue": null,
+        "mmPerPx": 10.833333333333334
+      },
+      {
+        "layoutKey": "songpa-ogeum-2-3-02",
+        "unitKey": "songpa-ogeum-2-3-02",
+        "floor": "2-3",
+        "unit": "02",
+        "type": null,
+        "exclusiveAreaM2": 23.265,
+        "balconyAreaM2": null,
+        "page": 2,
+        "cropPolygon": [
+          [
+            486,
+            381
+          ],
+          [
+            656,
+            381
+          ],
+          [
+            656,
+            504
+          ],
+          [
+            481,
+            504
+          ],
+          [
+            481,
+            466
+          ],
+          [
+            436,
+            466
+          ],
+          [
+            436,
+            394
+          ],
+          [
+            486,
+            394
+          ]
+        ],
+        "calibration": [
+          5100,
+          153
+        ],
+        "image2dUrl": "/housing/songpa-ogeum/songpa-ogeum-2-3-02.png",
+        "modelStatus": "pending-review",
+        "issue": null,
+        "mmPerPx": 10.833333333333334
+      },
+      {
+        "layoutKey": "songpa-ogeum-2-3-03",
+        "unitKey": "songpa-ogeum-2-3-03",
+        "floor": "2-3",
+        "unit": "03",
+        "type": null,
+        "exclusiveAreaM2": 23.225,
+        "balconyAreaM2": null,
+        "page": 2,
+        "cropPolygon": [
+          [
+            171,
+            393
+          ],
+          [
+            365,
+            393
+          ],
+          [
+            365,
+            463
+          ],
+          [
+            321,
+            463
+          ],
+          [
+            321,
+            518
+          ],
+          [
+            147,
+            518
+          ],
+          [
+            147,
+            452
+          ],
+          [
+            171,
+            452
+          ]
+        ],
+        "calibration": [
+          5100,
+          153
+        ],
+        "image2dUrl": "/housing/songpa-ogeum/songpa-ogeum-2-3-03.png",
+        "modelStatus": "pending-review",
+        "issue": null,
+        "mmPerPx": 10.833333333333334
+      },
+      {
+        "layoutKey": "songpa-ogeum-2-3-04",
+        "unitKey": "songpa-ogeum-2-3-04",
+        "floor": "2-3",
+        "unit": "04",
+        "type": null,
+        "exclusiveAreaM2": 22.86,
+        "balconyAreaM2": null,
+        "page": 2,
+        "cropPolygon": [
+          [
+            126,
+            509
+          ],
+          [
+            321,
+            509
+          ],
+          [
+            321,
+            549
+          ],
+          [
+            360,
+            549
+          ],
+          [
+            360,
+            622
+          ],
+          [
+            126,
+            622
+          ]
+        ],
+        "calibration": [
+          5100,
+          153
+        ],
+        "image2dUrl": "/housing/songpa-ogeum/songpa-ogeum-2-3-04.png",
+        "modelStatus": "pending-review",
+        "issue": null,
+        "mmPerPx": 10.833333333333334
+      },
+      {
+        "layoutKey": "songpa-ogeum-4-401",
+        "unitKey": "songpa-ogeum-4-401",
+        "floor": "4",
+        "unit": "401",
+        "type": null,
+        "exclusiveAreaM2": 23.43,
+        "balconyAreaM2": null,
+        "page": 2,
+        "cropPolygon": [
+          [
+            1255,
+            499
+          ],
+          [
+            1428,
+            499
+          ],
+          [
+            1428,
+            622
+          ],
+          [
+            1208,
+            622
+          ],
+          [
+            1208,
+            542
+          ],
+          [
+            1255,
+            542
+          ]
+        ],
+        "calibration": [
+          5100,
+          153
+        ],
+        "image2dUrl": "/housing/songpa-ogeum/songpa-ogeum-4-401.png",
+        "modelStatus": "pending-review",
+        "issue": null,
+        "mmPerPx": 10.833333333333334
+      },
+      {
+        "layoutKey": "songpa-ogeum-4-402",
+        "unitKey": "songpa-ogeum-4-402",
+        "floor": "4",
+        "unit": "402",
+        "type": null,
+        "exclusiveAreaM2": 23.265,
+        "balconyAreaM2": null,
+        "page": 2,
+        "cropPolygon": [
+          [
+            1258,
+            381
+          ],
+          [
+            1428,
+            381
+          ],
+          [
+            1428,
+            504
+          ],
+          [
+            1255,
+            504
+          ],
+          [
+            1255,
+            466
+          ],
+          [
+            1208,
+            466
+          ],
+          [
+            1208,
+            394
+          ],
+          [
+            1258,
+            394
+          ]
+        ],
+        "calibration": [
+          5100,
+          153
+        ],
+        "image2dUrl": "/housing/songpa-ogeum/songpa-ogeum-4-402.png",
+        "modelStatus": "pending-review",
+        "issue": null,
+        "mmPerPx": 10.833333333333334
+      },
+      {
+        "layoutKey": "songpa-ogeum-4-403",
+        "unitKey": "songpa-ogeum-4-403",
+        "floor": "4",
+        "unit": "403",
+        "type": null,
+        "exclusiveAreaM2": 24.585,
+        "balconyAreaM2": 6.22,
+        "page": 2,
+        "cropPolygon": [
+          [
+            1023,
+            393
+          ],
+          [
+            1136,
+            393
+          ],
+          [
+            1136,
+            622
+          ],
+          [
+            968,
+            622
+          ],
+          [
+            968,
+            524
+          ],
+          [
+            998,
+            524
+          ],
+          [
+            998,
+            453
+          ],
+          [
+            1023,
+            453
+          ]
+        ],
+        "calibration": [
+          5100,
+          153
+        ],
+        "image2dUrl": "/housing/songpa-ogeum/songpa-ogeum-4-403.png",
+        "modelStatus": "pending-review",
+        "issue": null,
+        "mmPerPx": 10.833333333333334
+      },
+      {
+        "layoutKey": "songpa-ogeum-5-501",
+        "unitKey": "songpa-ogeum-5-501",
+        "floor": "5",
+        "unit": "501",
+        "type": null,
+        "exclusiveAreaM2": 23.43,
+        "balconyAreaM2": null,
+        "page": 3,
+        "cropPolygon": [
+          [
+            447,
+            499
+          ],
+          [
+            623,
+            499
+          ],
+          [
+            623,
+            622
+          ],
+          [
+            402,
+            622
+          ],
+          [
+            402,
+            542
+          ],
+          [
+            447,
+            542
+          ]
+        ],
+        "calibration": [
+          5100,
+          154
+        ],
+        "image2dUrl": "/housing/songpa-ogeum/songpa-ogeum-5-501.png",
+        "modelStatus": "pending-review",
+        "issue": null,
+        "mmPerPx": 10.762987012987013
+      },
+      {
+        "layoutKey": "songpa-ogeum-5-502",
+        "unitKey": "songpa-ogeum-5-502",
+        "floor": "5",
+        "unit": "502",
+        "type": null,
+        "exclusiveAreaM2": 23.265,
+        "balconyAreaM2": null,
+        "page": 3,
+        "cropPolygon": [
+          [
+            451,
+            381
+          ],
+          [
+            623,
+            381
+          ],
+          [
+            623,
+            504
+          ],
+          [
+            447,
+            504
+          ],
+          [
+            447,
+            466
+          ],
+          [
+            402,
+            466
+          ],
+          [
+            402,
+            394
+          ],
+          [
+            451,
+            394
+          ]
+        ],
+        "calibration": [
+          5100,
+          154
+        ],
+        "image2dUrl": "/housing/songpa-ogeum/songpa-ogeum-5-502.png",
+        "modelStatus": "pending-review",
+        "issue": null,
+        "mmPerPx": 10.762987012987013
+      },
+      {
+        "layoutKey": "songpa-ogeum-5-503",
+        "unitKey": "songpa-ogeum-5-503",
+        "floor": "5",
+        "unit": "503",
+        "type": null,
+        "exclusiveAreaM2": 23.445,
+        "balconyAreaM2": null,
+        "page": 3,
+        "cropPolygon": [
+          [
+            253,
+            392
+          ],
+          [
+            336,
+            392
+          ],
+          [
+            336,
+            465
+          ],
+          [
+            325,
+            465
+          ],
+          [
+            325,
+            622
+          ],
+          [
+            196,
+            622
+          ],
+          [
+            196,
+            544
+          ]
+        ],
+        "calibration": [
+          3900,
+          117
+        ],
+        "image2dUrl": "/housing/songpa-ogeum/songpa-ogeum-5-503.png",
+        "modelStatus": "pending-review",
+        "issue": "대각 외벽: 직교 추출 결과 검수 필수",
+        "mmPerPx": 10.833333333333334
+      }
+    ],
+    "issues": [
+      "1쪽 다세대주택 / 2~3쪽 비고 도시형생활주택: 주택유형 미확정"
+    ]
+  },
+  {
+    "id": "jungnang-myeonmok",
+    "title": "중랑면목동",
+    "address": "서울특별시 중랑구 면목천로23길 52(면목동)",
+    "agency": null,
+    "households": 12,
+    "housingType": "다가구주택",
+    "sourcePdf": "/reference/현황도_중랑구_면목동_면목천로23길52.pdf",
+    "sourceSha256": "f3d4005e732b64bfc6b30e2e87f69feb4dff86c3e67701ba3854a64ce793fa1a",
+    "image": "/housing/jungnang-myeonmok/exterior.png",
+    "layouts": [
+      {
+        "layoutKey": "jungnang-myeonmok-2-3-01",
+        "unitKey": "jungnang-myeonmok-2-3-01",
+        "floor": "2-3",
+        "unit": "01",
+        "type": null,
+        "exclusiveAreaM2": 14.6475,
+        "balconyAreaM2": 3.78,
+        "page": 2,
+        "cropPolygon": [
+          [
+            213,
+            266
+          ],
+          [
+            347,
+            266
+          ],
+          [
+            347,
+            495
+          ],
+          [
+            213,
+            495
+          ]
+        ],
+        "calibration": [
+          3150,
+          110
+        ],
+        "image2dUrl": "/housing/jungnang-myeonmok/jungnang-myeonmok-2-3-01.png",
+        "modelStatus": "pending-review",
+        "issue": null,
+        "mmPerPx": 9.306818181818182
+      },
+      {
+        "layoutKey": "jungnang-myeonmok-2-3-02",
+        "unitKey": "jungnang-myeonmok-2-3-02",
+        "floor": "2-3",
+        "unit": "02",
+        "type": null,
+        "exclusiveAreaM2": 14.6475,
+        "balconyAreaM2": 3.78,
+        "page": 2,
+        "cropPolygon": [
+          [
+            425,
+            266
+          ],
+          [
+            559,
+            266
+          ],
+          [
+            559,
+            495
+          ],
+          [
+            425,
+            495
+          ]
+        ],
+        "calibration": [
+          3150,
+          110
+        ],
+        "image2dUrl": "/housing/jungnang-myeonmok/jungnang-myeonmok-2-3-02.png",
+        "modelStatus": "pending-review",
+        "issue": null,
+        "mmPerPx": 9.306818181818182
+      },
+      {
+        "layoutKey": "jungnang-myeonmok-2-3-03",
+        "unitKey": "jungnang-myeonmok-2-3-03",
+        "floor": "2-3",
+        "unit": "03",
+        "type": null,
+        "exclusiveAreaM2": 14.64,
+        "balconyAreaM2": 3.66,
+        "page": 2,
+        "cropPolygon": [
+          [
+            435,
+            544
+          ],
+          [
+            559,
+            544
+          ],
+          [
+            559,
+            776
+          ],
+          [
+            435,
+            776
+          ]
+        ],
+        "calibration": [
+          3150,
+          110
+        ],
+        "image2dUrl": "/housing/jungnang-myeonmok/jungnang-myeonmok-2-3-03.png",
+        "modelStatus": "pending-review",
+        "issue": null,
+        "mmPerPx": 9.306818181818182
+      },
+      {
+        "layoutKey": "jungnang-myeonmok-2-3-04",
+        "unitKey": "jungnang-myeonmok-2-3-04",
+        "floor": "2-3",
+        "unit": "04",
+        "type": null,
+        "exclusiveAreaM2": 14.64,
+        "balconyAreaM2": 3.66,
+        "page": 2,
+        "cropPolygon": [
+          [
+            328,
+            544
+          ],
+          [
+            443,
+            544
+          ],
+          [
+            443,
+            776
+          ],
+          [
+            328,
+            776
+          ]
+        ],
+        "calibration": [
+          3150,
+          110
+        ],
+        "image2dUrl": "/housing/jungnang-myeonmok/jungnang-myeonmok-2-3-04.png",
+        "modelStatus": "pending-review",
+        "issue": null,
+        "mmPerPx": 9.306818181818182
+      },
+      {
+        "layoutKey": "jungnang-myeonmok-2-3-05",
+        "unitKey": "jungnang-myeonmok-2-3-05",
+        "floor": "2-3",
+        "unit": "05",
+        "type": null,
+        "exclusiveAreaM2": 14.64,
+        "balconyAreaM2": 3.66,
+        "page": 2,
+        "cropPolygon": [
+          [
+            213,
+            544
+          ],
+          [
+            336,
+            544
+          ],
+          [
+            336,
+            776
+          ],
+          [
+            213,
+            776
+          ]
+        ],
+        "calibration": [
+          3150,
+          110
+        ],
+        "image2dUrl": "/housing/jungnang-myeonmok/jungnang-myeonmok-2-3-05.png",
+        "modelStatus": "pending-review",
+        "issue": null,
+        "mmPerPx": 9.306818181818182
+      },
+      {
+        "layoutKey": "jungnang-myeonmok-4-01-drawing",
+        "unitKey": "jungnang-myeonmok-4-01-drawing",
+        "floor": "4",
+        "unit": "01-drawing",
+        "type": null,
+        "exclusiveAreaM2": null,
+        "balconyAreaM2": null,
+        "page": 2,
+        "cropPolygon": [
+          [
+            1207,
+            338
+          ],
+          [
+            1334,
+            338
+          ],
+          [
+            1334,
+            656
+          ],
+          [
+            1207,
+            656
+          ]
+        ],
+        "calibration": [
+          3150,
+          110
+        ],
+        "image2dUrl": "/housing/jungnang-myeonmok/jungnang-myeonmok-4-01-drawing.png",
+        "modelStatus": "pending-review",
+        "issue": "도면 1호는 분홍색, 표 401호는 파란색: 전용면적 대응 미확정",
+        "mmPerPx": 9.306818181818182
+      },
+      {
+        "layoutKey": "jungnang-myeonmok-4-02-drawing",
+        "unitKey": "jungnang-myeonmok-4-02-drawing",
+        "floor": "4",
+        "unit": "02-drawing",
+        "type": null,
+        "exclusiveAreaM2": null,
+        "balconyAreaM2": null,
+        "page": 2,
+        "cropPolygon": [
+          [
+            1097,
+            547
+          ],
+          [
+            1218,
+            547
+          ],
+          [
+            1218,
+            649
+          ],
+          [
+            1334,
+            649
+          ],
+          [
+            1334,
+            776
+          ],
+          [
+            1097,
+            776
+          ]
+        ],
+        "calibration": [
+          3050,
+          107
+        ],
+        "image2dUrl": "/housing/jungnang-myeonmok/jungnang-myeonmok-4-02-drawing.png",
+        "modelStatus": "pending-review",
+        "issue": "도면 2호는 파란색, 표 402호는 분홍색: 전용면적 대응 미확정",
+        "mmPerPx": 9.264018691588785
+      }
+    ],
+    "issues": []
+  },
+  {
+    "id": "jungnang-muk",
+    "title": "중랑묵동",
+    "address": "서울특별시 중랑구 동일로149가길 21(묵동) 묵동 245-39",
+    "agency": null,
+    "households": null,
+    "housingType": null,
+    "sourcePdf": "/reference/현황도_중랑구_묵동_동일로149가길21.pdf",
+    "sourceSha256": "9accb2122df6a40e74be7d6bb1639e6ec017488f6ae049e4de145ca5b796e687",
+    "image": null,
+    "layouts": [],
+    "issues": [
+      "사용자 주소 묵동 245-39 / PDF 본문 묵동 173-27: 동일 주택 확인 전 사진·도면 연결 보류"
+    ]
+  }
+]

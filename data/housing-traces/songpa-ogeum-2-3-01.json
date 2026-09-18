@@ -1,0 +1,185 @@
+{
+ "layoutKey": "songpa-ogeum-2-3-01",
+ "walls": [
+  {
+   "a": [
+    1495,
+    87
+   ],
+   "b": [
+    7074,
+    87
+   ],
+   "thicknessMm": 200
+  },
+  {
+   "a": [
+    7074,
+    87
+   ],
+   "b": [
+    7074,
+    3857
+   ],
+   "thicknessMm": 350
+  },
+  {
+   "a": [
+    206,
+    3857
+   ],
+   "b": [
+    7074,
+    3857
+   ],
+   "thicknessMm": 350
+  },
+  {
+   "a": [
+    206,
+    1668
+   ],
+   "b": [
+    206,
+    3857
+   ],
+   "thicknessMm": 350
+  },
+  {
+   "a": [
+    206,
+    1668
+   ],
+   "b": [
+    1495,
+    1668
+   ],
+   "thicknessMm": 350
+  },
+  {
+   "a": [
+    1495,
+    87
+   ],
+   "b": [
+    1495,
+    1668
+   ],
+   "thicknessMm": 200
+  },
+  {
+   "a": [
+    1495,
+    1668
+   ],
+   "b": [
+    1907,
+    1668
+   ],
+   "thicknessMm": 150
+  },
+  {
+   "a": [
+    1907,
+    1668
+   ],
+   "b": [
+    1907,
+    3857
+   ],
+   "thicknessMm": 150
+  },
+  {
+   "a": [
+    6100,
+    87
+   ],
+   "b": [
+    6100,
+    780
+   ],
+   "thicknessMm": 150
+  },
+  {
+   "a": [
+    6100,
+    780
+   ],
+   "b": [
+    7074,
+    780
+   ],
+   "thicknessMm": 150
+  }
+ ],
+ "labels": [
+  {
+   "at": [
+    4500,
+    2500
+   ],
+   "label": "거실"
+  },
+  {
+   "at": [
+    1000,
+    2700
+   ],
+   "label": "욕실"
+  },
+  {
+   "at": [
+    6600,
+    430
+   ],
+   "label": "기타"
+  }
+ ],
+ "openings": [
+  {
+   "wall": 5,
+   "alongMm": 833,
+   "type": "door",
+   "widthMm": 900
+  },
+  {
+   "wall": 7,
+   "alongMm": 592,
+   "type": "door",
+   "widthMm": 700
+  },
+  {
+   "wall": 9,
+   "alongMm": 350,
+   "type": "door",
+   "widthMm": 600
+  },
+  {
+   "wall": 1,
+   "alongMm": 1701,
+   "type": "window",
+   "widthMm": 1000
+  },
+  {
+   "wall": 2,
+   "alongMm": 991,
+   "type": "window",
+   "widthMm": 450
+  },
+  {
+   "wall": 2,
+   "alongMm": 3407,
+   "type": "window",
+   "widthMm": 1550
+  }
+ ],
+ "dimensionChains": [
+  {
+   "axis": "x",
+   "values": [
+    1800,
+    5100
+   ]
+  }
+ ]
+}

@@ -1,0 +1,282 @@
+{
+  "scale": {
+    "mmPerPx": 11.271676300578035,
+    "source": "dimension-chain"
+  },
+  "outline": [
+    {
+      "x": 0,
+      "z": 0
+    },
+    {
+      "x": 8150,
+      "z": 0
+    },
+    {
+      "x": 8150,
+      "z": 3350
+    },
+    {
+      "x": 0,
+      "z": 3350
+    }
+  ],
+  "rooms": [
+    {
+      "id": "room-0",
+      "label": "거실",
+      "polygon": [
+        {
+          "x": 0,
+          "z": 50
+        },
+        {
+          "x": 5950,
+          "z": 50
+        },
+        {
+          "x": 5950,
+          "z": 3350
+        },
+        {
+          "x": 4100,
+          "z": 3350
+        },
+        {
+          "x": 4100,
+          "z": 2600
+        },
+        {
+          "x": 3750,
+          "z": 2600
+        },
+        {
+          "x": 3750,
+          "z": 3350
+        },
+        {
+          "x": 0,
+          "z": 3350
+        }
+      ],
+      "areaM2": 19.3725
+    },
+    {
+      "id": "room-1",
+      "label": "기타",
+      "polygon": [
+        {
+          "x": 6000,
+          "z": 50
+        },
+        {
+          "x": 8150,
+          "z": 50
+        },
+        {
+          "x": 8150,
+          "z": 1600
+        },
+        {
+          "x": 6000,
+          "z": 1600
+        }
+      ],
+      "areaM2": 3.3325
+    },
+    {
+      "id": "room-2",
+      "label": "욕실",
+      "polygon": [
+        {
+          "x": 6000,
+          "z": 1650
+        },
+        {
+          "x": 8150,
+          "z": 1650
+        },
+        {
+          "x": 8150,
+          "z": 3350
+        },
+        {
+          "x": 6000,
+          "z": 3350
+        }
+      ],
+      "areaM2": 3.655
+    }
+  ],
+  "walls": [
+    {
+      "id": "w1",
+      "a": {
+        "x": 0,
+        "z": 50
+      },
+      "b": {
+        "x": 8150,
+        "z": 50
+      },
+      "thicknessMm": 300,
+      "exterior": true
+    },
+    {
+      "id": "w2",
+      "a": {
+        "x": 8150,
+        "z": 50
+      },
+      "b": {
+        "x": 8150,
+        "z": 3350
+      },
+      "thicknessMm": 200,
+      "exterior": true
+    },
+    {
+      "id": "w3",
+      "a": {
+        "x": 0,
+        "z": 3350
+      },
+      "b": {
+        "x": 8150,
+        "z": 3350
+      },
+      "thicknessMm": 250,
+      "exterior": true
+    },
+    {
+      "id": "w4",
+      "a": {
+        "x": 0,
+        "z": 50
+      },
+      "b": {
+        "x": 0,
+        "z": 3350
+      },
+      "thicknessMm": 200,
+      "exterior": true
+    },
+    {
+      "id": "w5",
+      "a": {
+        "x": 5950,
+        "z": 50
+      },
+      "b": {
+        "x": 5950,
+        "z": 3350
+      },
+      "thicknessMm": 180,
+      "exterior": false
+    },
+    {
+      "id": "w6",
+      "a": {
+        "x": 5950,
+        "z": 1650
+      },
+      "b": {
+        "x": 8150,
+        "z": 1650
+      },
+      "thicknessMm": 180,
+      "exterior": false
+    },
+    {
+      "id": "w7",
+      "a": {
+        "x": 3750,
+        "z": 2600
+      },
+      "b": {
+        "x": 4050,
+        "z": 2600
+      },
+      "thicknessMm": 100,
+      "exterior": false
+    },
+    {
+      "id": "w8",
+      "a": {
+        "x": 3750,
+        "z": 2600
+      },
+      "b": {
+        "x": 3750,
+        "z": 3350
+      },
+      "thicknessMm": 100,
+      "exterior": false
+    },
+    {
+      "id": "w9",
+      "a": {
+        "x": 4050,
+        "z": 2600
+      },
+      "b": {
+        "x": 4050,
+        "z": 3350
+      },
+      "thicknessMm": 150,
+      "exterior": false
+    }
+  ],
+  "openings": [
+    {
+      "wallId": "w1",
+      "type": "window",
+      "offsetMm": 1808,
+      "widthMm": 1747
+    },
+    {
+      "wallId": "w1",
+      "type": "window",
+      "offsetMm": 6575,
+      "widthMm": 981
+    },
+    {
+      "wallId": "w3",
+      "type": "door",
+      "offsetMm": 4157,
+      "widthMm": 1082
+    },
+    {
+      "wallId": "w5",
+      "type": "door",
+      "offsetMm": 646,
+      "widthMm": 823
+    },
+    {
+      "wallId": "w5",
+      "type": "door",
+      "offsetMm": 1699.9999999999998,
+      "widthMm": 676
+    }
+  ],
+  "printed": {
+    "exclusiveAreaM2": 26.99,
+    "dimensionChains": [
+      {
+        "axis": "x",
+        "values": [
+          6000,
+          2200
+        ]
+      }
+    ]
+  },
+  "confidence": {
+    "overall": 1,
+    "perRoom": {
+      "room-0": 1,
+      "room-1": 1,
+      "room-2": 1
+    }
+  }
+}

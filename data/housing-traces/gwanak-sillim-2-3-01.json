@@ -1,0 +1,26 @@
+{
+  "layoutKey": "gwanak-sillim-2-3-01",
+  "walls": [
+    { "a": [363, 73],    "b": [3774, 73],   "thicknessMm": 200 },
+    { "a": [3774, 73],   "b": [3774, 5801], "thicknessMm": 200 },
+    { "a": [363, 5801],  "b": [3774, 5801], "thicknessMm": 200 },
+    { "a": [363, 73],    "b": [363, 5801],  "thicknessMm": 200 },
+    { "a": [363, 4599],  "b": [3774, 4599], "thicknessMm": 150 },
+    { "a": [2170, 73],   "b": [2170, 1800], "thicknessMm": 100 },
+    { "a": [2170, 1800], "b": [3774, 1800], "thicknessMm": 100 }
+  ],
+  "labels": [
+    { "at": [1200, 3000], "label": "거실" },
+    { "at": [3000, 900],  "label": "욕실" },
+    { "at": [2000, 5200], "label": "발코니" }
+  ],
+  "openings": [
+    { "wall": 0, "alongMm": 1240, "type": "door",   "widthMm": 900 },
+    { "wall": 5, "alongMm": 1261, "type": "door",   "widthMm": 750 },
+    { "wall": 4, "alongMm": 1407, "type": "window", "widthMm": 1800 },
+    { "wall": 2, "alongMm": 967,  "type": "window", "widthMm": 830 },
+    { "wall": 2, "alongMm": 1817, "type": "window", "widthMm": 780 },
+    { "wall": 3, "alongMm": 1862, "type": "window", "widthMm": 900 }
+  ],
+  "dimensionChains": [ { "axis": "x", "values": [3400] }, { "axis": "z", "values": [4500, 1200] } ]
+}

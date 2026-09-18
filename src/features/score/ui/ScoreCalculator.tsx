@@ -164,10 +164,10 @@ function EligibleListings({ items }: { items: Subscription[] }) {
             </div>
             <span
               className={`shrink-0 rounded-lg px-4 py-2 text-sm font-bold ${
-                s.dday <= DDAY_URGENT_THRESHOLD ? "bg-brand text-brand-on" : "bg-surface-tertiary text-fg-disabled"
+                s.dday !== null && s.dday <= DDAY_URGENT_THRESHOLD ? "bg-brand text-brand-on" : "bg-surface-tertiary text-fg-disabled"
               }`}
             >
-              D-{s.dday}
+              {s.dday === null ? "" : `D-${s.dday}`}
             </span>
           </div>
         ))}

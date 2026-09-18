@@ -1,0 +1,302 @@
+[
+  {
+    "layoutKey": "dobong-banghak-2-3-01",
+    "property": "dobong-banghak",
+    "method": "traced",
+    "reviewedAt": "2026-09-17T14:00:57.294Z",
+    "reviewer": "Claude Fable 5.1",
+    "note": "PDF 치수 체인 1200+2500+1450(x) 정합, 문 폭 1000은 도면 치수, 오버레이 눈검사",
+    "sourcePdf": "/reference/현황도_도봉구_방학동_도당로13다길15-7.pdf",
+    "sourcePage": 2,
+    "image2dUrl": "/housing/dobong-banghak/dobong-banghak-2-3-01.png",
+    "originPx": {
+      "x": 34,
+      "y": 6
+    }
+  },
+  {
+    "layoutKey": "dobong-banghak-2-3-02",
+    "property": "dobong-banghak",
+    "method": "traced",
+    "reviewedAt": "2026-09-18T01:23:48.198Z",
+    "reviewer": "Codex",
+    "note": "PDF 2쪽 202호 독립 실측. x=1100+1800+700, z=1200+2550+1450. 벽·문·창 오버레이 대조.",
+    "sourcePdf": "/reference/현황도_도봉구_방학동_도당로13다길15-7.pdf",
+    "sourcePage": 2,
+    "image2dUrl": "/housing/dobong-banghak/dobong-banghak-2-3-02.png",
+    "originPx": {
+      "x": 11,
+      "y": 40
+    }
+  },
+  {
+    "layoutKey": "gangnam-gaepo-2-3-01",
+    "property": "gangnam-gaepo",
+    "method": "traced",
+    "reviewedAt": "2026-09-17T14:01:00.220Z",
+    "reviewer": "Claude Fable 5.1",
+    "note": "보정 3000mm=86px로 수정(치수 2300+2200=4500 실측), 치수 체인 x·z 정합, 오버레이 눈검사",
+    "sourcePdf": "/reference/현황도_강남구_개포동_논현로12길23-5_T&K개포.pdf",
+    "sourcePage": 2,
+    "image2dUrl": "/housing/gangnam-gaepo/gangnam-gaepo-2-3-01.png",
+    "originPx": {
+      "x": 22,
+      "y": 18
+    }
+  },
+  {
+    "layoutKey": "gangnam-gaepo-2-3-02",
+    "property": "gangnam-gaepo",
+    "method": "traced",
+    "reviewedAt": "2026-09-18T02:26:11.117Z",
+    "reviewer": "Claude Fable 5.1",
+    "note": "PDF 상단 치수 3000+1300+2800(x) 정합, 크롭 벽 중심선 실측, 현관은 개방 경계선, 오버레이 눈검사",
+    "sourcePdf": "/reference/현황도_강남구_개포동_논현로12길23-5_T&K개포.pdf",
+    "sourcePage": 2,
+    "image2dUrl": "/housing/gangnam-gaepo/gangnam-gaepo-2-3-02.png",
+    "originPx": {
+      "x": 18,
+      "y": 18
+    }
+  },
+  {
+    "layoutKey": "gangnam-gaepo-2-3-03",
+    "property": "gangnam-gaepo",
+    "method": "traced",
+    "reviewedAt": "2026-09-18T02:29:48.756Z",
+    "reviewer": "Claude Fable 5.1",
+    "note": "PDF 상단 치수 2800+1300+3000(x) 정합, 크롭 벽 중심선 실측, 현관은 개방 경계선, 오버레이 눈검사",
+    "sourcePdf": "/reference/현황도_강남구_개포동_논현로12길23-5_T&K개포.pdf",
+    "sourcePage": 2,
+    "image2dUrl": "/housing/gangnam-gaepo/gangnam-gaepo-2-3-03.png",
+    "originPx": {
+      "x": 4,
+      "y": 18
+    }
+  },
+  {
+    "layoutKey": "gangnam-gaepo-2-3-04",
+    "property": "gangnam-gaepo",
+    "method": "traced",
+    "reviewedAt": "2026-09-18T02:31:39.531Z",
+    "reviewer": "Claude Fable 5.1",
+    "note": "PDF 치수 2200+2300(x)·4400+1700+1300(z) 정합, 현관문은 좌측 외벽 탐침(3016~4104), 오버레이 눈검사",
+    "sourcePdf": "/reference/현황도_강남구_개포동_논현로12길23-5_T&K개포.pdf",
+    "sourcePage": 2,
+    "image2dUrl": "/housing/gangnam-gaepo/gangnam-gaepo-2-3-04.png",
+    "originPx": {
+      "x": 13,
+      "y": 18
+    }
+  },
+  {
+    "layoutKey": "gangnam-gaepo-4-402",
+    "property": "gangnam-gaepo",
+    "method": "traced",
+    "reviewedAt": "2026-09-18T03:45:04.040Z",
+    "reviewer": "Codex",
+    "note": "PDF 2쪽 402호 직접 실측. x=6000+2200. 거실·보일러실(기타)·욕실과 현관 옆 PS 벽, 개구부 실측 위치 반영. RoomLabel 열거형에 맞춰 보일러실을 기타로 정정(Claude)",
+    "sourcePdf": "/reference/현황도_강남구_개포동_논현로12길23-5_T&K개포.pdf",
+    "sourcePage": 2,
+    "image2dUrl": "/housing/gangnam-gaepo/gangnam-gaepo-4-402.png",
+    "originPx": {
+      "x": 22,
+      "y": 18
+    }
+  },
+  {
+    "layoutKey": "gangseo-hwagok-2-201",
+    "property": "gangseo-hwagok",
+    "method": "traced",
+    "reviewedAt": "2026-09-17T14:00:58.709Z",
+    "reviewer": "Claude Fable 5.1",
+    "note": "PDF 치수 체인 1800+1425(x) 정합, 현관문 1000·욕실 1400은 도면 치수, 오버레이 눈검사",
+    "sourcePdf": "/reference/현황도_강서구_화곡동_초록마을로12길20.pdf",
+    "sourcePage": 2,
+    "image2dUrl": "/housing/gangseo-hwagok/gangseo-hwagok-2-201.png",
+    "originPx": {
+      "x": 51,
+      "y": 23
+    }
+  },
+  {
+    "layoutKey": "gangseo-hwagok-2-203",
+    "property": "gangseo-hwagok",
+    "method": "traced",
+    "reviewedAt": "2026-09-18T03:45:05.754Z",
+    "reviewer": "Codex",
+    "note": "PDF 2쪽 203호 직접 실측. x=1100+2200, z=1050+3700. 보일러실(기타)·욕실과 개구부 실측 위치 반영. RoomLabel 열거형에 맞춰 보일러실을 기타로 정정(Claude)",
+    "sourcePdf": "/reference/현황도_강서구_화곡동_초록마을로12길20.pdf",
+    "sourcePage": 2,
+    "image2dUrl": "/housing/gangseo-hwagok/gangseo-hwagok-2-203.png",
+    "originPx": {
+      "x": 40,
+      "y": 40
+    }
+  },
+  {
+    "layoutKey": "gwanak-sillim-2-3-01",
+    "property": "gwanak-sillim",
+    "method": "traced",
+    "reviewedAt": "2026-09-17T14:00:55.634Z",
+    "reviewer": "Claude Fable 5.1",
+    "note": "PDF 치수 체인 3400(x)·4500+1200(z) 정합, 크롭 실측, 오버레이 눈검사",
+    "sourcePdf": "/reference/현황도_관악구_신림동_대학2길6.pdf",
+    "sourcePage": 2,
+    "image2dUrl": "/housing/gwanak-sillim/gwanak-sillim-2-3-01.png",
+    "originPx": {
+      "x": 33,
+      "y": 5
+    }
+  },
+  {
+    "layoutKey": "gwanak-sillim-2-3-03",
+    "property": "gwanak-sillim",
+    "method": "traced",
+    "reviewedAt": "2026-09-18T01:23:50.800Z",
+    "reviewer": "Codex",
+    "note": "PDF 2쪽 나형 3호 독립 실측. x=3300, z=4500+1200. 벽·욕실·발코니 및 문·창 오버레이 대조.",
+    "sourcePdf": "/reference/현황도_관악구_신림동_대학2길6.pdf",
+    "sourcePage": 2,
+    "image2dUrl": "/housing/gwanak-sillim/gwanak-sillim-2-3-03.png",
+    "originPx": {
+      "x": 9,
+      "y": 5
+    }
+  },
+  {
+    "layoutKey": "jungnang-myeonmok-2-3-01",
+    "property": "jungnang-myeonmok",
+    "method": "traced",
+    "reviewedAt": "2026-09-17T14:06:15.216Z",
+    "reviewer": "Claude Fable 5.1",
+    "note": "PDF 치수 체인 3150(x)·1200+4650(z) 정합, 현관문은 하단 벽 안쪽면 탐침(1899~2857), 오버레이 눈검사",
+    "sourcePdf": "/reference/현황도_중랑구_면목동_면목천로23길52.pdf",
+    "sourcePage": 2,
+    "image2dUrl": "/housing/jungnang-myeonmok/jungnang-myeonmok-2-3-01.png",
+    "originPx": {
+      "x": 38,
+      "y": 38
+    }
+  },
+  {
+    "layoutKey": "jungnang-myeonmok-2-3-03",
+    "property": "jungnang-myeonmok",
+    "method": "traced",
+    "reviewedAt": "2026-09-18T01:30:25.170Z",
+    "reviewer": "Codex",
+    "note": "PDF 2쪽 3호 독립 실측. x=3050, z=4800+1200. 욕실·발코니·현관문과 창 오버레이 대조.",
+    "sourcePdf": "/reference/현황도_중랑구_면목동_면목천로23길52.pdf",
+    "sourcePage": 2,
+    "image2dUrl": "/housing/jungnang-myeonmok/jungnang-myeonmok-2-3-03.png",
+    "originPx": {
+      "x": 11,
+      "y": 21
+    }
+  },
+  {
+    "layoutKey": "songpa-ogeum-2-3-01",
+    "property": "songpa-ogeum",
+    "method": "traced",
+    "reviewedAt": "2026-09-17T14:00:54.212Z",
+    "reviewer": "Claude Fable 5.1",
+    "note": "PDF 치수 체인 1800+5100(x) 정합, 크롭 벽 중심선 실측, 오버레이 눈검사",
+    "sourcePdf": "/reference/현황도_송파구_오금동_마천로8길19-12_더트라이앵글.pdf",
+    "sourcePage": 2,
+    "image2dUrl": "/housing/songpa-ogeum/songpa-ogeum-2-3-01.png",
+    "originPx": {
+      "x": 18,
+      "y": 5
+    }
+  },
+  {
+    "layoutKey": "songpa-ogeum-2-3-02",
+    "property": "songpa-ogeum",
+    "method": "traced",
+    "reviewedAt": "2026-09-18T04:48:43.279Z",
+    "reviewer": "Claude Fable 5.1",
+    "note": "PDF 상단 치수 1800+5100(x) 정합, 크롭 벽 중심선 실측, 현관문은 PDF 도면의 문 호 위치(좌측 벽, 크롭 마스크로 가려짐), 오버레이 눈검사",
+    "sourcePdf": "/reference/현황도_송파구_오금동_마천로8길19-12_더트라이앵글.pdf",
+    "sourcePage": 2,
+    "image2dUrl": "/housing/songpa-ogeum/songpa-ogeum-2-3-02.png",
+    "originPx": {
+      "x": 18,
+      "y": 18
+    }
+  },
+  {
+    "layoutKey": "songpa-ogeum-2-3-03",
+    "property": "songpa-ogeum",
+    "method": "traced",
+    "reviewedAt": "2026-09-18T04:56:50.041Z",
+    "reviewer": "Claude Fable 5.1",
+    "note": "크롭 벽 중심선 실측(외곽 8선·내벽 2선). 현관문은 PDF 도면의 문 호 위치(우측 벽, 크롭 마스크로 가려짐). 치수 체인은 외곽과 기준이 달라 넣지 않음. 오버레이 눈검사",
+    "sourcePdf": "/reference/현황도_송파구_오금동_마천로8길19-12_더트라이앵글.pdf",
+    "sourcePage": 2,
+    "image2dUrl": "/housing/songpa-ogeum/songpa-ogeum-2-3-03.png",
+    "originPx": {
+      "x": 18,
+      "y": 18
+    }
+  },
+  {
+    "layoutKey": "songpa-ogeum-4-401",
+    "property": "songpa-ogeum",
+    "method": "traced",
+    "reviewedAt": "2026-09-18T04:52:21.485Z",
+    "reviewer": "Claude Fable 5.1",
+    "note": "2~301호와 같은 타입. 401호 크롭에서 굵은 벽 선 8개를 실측해 좌표를 확정(잔차 최대 6mm), 오버레이 눈검사",
+    "sourcePdf": "/reference/현황도_송파구_오금동_마천로8길19-12_더트라이앵글.pdf",
+    "sourcePage": 2,
+    "image2dUrl": "/housing/songpa-ogeum/songpa-ogeum-4-401.png",
+    "originPx": {
+      "x": 23,
+      "y": 9
+    }
+  },
+  {
+    "layoutKey": "songpa-ogeum-4-402",
+    "property": "songpa-ogeum",
+    "method": "traced",
+    "reviewedAt": "2026-09-18T04:51:21.406Z",
+    "reviewer": "Claude Fable 5.1",
+    "note": "2~302호와 같은 타입. 402호 크롭에서 굵은 벽 선 10개를 실측해 좌표를 확정(잔차 x/z 최대 14mm), 오버레이 눈검사",
+    "sourcePdf": "/reference/현황도_송파구_오금동_마천로8길19-12_더트라이앵글.pdf",
+    "sourcePage": 2,
+    "image2dUrl": "/housing/songpa-ogeum/songpa-ogeum-4-402.png",
+    "originPx": {
+      "x": 23,
+      "y": 18
+    }
+  },
+  {
+    "layoutKey": "songpa-ogeum-5-501",
+    "property": "songpa-ogeum",
+    "method": "traced",
+    "reviewedAt": "2026-09-18T04:52:22.838Z",
+    "reviewer": "Claude Fable 5.1",
+    "note": "2~301호와 같은 타입. 3쪽 501호 크롭에서 굵은 벽 선 8개를 실측해 좌표를 확정(잔차 최대 4mm), 오버레이 눈검사",
+    "sourcePdf": "/reference/현황도_송파구_오금동_마천로8길19-12_더트라이앵글.pdf",
+    "sourcePage": 3,
+    "image2dUrl": "/housing/songpa-ogeum/songpa-ogeum-5-501.png",
+    "originPx": {
+      "x": 19,
+      "y": 9
+    }
+  },
+  {
+    "layoutKey": "songpa-ogeum-5-502",
+    "property": "songpa-ogeum",
+    "method": "traced",
+    "reviewedAt": "2026-09-18T04:51:22.835Z",
+    "reviewer": "Claude Fable 5.1",
+    "note": "2~302호와 같은 타입. 3쪽 502호 크롭에서 굵은 벽 선 10개를 실측해 좌표를 확정(잔차 x/z 최대 14mm), 오버레이 눈검사",
+    "sourcePdf": "/reference/현황도_송파구_오금동_마천로8길19-12_더트라이앵글.pdf",
+    "sourcePage": 3,
+    "image2dUrl": "/housing/songpa-ogeum/songpa-ogeum-5-502.png",
+    "originPx": {
+      "x": 19,
+      "y": 19
+    }
+  }
+]

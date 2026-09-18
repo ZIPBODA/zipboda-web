@@ -18,6 +18,15 @@ function closestPointOnSegment(px: number, pz: number, s: SceneSegment) {
   return { x: s.x1 + t * dx, z: s.z1 + t * dz };
 }
 
+/** 점에서 세그먼트까지의 거리(미터) */
+export function distanceToSegment(x: number, z: number, s: SceneSegment): number {
+  const c = closestPointOnSegment(x, z, s);
+  return Math.hypot(x - c.x, z - c.z);
+}
+
+/** 캡슐 충돌이 벽에서 유지하는 최소 간격 — 카메라 여유 + 벽 두께 절반 */
+export const COLLISION_MIN_DISTANCE_M = COLLISION_PADDING_M + WALL_THICKNESS_M / 2;
+
 /** 벽 세그먼트로부터 padding 이내 접근을 막도록 위치를 밀어낸다(캡슐 충돌) */
 export function resolveCollision(
   x: number,

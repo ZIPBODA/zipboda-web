@@ -1,0 +1,202 @@
+{
+  "layoutKey": "songpa-ogeum-5-502",
+  "walls": [
+    {
+      "a": [
+        1689,
+        198
+      ],
+      "b": [
+        7017,
+        198
+      ],
+      "thicknessMm": 360
+    },
+    {
+      "a": [
+        7017,
+        198
+      ],
+      "b": [
+        7017,
+        3984
+      ],
+      "thicknessMm": 360
+    },
+    {
+      "a": [
+        1689,
+        3984
+      ],
+      "b": [
+        7017,
+        3984
+      ],
+      "thicknessMm": 190
+    },
+    {
+      "a": [
+        1689,
+        2571
+      ],
+      "b": [
+        1689,
+        3984
+      ],
+      "thicknessMm": 360
+    },
+    {
+      "a": [
+        208,
+        2571
+      ],
+      "b": [
+        1937,
+        2571
+      ],
+      "thicknessMm": 380
+    },
+    {
+      "a": [
+        208,
+        610
+      ],
+      "b": [
+        208,
+        2571
+      ],
+      "thicknessMm": 380
+    },
+    {
+      "a": [
+        208,
+        610
+      ],
+      "b": [
+        1937,
+        610
+      ],
+      "thicknessMm": 390
+    },
+    {
+      "a": [
+        1689,
+        198
+      ],
+      "b": [
+        1689,
+        610
+      ],
+      "thicknessMm": 360
+    },
+    {
+      "a": [
+        1937,
+        610
+      ],
+      "b": [
+        1937,
+        2571
+      ],
+      "thicknessMm": 140
+    },
+    {
+      "a": [
+        6052,
+        3293
+      ],
+      "b": [
+        6052,
+        3984
+      ],
+      "thicknessMm": 100
+    },
+    {
+      "a": [
+        6052,
+        3293
+      ],
+      "b": [
+        7017,
+        3293
+      ],
+      "thicknessMm": 100
+    }
+  ],
+  "labels": [
+    {
+      "at": [
+        4465,
+        1785
+      ],
+      "label": "거실"
+    },
+    {
+      "at": [
+        995,
+        1586
+      ],
+      "label": "욕실"
+    },
+    {
+      "at": [
+        6547,
+        3677
+      ],
+      "label": "기타"
+    }
+  ],
+  "openings": [
+    {
+      "wall": 8,
+      "alongMm": 1375,
+      "type": "door",
+      "widthMm": 725
+    },
+    {
+      "wall": 3,
+      "alongMm": 706,
+      "type": "door",
+      "widthMm": 894
+    },
+    {
+      "wall": 10,
+      "alongMm": 350,
+      "type": "door",
+      "widthMm": 487
+    },
+    {
+      "wall": 0,
+      "alongMm": 1901,
+      "type": "window",
+      "widthMm": 1540
+    },
+    {
+      "wall": 1,
+      "alongMm": 2105,
+      "type": "window",
+      "widthMm": 1143
+    },
+    {
+      "wall": 1,
+      "alongMm": 3343,
+      "type": "window",
+      "widthMm": 378
+    },
+    {
+      "wall": 6,
+      "alongMm": 1007,
+      "type": "window",
+      "widthMm": 477
+    }
+  ],
+  "dimensionChains": [
+    {
+      "axis": "x",
+      "values": [
+        1800,
+        5100
+      ]
+    }
+  ]
+}

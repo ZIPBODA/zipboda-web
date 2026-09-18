@@ -1,5 +1,6 @@
+import { NORMALIZE_GRID_MM, POINT_MERGE_TOLERANCE_MM } from "../config/constants";
 import type { PointMm } from "../model/types";
-import { polygonBBox } from "./normalize";
+import { polygonBBox, snapPolygonOrthogonal } from "./normalize";
 
 /** 점이 폴리곤 안에 있는지 본다(짝수-홀수 규칙). 경계 위의 점은 안으로 친다 */
 export function pointInPolygon(point: PointMm, polygon: PointMm[]): boolean {
@@ -75,4 +76,33 @@ export function polygonCentroid(polygon: PointMm[]): PointMm {
   }
   const factor = 1 / (3 * twiceArea);
   return { x: cx * factor, z: cz * factor };
+}
+
+const isCollinear = (prev: PointMm, cur: PointMm, next: PointMm) => (cur.x - prev.x) * (next.z - cur.z) - (cur.z - prev.z) * (next.x - cur.x) === 0;
+const isClose = (a: PointMm, b: PointMm, toleranceMm: number) => Math.hypot(a.x - b.x, a.z - b.z) <= toleranceMm;
+
+/**
+ * 직교 스냅 뒤 겹친 점과 직선 위의 중간점을 없앤다.
+ * 래스터 윤곽 추적은 1px 벽 조각에서 폭 0 돌기(A→B→A)를 남기는데, 그대로 두면 변이 겹쳐
+ * "교차하지 않는 직교 폴리곤" 검사에 걸리고 3D 바닥도 찢어진다. B는 직선 위 점으로, A·A는 겹침으로 사라진다
+ */
+export function cleanOrthogonalPolygon(polygon: PointMm[], gridMm = NORMALIZE_GRID_MM, toleranceMm = POINT_MERGE_TOLERANCE_MM): PointMm[] {
+  let points = snapPolygonOrthogonal(polygon, gridMm);
+  let changed = true;
+  while (changed && points.length >= 3) {
+    changed = false;
+    const kept: PointMm[] = [];
+    for (let i = 0; i < points.length; i++) {
+      const prev = points[(i - 1 + points.length) % points.length];
+      const cur = points[i];
+      const next = points[(i + 1) % points.length];
+      if (isClose(prev, cur, toleranceMm) || isCollinear(prev, cur, next)) {
+        changed = true;
+        continue;
+      }
+      kept.push(cur);
+    }
+    points = kept;
+  }
+  return points.length >= 3 ? points : [];
 }

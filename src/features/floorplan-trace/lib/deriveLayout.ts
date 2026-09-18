@@ -1,5 +1,6 @@
 import {
   POINT_MERGE_TOLERANCE_MM,
+  cleanOrthogonalPolygon,
   labelRoomRegions,
   polygonAreaM2,
   polygonBBox,
@@ -10,7 +11,6 @@ import {
 } from "@/entities/floorplan";
 import { MIN_ROOM_M2 } from "../config/constants";
 import type { DerivedLayout, DerivedRoom, TraceWall } from "../model/types";
-import { cleanOrthogonalPolygon } from "./cleanPolygon";
 import { rasterizeWalls, type WallRaster } from "./rasterizeWalls";
 import { isHorizontal } from "./snap";
 import { openEndpoints } from "./wallOps";

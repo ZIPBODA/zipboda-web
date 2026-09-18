@@ -1,3 +1,5 @@
+import { validateModelIntegrity } from "./modelIntegrity";
+import { cleanOrthogonalPolygon, pointInPolygon } from "./polygon";
 import {
   AREA_EXCLUDED_LABELS,
   REACHABILITY_EXEMPT_LABELS,
@@ -75,7 +77,7 @@ export function polygonBBox(polygon: PointMm[]): BBox {
 
 export const wallLength = (wall: Wall2D): number => distance(wall.a, wall.b);
 
-const roomArea = (room: Room2D) => room.areaM2 ?? polygonAreaM2(room.polygon);
+const roomArea = (room: Room2D) => polygonAreaM2(room.polygon);
 const isAreaCounted = (room: Room2D) => !AREA_EXCLUDED_LABELS.includes(room.label);
 
 export function validateScale(model: FloorplanModel2D): NormalizeFlag[] {
@@ -104,19 +106,59 @@ export function validateScale(model: FloorplanModel2D): NormalizeFlag[] {
  * 그래서 제외 대상 이름을 하나도 못 읽었으면 "모자란다"만 본다.
  * 넘치는 쪽은 tiling 검사(커버리지 상한·겹침)가 이미 잡는다.
  */
+export interface ExclusiveAreaBounds {
+  /** 면적에 세는 방(발코니 제외) 폴리곤 합 — 벽 중심선 기준 */
+  centerline: number;
+  /** 중심선 합에서 외벽 안쪽 반두께 띠를 뺀 값 — 안목치수 기준에 가깝다 */
+  innerFace: number;
+}
+
+const wallSideProbe = (wall: Wall2D, sign: 1 | -1): PointMm => {
+  const dx = wall.b.x - wall.a.x;
+  const dz = wall.b.z - wall.a.z;
+  const length = Math.hypot(dx, dz) || 1;
+  const offset = wall.thicknessMm / 2 + 1;
+  return { x: (wall.a.x + wall.b.x) / 2 + (-dz / length) * offset * sign, z: (wall.a.z + wall.b.z) / 2 + (dx / length) * offset * sign };
+};
+
+/**
+ * 전용면적 산정 기준은 도면마다 벽 중심선(단독·다가구)이거나 안목치수(공동주택)라 두 환산값을 함께 돌려준다.
+ * 안목 환산에서는 면적에 세는 방에 면한 외벽만 뺀다 — 발코니에만 면한 외벽은 발코니 몫이다
+ */
+export function exclusiveAreaBounds(model: FloorplanModel2D): ExclusiveAreaBounds {
+  const counted = model.rooms.filter(isAreaCounted);
+  const centerline = counted.reduce((acc, r) => acc + roomArea(r), 0);
+  const facesCountedRoom = (wall: Wall2D) =>
+    ([1, -1] as const).some((sign) => counted.some((room) => pointInPolygon(wallSideProbe(wall, sign), room.polygon)));
+  const band = model.walls
+    .filter((wall) => wall.exterior && facesCountedRoom(wall))
+    .reduce((acc, wall) => acc + (wallLength(wall) * wall.thicknessMm) / 2, 0);
+  return { centerline, innerFace: centerline - band / MM2_PER_M2 };
+}
+
+/** 인쇄 전용면적이 [안목 환산, 중심선 합] 구간을 벗어난 비율. 구간 안이면 0, 전용면적이 없으면 null */
+export function exclusiveAreaDeviation(model: FloorplanModel2D): number | null {
+  const printed = model.printed.exclusiveAreaM2;
+  if (printed === undefined) return null;
+  const { centerline, innerFace } = exclusiveAreaBounds(model);
+  const knowsExcludedRooms = model.rooms.some((room) => !isAreaCounted(room));
+  // 방 합이 전용면적에 못 미치면 방을 놓친 것이다
+  if (printed > centerline) return (printed - centerline) / printed;
+  // 방 합이 안목 환산으로도 전용면적을 넘으면 방을 더 잡은 것이다 — 단, 발코니를 못 읽었으면 발코니가 섞인 것일 수 있어 걸지 않는다
+  if (knowsExcludedRooms && printed < innerFace) return (innerFace - printed) / printed;
+  return 0;
+}
+
 export function validateArea(model: FloorplanModel2D): NormalizeFlag[] {
   const printed = model.printed.exclusiveAreaM2;
   if (printed === undefined) return [];
+  const deviation = exclusiveAreaDeviation(model);
+  if (deviation === null || deviation <= AREA_TOLERANCE) return [];
 
-  const sum = model.rooms.filter(isAreaCounted).reduce((acc, r) => acc + roomArea(r), 0);
+  const { centerline, innerFace } = exclusiveAreaBounds(model);
   const knowsExcludedRooms = model.rooms.some((room) => !isAreaCounted(room));
-  const shortfall = (printed - sum) / printed;
-  const tooLittle = shortfall > AREA_TOLERANCE;
-  const tooMuch = knowsExcludedRooms && (sum - printed) / printed > AREA_TOLERANCE;
-
-  if (!tooLittle && !tooMuch) return [];
   const basis = knowsExcludedRooms ? "" : " (발코니 등 제외 대상을 못 읽어 부족분만 검사)";
-  return [{ code: "area-mismatch", detail: `방 합 ${sum.toFixed(2)}㎡ vs 전용 ${printed}㎡${basis}` }];
+  return [{ code: "area-mismatch", detail: `방 합 ${centerline.toFixed(2)}㎡·안목 환산 ${innerFace.toFixed(2)}㎡ vs 전용 ${printed}㎡${basis}` }];
 }
 
 /** 직교 폴리곤이 x 구간(midX 기준)에서 덮는 z 구간들 — 수평 변과의 교차 z를 정렬해 짝지음 */
@@ -160,6 +202,9 @@ export function validateTiling(model: FloorplanModel2D): NormalizeFlag[] {
   const isCoverageOutOfRange = coverage < TILING_MIN_COVERAGE || coverage > TILING_MAX_COVERAGE;
   if (isCoverageOutOfRange) flags.push({ code: "tiling-gap", detail: `방 면적 커버리지 ${(coverage * 100).toFixed(1)}%` });
 
+  for (const room of model.rooms) {
+    if (polygonAreaMm2(room.polygon) - rectilinearIntersectionArea(room.polygon, model.outline) > 1) flags.push({ code: "room-outside", detail: room.id });
+  }
   for (let i = 0; i < model.rooms.length; i++) {
     for (let j = i + 1; j < model.rooms.length; j++) {
       if (rectilinearIntersectionArea(model.rooms[i].polygon, model.rooms[j].polygon) > TILING_OVERLAP_TOLERANCE_MM2) {
@@ -227,8 +272,14 @@ export function validateOpenings(model: FloorplanModel2D): NormalizeFlag[] {
       flags.push({ code: "opening-invalid", detail: `${opening.wallId} 벽 없음` });
       continue;
     }
-    const isOutsideWall = opening.offsetMm < 0 || opening.offsetMm + opening.widthMm > wallLength(wall) + OPENING_LENGTH_TOLERANCE_MM;
+    const isOutsideWall = !Number.isFinite(opening.offsetMm) || !Number.isFinite(opening.widthMm) || opening.widthMm <= 0 || opening.offsetMm < 0 || opening.offsetMm + opening.widthMm > wallLength(wall) + OPENING_LENGTH_TOLERANCE_MM;
     if (isOutsideWall) flags.push({ code: "opening-invalid", detail: `${opening.wallId} 개구부가 벽 길이 초과` });
+  }
+  for (let i = 0; i < model.openings.length; i++) {
+    const a = model.openings[i];
+    for (const b of model.openings.slice(i + 1)) {
+      if (a.wallId === b.wallId && Math.max(a.offsetMm, b.offsetMm) < Math.min(a.offsetMm + a.widthMm, b.offsetMm + b.widthMm)) flags.push({ code: "opening-invalid", detail: `${a.wallId}: overlapping openings` });
+    }
   }
   return flags;
 }
@@ -369,15 +420,37 @@ export function computeConfidence(flags: NormalizeFlag[]): number {
 
 /** 추출 모델을 직교 스냅·벽 병합 후 검증해 신뢰도와 자동 확정 여부를 산출한다 */
 export function normalizeModel(model: FloorplanModel2D): NormalizeResult {
+  const inputFlags = validateModelIntegrity(model, false);
+  if (inputFlags.length) return { model, confidence: 0, flags: inputFlags, autoAccept: false };
   const snapPoint = (p: PointMm): PointMm => ({ x: snapToGrid(p.x), z: snapToGrid(p.z) });
   const normalized: FloorplanModel2D = {
     ...model,
-    outline: snapPolygonOrthogonal(model.outline),
-    rooms: model.rooms.map((r) => ({ ...r, polygon: snapPolygonOrthogonal(r.polygon) })),
+    outline: cleanOrthogonalPolygon(model.outline),
+    rooms: model.rooms.map((r) => {
+      const polygon = cleanOrthogonalPolygon(r.polygon);
+      return { ...r, polygon, areaM2: polygonAreaM2(polygon) };
+    }),
     walls: mergeCollinearWalls(model.walls.map((w) => ({ ...w, a: snapPoint(w.a), b: snapPoint(w.b) })))
   };
 
+  normalized.openings = model.openings.map((opening) => {
+    const before = model.walls.find((wall) => wall.id === opening.wallId);
+    if (!before) return opening;
+    const a = snapPoint(before.a), b = snapPoint(before.b);
+    const horizontal = a.z === b.z;
+    const along = horizontal ? "x" : "z";
+    const across = horizontal ? "z" : "x";
+    const after = normalized.walls.find((wall) => wall.a[across] === a[across] && wall.b[across] === b[across] &&
+      wall.a[along] <= Math.min(a[along], b[along]) && wall.b[along] >= Math.max(a[along], b[along]));
+    if (!after) return opening;
+    const start = pointOnWall(before, opening.offsetMm);
+    const end = pointOnWall(before, opening.offsetMm + opening.widthMm);
+    return { ...opening, wallId: after.id, offsetMm: Math.min(start[along], end[along]) - after.a[along] };
+  });
+  const integrityFlags = validateModelIntegrity(normalized);
+  if (integrityFlags.length) return { model: normalized, confidence: 0, flags: integrityFlags, autoAccept: false };
   const flags = [
+    ...validateOpenings(model),
     ...validateScale(normalized),
     ...validateArea(normalized),
     ...validateTiling(normalized),
@@ -390,6 +463,6 @@ export function normalizeModel(model: FloorplanModel2D): NormalizeResult {
     model: { ...normalized, confidence: { ...normalized.confidence, overall: confidence } },
     confidence,
     flags,
-    autoAccept: confidence >= AUTO_ACCEPT_CONFIDENCE
+    autoAccept: confidence >= AUTO_ACCEPT_CONFIDENCE && flags.every((flag) => flag.code === "scale-no-chain")
   };
 }

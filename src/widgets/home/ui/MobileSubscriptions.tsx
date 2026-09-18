@@ -12,12 +12,12 @@ export function MobileSubscriptions({ items }: { items: Subscription[] }) {
     <MobileHomeSection title="공공 청약" actionLabel="전체 보기" actionHref="/subscriptions">
       <ul className="flex flex-col gap-2 px-3">
         {items.map((item) => {
-          const urgent = item.dday <= URGENT_DDAY;
+          const urgent = item.dday !== null && item.dday <= URGENT_DDAY;
           return (
             <li key={item.id}>
               <Link href={`/subscriptions/${item.id}`} className="flex items-center gap-3 rounded-xl border border-line-subtle bg-surface p-3">
                 <span className="relative size-12 shrink-0 overflow-hidden rounded-lg bg-surface-tertiary">
-                  <Image src={item.image} alt="" fill sizes="48px" className="object-cover" />
+                  {item.image && <Image src={item.image} alt="" fill sizes="48px" className="object-cover" />}
                 </span>
                 <span className="min-w-0 flex-1">
                   <span className="block truncate text-xs font-semibold text-fg-heading">{item.title}</span>
@@ -30,13 +30,13 @@ export function MobileSubscriptions({ items }: { items: Subscription[] }) {
                     ))}
                   </span>
                 </span>
-                <span
+                {item.dday !== null && <span
                   className={`flex size-12 shrink-0 flex-col items-center justify-center rounded-lg text-sm font-bold ${
                     urgent ? "bg-brand text-fg-heading" : "bg-surface-tertiary text-gray-700"
                   }`}
                 >
                   D-{item.dday}
-                </span>
+                </span>}
               </Link>
             </li>
           );

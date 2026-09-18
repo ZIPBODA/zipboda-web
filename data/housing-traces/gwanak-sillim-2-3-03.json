@@ -1,0 +1,152 @@
+{
+  "layoutKey": "gwanak-sillim-2-3-03",
+  "walls": [
+    {
+      "a": [
+        118,
+        75
+      ],
+      "b": [
+        3453,
+        75
+      ],
+      "thicknessMm": 200
+    },
+    {
+      "a": [
+        3453,
+        75
+      ],
+      "b": [
+        3453,
+        5792
+      ],
+      "thicknessMm": 160
+    },
+    {
+      "a": [
+        118,
+        5792
+      ],
+      "b": [
+        3453,
+        5792
+      ],
+      "thicknessMm": 200
+    },
+    {
+      "a": [
+        118,
+        75
+      ],
+      "b": [
+        118,
+        5792
+      ],
+      "thicknessMm": 200
+    },
+    {
+      "a": [
+        118,
+        4580
+      ],
+      "b": [
+        3453,
+        4580
+      ],
+      "thicknessMm": 150
+    },
+    {
+      "a": [
+        1727,
+        75
+      ],
+      "b": [
+        1727,
+        1866
+      ],
+      "thicknessMm": 100
+    },
+    {
+      "a": [
+        118,
+        1866
+      ],
+      "b": [
+        1727,
+        1866
+      ],
+      "thicknessMm": 100
+    }
+  ],
+  "labels": [
+    {
+      "at": [
+        2145,
+        3218
+      ],
+      "label": "거실"
+    },
+    {
+      "at": [
+        858,
+        965
+      ],
+      "label": "욕실"
+    },
+    {
+      "at": [
+        1931,
+        5202
+      ],
+      "label": "발코니"
+    }
+  ],
+  "openings": [
+    {
+      "wall": 0,
+      "alongMm": 2284,
+      "type": "door",
+      "widthMm": 922
+    },
+    {
+      "wall": 5,
+      "alongMm": 1287,
+      "type": "door",
+      "widthMm": 740
+    },
+    {
+      "wall": 4,
+      "alongMm": 2016,
+      "type": "window",
+      "widthMm": 1770
+    },
+    {
+      "wall": 2,
+      "alongMm": 1577,
+      "type": "window",
+      "widthMm": 858
+    },
+    {
+      "wall": 2,
+      "alongMm": 2456,
+      "type": "window",
+      "widthMm": 858
+    }
+  ],
+  "dimensionChains": [
+    {
+      "axis": "x",
+      "values": [
+        3300
+      ]
+    },
+    {
+      "axis": "z",
+      "values": [
+        4500,
+        1200
+      ]
+    }
+  ]
+}

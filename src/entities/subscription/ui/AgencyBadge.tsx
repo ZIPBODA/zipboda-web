@@ -8,11 +8,12 @@ const SIZE_CLASS = {
 } as const;
 
 interface Props {
-  agency: AgencyCode;
+  agency: AgencyCode | null;
   size?: keyof typeof SIZE_CLASS;
 }
 
 export function AgencyBadge({ agency, size = "md" }: Props) {
+  if (agency === null) return null;
   return (
     <span
       className={`flex shrink-0 items-center justify-center rounded-lg font-bold text-fg-ondark ${SIZE_CLASS[size]} ${AGENCY_BADGE_BG[agency]}`}

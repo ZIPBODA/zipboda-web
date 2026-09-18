@@ -25,3 +25,5 @@ export { SubscriptionCardMobile } from "./ui/SubscriptionCardMobile";
 export { SubscriptionSummaryRow } from "./ui/SubscriptionSummaryRow";
 export { AgencyBadge } from "./ui/AgencyBadge";
 export { DdayBadge } from "./ui/DdayBadge";
+
+export { selectSubscriptionUnit } from "./lib/selectUnit";

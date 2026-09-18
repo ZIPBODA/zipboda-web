@@ -5,11 +5,11 @@ import { DdayBadge } from "./DdayBadge";
 import type { Subscription } from "../model/types";
 
 // figma 135:7088 메인 청약 요약 행 — 목록 카드(135:5669)보다 조밀하고 마감일 중심
-export function SubscriptionSummaryRow({ item, image }: { item: Subscription; image?: string }) {
+export function SubscriptionSummaryRow({ item }: { item: Subscription; image?: string }) {
   const stats: [string, string, string][] = [
-    ["신청자", item.applicants.toLocaleString(), "font-semibold text-gray-800"],
-    ["경쟁률", item.competition, "font-semibold text-gray-800"],
-    ["마감일", item.deadline, "font-medium text-gray-700"]
+    ["신청자", item.applicants?.toLocaleString() ?? "", "font-semibold text-gray-800"],
+    ["경쟁률", item.competition ?? "", "font-semibold text-gray-800"],
+    ["마감일", item.deadline ?? "", "font-medium text-gray-700"]
   ];
 
   return (
@@ -18,7 +18,7 @@ export function SubscriptionSummaryRow({ item, image }: { item: Subscription; im
       className="flex items-center gap-5 rounded-xl border border-line-subtle bg-surface p-5 transition-shadow hover:shadow-sm"
     >
       <div className="relative h-[54px] w-[72px] shrink-0 overflow-hidden rounded-lg bg-surface-tertiary">
-        <Image src={image ?? item.image} alt="" fill sizes="72px" className="object-cover" />
+        {item.image && <Image src={item.image} alt="" fill sizes="72px" className="object-cover" />}
       </div>
       <AgencyBadge agency={item.agency} size="lg" />
 

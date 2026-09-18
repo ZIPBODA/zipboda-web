@@ -11,7 +11,7 @@ export interface FloorplanRoom {
 /** 메인 '인터랙티브 평면도' 섹션에 노출하는 대표 평면도 */
 export interface FloorplanShowcase {
   id: string;
-  size: number;
+  size: number | null;
   type: string;
   summary: string;
   has2d: boolean;
@@ -20,9 +20,13 @@ export interface FloorplanShowcase {
 }
 
 export interface Floorplan {
+  layoutKey?: string;
+  unitKey?: string;
+  sourcePdf?: string;
+  sourcePage?: number;
   id: string;
   subscriptionId: string;
-  size: number;
+  size: number | null;
   type: string;
   rooms: FloorplanRoom[];
   has3d: boolean;
@@ -123,6 +127,8 @@ export interface FloorplanModel2D {
 }
 
 export type NormalizeFlagCode =
+  | "geometry-invalid"
+  | "room-outside"
   | "scale-mismatch"
   | "scale-no-chain"
   | "area-mismatch"
@@ -142,4 +148,19 @@ export interface NormalizeResult {
   confidence: number;
   flags: NormalizeFlag[];
   autoAccept: boolean;
+}
+
+/** 검수를 통과해 3D로 내보내는 모델의 출처 기록(models/reviewed.json 한 줄) */
+export interface ReviewedModelEntry {
+  layoutKey: string;
+  property: string;
+  method: "extraction" | "traced";
+  reviewedAt: string;
+  reviewer: string;
+  note: string;
+  sourcePdf: string;
+  sourcePage: number;
+  image2dUrl: string;
+  /** 모델 (0,0)이 놓인 크롭 이미지 px — 검수 화면이 크롭 위에 모델을 겹칠 때 쓴다 */
+  originPx: { x: number; y: number };
 }

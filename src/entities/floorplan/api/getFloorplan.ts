@@ -1,7 +1,10 @@
-import { MOCK_FLOORPLANS } from "./__mocks__/floorplan.mock";
+import { HOUSING_FLOORPLANS } from "./housingFloorplans";
 import type { Floorplan } from "../model/types";
 
-// TODO(API-031): fetch(`/api/floorplans/${id}`)로 교체, mock 제거(A1)
-export async function getFloorplan(subscriptionId: string, size: number): Promise<Floorplan | null> {
-  return MOCK_FLOORPLANS.find((f) => f.subscriptionId === subscriptionId && f.size === size) ?? null;
+export async function getFloorplan(subscriptionId: string, unit: string | number): Promise<Floorplan | null> {
+  const candidates = HOUSING_FLOORPLANS.filter((floorplan) => floorplan.subscriptionId === subscriptionId);
+  const exact = candidates.find((floorplan) => floorplan.unitKey === unit || floorplan.layoutKey === unit);
+  if (exact) return exact;
+  const matches = candidates.filter((floorplan) => floorplan.size !== null && floorplan.size === Number(unit));
+  return matches.length === 1 ? matches[0] : null;
 }

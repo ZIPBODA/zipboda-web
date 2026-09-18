@@ -33,8 +33,9 @@ export function assembleTraceModel(document: TraceDocument, layout: DerivedLayou
     document.openings.filter((opening) => wallIds.has(opening.wallId))
   );
 
-  // 이름 없는 1.5㎡ 이하 공간은 PS·실외기실 같은 설비 공간이다 — 자동 추출과 같이 벽은 남기고 바닥(방)으로는 세우지 않는다
-  const isServiceSpace = (room: LabeledRoom) => room.label === "기타" && room.areaM2 <= REACHABILITY_EXEMPT_UNLABELED_MAX_M2;
+  // 이름을 안 붙인 1.5㎡ 이하 공간은 PS·실외기실 같은 설비 공간이다 — 자동 추출과 같이 벽은 남기고 바닥(방)으로는 세우지 않는다.
+  // 사람이 '기타'로 이름을 붙인 작은 공간(세탁실 등)은 쓰는 공간이라 남긴다
+  const isServiceSpace = (room: LabeledRoom) => room.anchorId === null && room.label === "기타" && room.areaM2 <= REACHABILITY_EXEMPT_UNLABELED_MAX_M2;
   const kept = rooms.filter((room) => !isServiceSpace(room));
   const room2ds: Room2D[] = kept.map((room) => ({ id: room.key, label: room.label, polygon: room.polygon.map(shift), areaM2: room.areaM2 }));
   const perRoom = Object.fromEntries(kept.map((room) => [room.key, room.anchorId ? MANUAL_ROOM_CONFIDENCE : UNLABELED_ROOM_CONFIDENCE]));

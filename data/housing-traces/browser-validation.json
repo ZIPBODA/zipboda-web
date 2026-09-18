@@ -1,0 +1,290 @@
+{
+  "baseUrl": "http://localhost:3001",
+  "branch": "fix/floorplan-engine-integrity",
+  "checks": [
+    {
+      "type": "unit",
+      "width": 360,
+      "before": 456,
+      "after": 456,
+      "horizontalOverflow": 0,
+      "errors": []
+    },
+    {
+      "type": "tab",
+      "width": 360,
+      "before": 82,
+      "after": 82
+    },
+    {
+      "type": "unit",
+      "width": 767,
+      "before": 436,
+      "after": 436,
+      "horizontalOverflow": 0,
+      "errors": []
+    },
+    {
+      "type": "tab",
+      "width": 767,
+      "before": 72,
+      "after": 72
+    },
+    {
+      "type": "unit",
+      "width": 768,
+      "before": 898,
+      "after": 898,
+      "horizontalOverflow": 59,
+      "errors": []
+    },
+    {
+      "type": "unit",
+      "width": 1280,
+      "before": 366,
+      "after": 366,
+      "horizontalOverflow": 0,
+      "errors": []
+    },
+    {
+      "type": "3d",
+      "key": "dobong-banghak-2-3-02",
+      "width": 360,
+      "mode": "orbit",
+      "errors": [],
+      "canvas": {
+        "width": 360,
+        "height": 717
+      },
+      "walkLabelPresent": false
+    },
+    {
+      "type": "3d",
+      "key": "dobong-banghak-2-3-02",
+      "width": 360,
+      "mode": "walk",
+      "errors": [],
+      "canvas": {
+        "width": 360,
+        "height": 900
+      },
+      "walkLabelPresent": true
+    },
+    {
+      "type": "3d",
+      "key": "dobong-banghak-2-3-02",
+      "width": 1280,
+      "mode": "orbit",
+      "errors": [],
+      "canvas": {
+        "width": 1280,
+        "height": 717
+      },
+      "walkLabelPresent": false
+    },
+    {
+      "type": "3d",
+      "key": "dobong-banghak-2-3-02",
+      "width": 1280,
+      "mode": "walk",
+      "errors": [],
+      "canvas": {
+        "width": 1280,
+        "height": 900
+      },
+      "walkLabelPresent": true
+    },
+    {
+      "type": "3d",
+      "key": "gangseo-hwagok-2-203",
+      "width": 360,
+      "mode": "orbit",
+      "errors": [],
+      "canvas": {
+        "width": 360,
+        "height": 717
+      },
+      "walkLabelPresent": false
+    },
+    {
+      "type": "3d",
+      "key": "gangseo-hwagok-2-203",
+      "width": 360,
+      "mode": "walk",
+      "errors": [],
+      "canvas": {
+        "width": 360,
+        "height": 900
+      },
+      "walkLabelPresent": true
+    },
+    {
+      "type": "3d",
+      "key": "gangseo-hwagok-2-203",
+      "width": 1280,
+      "mode": "orbit",
+      "errors": [],
+      "canvas": {
+        "width": 1280,
+        "height": 717
+      },
+      "walkLabelPresent": false
+    },
+    {
+      "type": "3d",
+      "key": "gangseo-hwagok-2-203",
+      "width": 1280,
+      "mode": "walk",
+      "errors": [],
+      "canvas": {
+        "width": 1280,
+        "height": 900
+      },
+      "walkLabelPresent": true
+    },
+    {
+      "type": "3d",
+      "key": "gwanak-sillim-2-3-03",
+      "width": 360,
+      "mode": "orbit",
+      "errors": [],
+      "canvas": {
+        "width": 360,
+        "height": 717
+      },
+      "walkLabelPresent": false
+    },
+    {
+      "type": "3d",
+      "key": "gwanak-sillim-2-3-03",
+      "width": 360,
+      "mode": "walk",
+      "errors": [],
+      "canvas": {
+        "width": 360,
+        "height": 900
+      },
+      "walkLabelPresent": true
+    },
+    {
+      "type": "3d",
+      "key": "gwanak-sillim-2-3-03",
+      "width": 1280,
+      "mode": "orbit",
+      "errors": [],
+      "canvas": {
+        "width": 1280,
+        "height": 717
+      },
+      "walkLabelPresent": false
+    },
+    {
+      "type": "3d",
+      "key": "gwanak-sillim-2-3-03",
+      "width": 1280,
+      "mode": "walk",
+      "errors": [],
+      "canvas": {
+        "width": 1280,
+        "height": 900
+      },
+      "walkLabelPresent": true
+    },
+    {
+      "type": "3d",
+      "key": "gangnam-gaepo-4-402",
+      "width": 360,
+      "mode": "orbit",
+      "errors": [],
+      "canvas": {
+        "width": 360,
+        "height": 717
+      },
+      "walkLabelPresent": false
+    },
+    {
+      "type": "3d",
+      "key": "gangnam-gaepo-4-402",
+      "width": 360,
+      "mode": "walk",
+      "errors": [],
+      "canvas": {
+        "width": 360,
+        "height": 900
+      },
+      "walkLabelPresent": true
+    },
+    {
+      "type": "3d",
+      "key": "gangnam-gaepo-4-402",
+      "width": 1280,
+      "mode": "orbit",
+      "errors": [],
+      "canvas": {
+        "width": 1280,
+        "height": 717
+      },
+      "walkLabelPresent": false
+    },
+    {
+      "type": "3d",
+      "key": "gangnam-gaepo-4-402",
+      "width": 1280,
+      "mode": "walk",
+      "errors": [],
+      "canvas": {
+        "width": 1280,
+        "height": 900
+      },
+      "walkLabelPresent": true
+    },
+    {
+      "type": "3d",
+      "key": "jungnang-myeonmok-2-3-03",
+      "width": 360,
+      "mode": "orbit",
+      "errors": [],
+      "canvas": {
+        "width": 360,
+        "height": 717
+      },
+      "walkLabelPresent": false
+    },
+    {
+      "type": "3d",
+      "key": "jungnang-myeonmok-2-3-03",
+      "width": 360,
+      "mode": "walk",
+      "errors": [],
+      "canvas": {
+        "width": 360,
+        "height": 900
+      },
+      "walkLabelPresent": true
+    },
+    {
+      "type": "3d",
+      "key": "jungnang-myeonmok-2-3-03",
+      "width": 1280,
+      "mode": "orbit",
+      "errors": [],
+      "canvas": {
+        "width": 1280,
+        "height": 717
+      },
+      "walkLabelPresent": false
+    },
+    {
+      "type": "3d",
+      "key": "jungnang-myeonmok-2-3-03",
+      "width": 1280,
+      "mode": "walk",
+      "errors": [],
+      "canvas": {
+        "width": 1280,
+        "height": 900
+      },
+      "walkLabelPresent": true
+    }
+  ]
+}

@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { getSubscriptionDetail } from "@/entities/subscription";
+import { getSubscriptionDetail, selectSubscriptionUnit } from "@/entities/subscription";
 import { getFloorplan } from "@/entities/floorplan";
 import { FloorplanExperienceLoader, type FloorplanTab } from "@/widgets/floorplan-viewer";
 
@@ -19,9 +19,10 @@ export default async function FloorplanViewerPage({ params, searchParams }: Page
   const detail = await getSubscriptionDetail(params.id);
   if (!detail) notFound();
 
-  const requestedSize = Number(searchParams.unit);
-  const size = detail.units.find((u) => u.size === requestedSize)?.size ?? detail.defaultUnitSize;
-  const floorplan = (await getFloorplan(detail.id, size)) ?? (await getFloorplan(detail.id, detail.defaultUnitSize));
+  const unit = selectSubscriptionUnit(detail, searchParams.unit);
+  if (!unit) notFound();
+  const key = unit.unitKey ?? unit.size;
+  const floorplan = key === null ? null : await getFloorplan(detail.id, key);
   if (!floorplan) notFound();
 
   const initialTab: FloorplanTab = searchParams.view === "3d" ? "3d" : "2d";
@@ -31,7 +32,7 @@ export default async function FloorplanViewerPage({ params, searchParams }: Page
     <FloorplanExperienceLoader
       floorplan={floorplan}
       title={detail.title}
-      backHref={`/subscriptions/${detail.id}`}
+      backHref={`/subscriptions/${detail.id}?unit=${encodeURIComponent(String(key))}`}
       initialTab={initialTab}
       initialWalk={initialWalk}
     />

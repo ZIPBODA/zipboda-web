@@ -1,0 +1,24 @@
+{
+  "layoutKey": "gangseo-hwagok-2-201",
+  "walls": [
+    { "a": [451, 193],   "b": [3709, 193],  "thicknessMm": 200 },
+    { "a": [3709, 193],  "b": [3709, 5881], "thicknessMm": 200 },
+    { "a": [451, 5881],  "b": [3709, 5881], "thicknessMm": 200 },
+    { "a": [451, 193],   "b": [451, 5881],  "thicknessMm": 200 },
+    { "a": [451, 4650],  "b": [3709, 4650], "thicknessMm": 150 },
+    { "a": [1978, 193],  "b": [1978, 1574], "thicknessMm": 100 },
+    { "a": [1978, 1574], "b": [3709, 1574], "thicknessMm": 100 }
+  ],
+  "labels": [
+    { "at": [1200, 3000], "label": "거실" },
+    { "at": [2800, 800],  "label": "욕실" },
+    { "at": [1500, 5300], "label": "발코니" }
+  ],
+  "openings": [
+    { "wall": 0, "alongMm": 1050, "type": "door",   "widthMm": 1000 },
+    { "wall": 5, "alongMm": 906,  "type": "door",   "widthMm": 700 },
+    { "wall": 4, "alongMm": 909,  "type": "window", "widthMm": 1650 },
+    { "wall": 2, "alongMm": 909,  "type": "window", "widthMm": 1650 }
+  ],
+  "dimensionChains": [ { "axis": "x", "values": [1800, 1425] } ]
+}

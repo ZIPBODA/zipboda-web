@@ -52,6 +52,8 @@ export const REACHABILITY_EXEMPT_LABELS: RoomLabel[] = ["반침"];
 export const REACHABILITY_EXEMPT_UNLABELED_MAX_M2 = 1.5;
 export const ENTRANCE_LABEL: RoomLabel = "현관";
 export const CONFIDENCE_PENALTY: Record<NormalizeFlagCode, number> = {
+  "geometry-invalid": 1,
+  "room-outside": 1,
   "scale-mismatch": 0.15,
   "scale-no-chain": 0.1,
   "area-mismatch": 0.15,
