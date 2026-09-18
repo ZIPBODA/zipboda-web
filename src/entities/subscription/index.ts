@@ -27,3 +27,4 @@ export { AgencyBadge } from "./ui/AgencyBadge";
 export { DdayBadge } from "./ui/DdayBadge";
 
 export { selectSubscriptionUnit } from "./lib/selectUnit";
+export { toMapMarker, toMapMarkers } from "./lib/toMapMarker";

@@ -1,6 +1,8 @@
 import type { AgencyCode, SubscriptionSort, SubscriptionStatus } from "../model/types";
 
 export const REGION_OPTIONS = ["전체", "서울", "인천", "경기"] as const;
+/** 지오코딩으로 시·도를 알아내기 전까지 쓰는 값 — 현재 수집한 현황도가 모두 서울이다 */
+export const DEFAULT_REGION = "서울";
 export const SIZE_OPTIONS = ["전체", "39", "59", "84", "114"] as const;
 export const AGENCY_OPTIONS = ["전체", "LH", "SH", "GH", "IH"] as const;
 

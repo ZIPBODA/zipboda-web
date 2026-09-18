@@ -1,3 +1,5 @@
+import type { GeoPoint } from "@/shared/lib/geo";
+
 export type AgencyCode = "LH" | "SH" | "GH" | "IH";
 
 export type SubscriptionSort = "DEADLINE" | "COMPETITION" | "HOUSEHOLDS";
@@ -11,6 +13,8 @@ export interface Subscription {
   title: string;
   region: string;
   location: string;
+  /** 주소를 좌표로 바꾼 결과. 지오코딩 전이거나 실패하면 없다 */
+  coord?: GeoPoint | null;
   sizes: number[];
   applicants: number | null;
   households: number | null;
@@ -48,6 +52,8 @@ export interface SubscriptionDetail {
   status: SubscriptionStatus | null;
   title: string;
   address: string;
+  /** 주소를 좌표로 바꾼 결과. 지오코딩 전이거나 실패하면 없다 */
+  coord?: GeoPoint | null;
   dday: number | null;
   applyPeriod: string | null;
   households: string | null;
