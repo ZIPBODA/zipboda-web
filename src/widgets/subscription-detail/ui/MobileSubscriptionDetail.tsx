@@ -81,8 +81,8 @@ export function MobileSubscriptionDetail({ detail, floorplan, selectedUnit, acti
         </dl>
       </section>
 
-      {/* figma 419:10394 탭 바 4종 */}
-      <nav aria-label="상세 보기 전환" className="grid grid-cols-4 gap-2 bg-surface px-5 pb-1">
+      {/* figma 419:10394 탭 바 */}
+      <nav aria-label="상세 보기 전환" className="grid grid-cols-3 gap-2 bg-surface px-5 pb-1">
         {MOBILE_DETAIL_TABS.map((tab) => {
           const active = tab.key === activeTab;
           return (
@@ -177,7 +177,7 @@ export function MobileSubscriptionDetail({ detail, floorplan, selectedUnit, acti
   );
 }
 
-// figma 419:10404 뷰어 — 2D는 도면 프리뷰, 3D는 전용 워크스루 라우트 진입(SUBS-08). 단지/위치는 빈 상태(A3)
+// figma 419:10404 뷰어 — 2D는 도면 프리뷰, 3D는 전용 워크스루 라우트 진입(SUBS-08)
 function TabViewer({
   activeTab,
   floorplan,
@@ -202,13 +202,6 @@ function TabViewer({
         <span className="relative text-sm font-bold">3D·1인칭 집구경 시작</span>
         <span className="relative text-caption text-white/70">평면도를 3D로 둘러보세요</span>
       </Link>
-    );
-  }
-  if (activeTab === "complex") {
-    return (
-      <div className="flex h-[240px] items-center justify-center rounded-xl border border-line bg-surface-secondary text-sm font-medium text-fg-muted">
-        단지배치도 준비 중
-      </div>
     );
   }
   if (activeTab === "location") {

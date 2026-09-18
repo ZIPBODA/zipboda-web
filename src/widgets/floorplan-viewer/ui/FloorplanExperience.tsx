@@ -6,21 +6,12 @@ import type { Floorplan } from "@/entities/floorplan";
 import type { Axis, RigPose } from "../lib/types";
 import { buildScene, type BuiltScene } from "../lib/buildScene";
 import { isWebGLAvailable } from "../lib/detectWebGL";
-import { LOOK_DRAG_SENSITIVITY, MOUSE_LOOK_SENSITIVITY, PITCH_LIMIT_RAD } from "../config/constants";
+import { FLOORPLAN_TABS, LOOK_DRAG_SENSITIVITY, MOUSE_LOOK_SENSITIVITY, PITCH_LIMIT_RAD, type FloorplanTab } from "../config/constants";
 import { Scene2D } from "./Scene2D";
 import { Scene3D } from "./Scene3D";
 import { Joystick } from "./controls/Joystick";
 import { MiniMap } from "./controls/MiniMap";
 import { FloorplanUnsupported } from "./FloorplanUnsupported";
-
-export type FloorplanTab = "2d" | "3d" | "complex" | "location";
-
-const TABS: { key: FloorplanTab; label: string }[] = [
-  { key: "2d", label: "2D 평면도" },
-  { key: "3d", label: "3D 평면도" },
-  { key: "complex", label: "단지배치도" },
-  { key: "location", label: "위치" }
-];
 
 export interface FloorplanExperienceProps {
   floorplan: Floorplan;
@@ -108,8 +99,8 @@ export default function FloorplanExperience({ floorplan, title, backHref, initia
       <TopBar title={title} backHref={backHref} />
 
       {/* figma 353:3818 탭 선택 */}
-      <nav aria-label="평면도 보기 전환" className="grid grid-cols-4 gap-1.5 px-4 pb-3">
-        {TABS.map((t) => {
+      <nav aria-label="평면도 보기 전환" className="grid grid-cols-3 gap-1.5 px-4 pb-3">
+        {FLOORPLAN_TABS.map((t) => {
           const active = t.key === tab;
           return (
             <button
@@ -131,10 +122,8 @@ export default function FloorplanExperience({ floorplan, title, backHref, initia
 
       {tab === "3d" && <OrbitTab scene={scene} webgl={webgl} rigRef={rigRef} moveRef={moveRef} lookRef={lookRef} onView2D={() => setTab("2d")} onWalk={() => setWalk(true)} />}
 
-      {(tab === "complex" || tab === "location") && (
-        <div className="flex flex-1 items-center justify-center p-6 text-center text-sm font-medium text-fg-muted">
-          {tab === "complex" ? "단지배치도 준비 중" : "위치 지도 준비 중"}
-        </div>
+      {tab === "location" && (
+        <div className="flex flex-1 items-center justify-center p-6 text-center text-sm font-medium text-fg-muted">위치 지도 준비 중</div>
       )}
     </div>
   );

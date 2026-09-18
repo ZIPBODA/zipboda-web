@@ -76,3 +76,23 @@ export const SCENE_EXTENT_M = { min: 1.5, max: 40 } as const;
 export const REVIEW_MIN_CONFIDENCE = 0.85;
 /** 방 하나를 둘러싸는 데 필요한 최소 벽 수 — 이보다 적으면 외곽이 닫히지 않은 추출이다 */
 export const REVIEW_MIN_WALLS = 4;
+
+// figma 353:3818 전체화면 뷰어 탭. 단지배치도는 매입임대 단일 건물이라 원본 현황도에 존재하지 않아 두지 않는다
+export const FLOORPLAN_TABS = [
+  { key: "2d", label: "2D 평면도" },
+  { key: "3d", label: "3D 평면도" },
+  { key: "location", label: "위치" }
+] as const;
+
+export type FloorplanTab = (typeof FLOORPLAN_TABS)[number]["key"];
+
+export const FLOORPLAN_TAB_KEYS: readonly string[] = FLOORPLAN_TABS.map((tab) => tab.key);
+
+export const DEFAULT_FLOORPLAN_TAB: FloorplanTab = "2d";
+
+/**
+ * 2D 도면 팬·줌. fit은 배율이 아니라 "여백을 포함해 전체가 보이는 맞춤 상태"다 —
+ * 그 아래로 더 줄여도 보이는 것이 늘지 않고 회색 여백만 커지므로 min을 fit과 같게 둔다.
+ * 단계는 가산이 아니라 승산이어야 확대·축소 체감이 배율에 관계없이 일정하다
+ */
+export const SCENE2D_ZOOM = { fit: 1, min: 1, max: 4, factor: 1.3 } as const;
