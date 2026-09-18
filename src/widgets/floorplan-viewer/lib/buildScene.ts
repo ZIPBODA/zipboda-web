@@ -7,6 +7,7 @@ import {
   WINDOW_TOP_M,
   polygonAreaMm2,
   polygonBBox,
+  polygonInteriorPoint,
   type FloorplanModel2D,
   type Opening2D,
   type PointMm,
@@ -156,26 +157,6 @@ function openingSpan(opening: Opening2D): Span {
   return { start, end: start + opening.widthMm / MM_PER_M };
 }
 
-/** 면적 가중 무게중심(shoelace). 퇴화 폴리곤은 bbox 중심으로 대체 */
-export function polygonCentroid(polygon: PointMm[]): PointMm {
-  let twiceArea = 0;
-  let cx = 0;
-  let cz = 0;
-  for (let i = 0; i < polygon.length; i++) {
-    const p = polygon[i];
-    const q = polygon[(i + 1) % polygon.length];
-    const cross = p.x * q.z - q.x * p.z;
-    twiceArea += cross;
-    cx += (p.x + q.x) * cross;
-    cz += (p.z + q.z) * cross;
-  }
-  if (twiceArea === 0) {
-    const box = polygonBBox(polygon);
-    return { x: (box.minX + box.maxX) / 2, z: (box.minZ + box.maxZ) / 2 };
-  }
-  const factor = 1 / (3 * twiceArea);
-  return { x: cx * factor, z: cz * factor };
-}
 
 /** three.js 카메라 yaw — 전방 벡터 (-sin yaw, -cos yaw)가 (dx, dz)를 향하도록 */
 export function yawTowards(dx: number, dz: number): number {
@@ -190,17 +171,20 @@ const largestOf = (rooms: Room2D[]): Room2D | null =>
  *
  * 방 이름이 인쇄되지 않은 도면도 있고 OCR이 놓치기도 한다. 그때 외곽 무게중심을 쓰면
  * 벽 속이나 방이 아닌 곳에서 시작할 수 있으므로, 가장 넓은 방 안에서 그다음 방을 바라보게 한다.
+ *
+ * 자리는 무게중심이 아니라 방 안이 보장된 점으로 잡는다. ㄱ자 현관·거실은 무게중심이 패인 자리에
+ * 떨어져 벽 속에서 시작하게 된다.
  */
 function pickSpawn(model: FloorplanModel2D, toScene: (p: PointMm) => ScenePoint): SceneSpawn {
-  const outlineCenter = polygonCentroid(model.outline);
+  const outlineCenter = polygonInteriorPoint(model.outline);
   const entrance = model.rooms.find((room) => room.label === ENTRANCE_LABEL);
   const largest = largestOf(model.rooms.filter((room) => room !== entrance));
 
   const origin = entrance ?? largest;
-  const spawnMm = origin ? polygonCentroid(origin.polygon) : outlineCenter;
+  const spawnMm = origin ? polygonInteriorPoint(origin.polygon) : outlineCenter;
 
   const target = largestOf(model.rooms.filter((room) => room !== origin));
-  const targetMm = target ? polygonCentroid(target.polygon) : outlineCenter;
+  const targetMm = target ? polygonInteriorPoint(target.polygon) : outlineCenter;
 
   const spawn = toScene(spawnMm);
   const look = toScene(targetMm);
@@ -244,7 +228,8 @@ export function buildScene(model: FloorplanModel2D): BuiltScene {
     roomId: room.id,
     label: room.label,
     polygon: room.polygon.map(toScene),
-    center: toScene(polygonCentroid(room.polygon)),
+    // 방 이름표·핫스팟이 놓이는 자리 — ㄱ자 방에서 옆방 위에 뜨지 않게 방 안의 점을 쓴다
+    center: toScene(polygonInteriorPoint(room.polygon)),
     color: ROOM_FLOOR_COLOR[room.label]
   }));
 

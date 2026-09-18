@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { getSubscriptionDetail, getSubscriptions } from "@/entities/subscription";
+import { getSubscriptionDetail, getSubscriptions, selectSubscriptionUnit } from "@/entities/subscription";
 import {
   getFloorplan,
   DEFAULT_VIEW_MODE,
@@ -35,7 +35,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   if (!detail) return { title: "청약 공고 | 집보다" };
   return {
     title: `${detail.title} | 집보다`,
-    description: `${detail.address} · ${detail.supplyType} · ${detail.households}`
+    description: [detail.address, detail.supplyType, detail.households].filter(Boolean).join(" · ")
   };
 }
 
@@ -44,11 +44,9 @@ export default async function SubscriptionDetailPage({ params, searchParams }: P
   const detail = await getSubscriptionDetail(params.id);
   if (!detail) notFound();
 
-  const requestedSize = Number(searchParams.unit);
-  const selectedUnit =
-    detail.units.find((u) => u.size === requestedSize) ??
-    detail.units.find((u) => u.size === detail.defaultUnitSize) ??
-    detail.units[0];
+  const selectedUnit = selectSubscriptionUnit(detail, searchParams.unit);
+  if (searchParams.unit !== undefined && !selectedUnit) notFound();
+  const unitKey = selectedUnit?.unitKey ?? selectedUnit?.size ?? null;
 
   const view = VIEW_MODES.includes(searchParams.view as FloorplanViewMode)
     ? (searchParams.view as FloorplanViewMode)
@@ -61,7 +59,7 @@ export default async function SubscriptionDetailPage({ params, searchParams }: P
     : DEFAULT_MOBILE_DETAIL_TAB;
 
   const [floorplan, products, subscriptions] = await Promise.all([
-    getFloorplan(detail.id, selectedUnit.size),
+    unitKey === null ? null : getFloorplan(detail.id, unitKey),
     getRecommendedProducts(),
     getSubscriptions()
   ]);
@@ -69,8 +67,8 @@ export default async function SubscriptionDetailPage({ params, searchParams }: P
 
   const hrefFor = createDetailHrefBuilder({
     id: detail.id,
-    defaultUnitSize: detail.defaultUnitSize,
-    unit: selectedUnit.size,
+    defaultUnitSize: detail.defaultUnitKey ?? detail.defaultUnitSize,
+    unit: unitKey,
     view,
     viewpoint
   });
@@ -81,16 +79,16 @@ export default async function SubscriptionDetailPage({ params, searchParams }: P
       <div className="hidden md:block">
         <DetailTopBar
           title={detail.title}
-          unitLabel={`${selectedUnit.size}㎡ ${selectedUnit.type}타입`}
+          unitLabel={selectedUnit?.label ?? ""}
           dday={detail.dday}
           agency={detail.agency}
           agencyLabel={detail.agencyLabel}
         />
         <main className="mx-auto w-full max-w-7xl px-4 py-6 md:px-6 md:py-10">
           <div className="flex flex-col gap-6 lg:flex-row">
-            <FloorplanViewer floorplan={floorplan} subscriptionId={detail.id} unitSize={selectedUnit.size} />
+            <FloorplanViewer floorplan={floorplan} subscriptionId={detail.id} unitSize={unitKey} />
             <div className="flex w-full shrink-0 flex-col lg:w-[476px]">
-              <DetailInfoPanel detail={detail} selectedSize={selectedUnit.size} hrefFor={hrefFor} />
+              <DetailInfoPanel detail={detail} selectedSize={unitKey} hrefFor={hrefFor} />
               <FurnitureSuggestions products={products} />
             </div>
           </div>

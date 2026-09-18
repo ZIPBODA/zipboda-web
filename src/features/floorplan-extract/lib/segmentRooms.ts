@@ -14,7 +14,7 @@ import { colorBoundaryMask, unionMask } from "./colorBoundary";
 import { borderComponentMask, erodeMask, openMask, subtractMask } from "./maskOps";
 import { paintWallCenterlines, sealMaskBorder, sealWallGaps } from "./openings";
 import { paintExteriorWallBodies } from "./exteriorWalls";
-import { findRoomRegions, interiorRegions, labelRoomRegions } from "./roomRegions";
+import { findRoomRegions, interiorRegions, labelRoomRegions } from "@/entities/floorplan";
 
 export interface SegmentRoomsInput {
   mask: MaskImage;

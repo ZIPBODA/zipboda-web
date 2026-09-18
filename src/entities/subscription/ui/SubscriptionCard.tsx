@@ -7,10 +7,10 @@ import type { Subscription } from "../model/types";
 // figma 135:5669 공고 카드 — 가로형 리스트 행(이미지 좌측 + 본문). 카드 전체가 상세 진입(외부 신청 전환)
 export function SubscriptionCard({ item }: { item: Subscription }) {
   const stats: [string, string][] = [
-    ["신청자", item.applicants.toLocaleString()],
-    ["총 세대수", item.households.toLocaleString()],
-    ["경쟁률", item.competition],
-    ["입주", item.moveIn]
+    ["신청자", item.applicants?.toLocaleString() ?? ""],
+    ["총 세대수", item.households?.toLocaleString() ?? ""],
+    ["경쟁률", item.competition ?? ""],
+    ["입주", item.moveIn ?? ""]
   ];
   return (
     <Link
@@ -19,7 +19,7 @@ export function SubscriptionCard({ item }: { item: Subscription }) {
     >
       {/* figma 135:5670 이미지 컬럼(고정폭) */}
       <div className="relative w-48 shrink-0 bg-surface-tertiary">
-        <Image src={item.image} alt="" fill sizes="192px" className="object-cover" />
+        {item.image && <Image src={item.image} alt="" fill sizes="192px" className="object-cover" />}
       </div>
       <div className="flex flex-1 items-center gap-6 p-6">
         <AgencyBadge agency={item.agency} />

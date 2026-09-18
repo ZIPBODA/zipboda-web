@@ -1,0 +1,29 @@
+{
+  "layoutKey": "songpa-ogeum-2-3-03",
+  "walls": [
+    { "a": [1008, 206], "b": [7172, 206], "thicknessMm": 360 },
+    { "a": [7172, 206], "b": [7172, 2167], "thicknessMm": 180 },
+    { "a": [5590, 2167], "b": [7172, 2167], "thicknessMm": 340 },
+    { "a": [5790, 2167], "b": [5790, 4019], "thicknessMm": 240 },
+    { "a": [206, 4019], "b": [5790, 4019], "thicknessMm": 210 },
+    { "a": [206, 2199], "b": [206, 4019], "thicknessMm": 360 },
+    { "a": [206, 2199], "b": [1148, 2199], "thicknessMm": 360 },
+    { "a": [1008, 206], "b": [1008, 2199], "thicknessMm": 360 },
+    { "a": [5590, 206], "b": [5590, 2167], "thicknessMm": 130 },
+    { "a": [1148, 2199], "b": [1148, 4019], "thicknessMm": 110 }
+  ],
+  "labels": [
+    { "at": [3300, 1200], "label": "거실" },
+    { "at": [6400, 1100], "label": "욕실" },
+    { "at": [670, 3100], "label": "기타" }
+  ],
+  "openings": [
+    { "wall": 8, "alongMm": 1490, "type": "door", "widthMm": 900 },
+    { "wall": 3, "alongMm": 733, "type": "door", "widthMm": 900 },
+    { "wall": 9, "alongMm": 593, "type": "door", "widthMm": 560 },
+    { "wall": 0, "alongMm": 3217, "type": "window", "widthMm": 1700 },
+    { "wall": 0, "alongMm": 5157, "type": "window", "widthMm": 570 },
+    { "wall": 5, "alongMm": 623, "type": "window", "widthMm": 390 },
+    { "wall": 7, "alongMm": 1121, "type": "window", "widthMm": 1180 }
+  ]
+}

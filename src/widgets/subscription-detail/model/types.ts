@@ -1,7 +1,7 @@
 import type { FloorplanViewMode, Viewpoint } from "@/entities/floorplan";
 
 export interface DetailQuery {
-  unit?: number;
+  unit?: string | number;
   view?: FloorplanViewMode;
   viewpoint?: Viewpoint;
 }

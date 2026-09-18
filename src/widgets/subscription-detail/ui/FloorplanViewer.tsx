@@ -5,7 +5,7 @@ import { RoomSpecGrid, type Floorplan } from "@/entities/floorplan";
 interface Props {
   floorplan: Floorplan | null;
   subscriptionId: string;
-  unitSize: number;
+  unitSize: string | number | null;
 }
 
 // figma 135:5023 좌측 — 평면도 프리뷰(2D) + 전용 뷰어(2D/3D·1인칭) 진입 + 방별 치수
@@ -28,9 +28,9 @@ export function FloorplanViewer({ floorplan, subscriptionId, unitSize }: Props) 
             <Link href={`${base}&view=2d`} className="rounded-lg bg-surface/90 px-4 py-2 text-sm font-semibold text-fg-heading shadow-sm transition-colors hover:bg-surface">
               2D 크게 보기
             </Link>
-            <Link href={`${base}&view=3d`} className="rounded-lg bg-brand px-4 py-2 text-sm font-bold text-fg-heading shadow-sm transition-colors hover:bg-brand-hover">
+            {floorplan.has3d && <Link href={`${base}&view=3d`} className="rounded-lg bg-brand px-4 py-2 text-sm font-bold text-fg-heading shadow-sm transition-colors hover:bg-brand-hover">
               3D·1인칭 집구경 ↗
-            </Link>
+            </Link>}
           </div>
         )}
       </div>

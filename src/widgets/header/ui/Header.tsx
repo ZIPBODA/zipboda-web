@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { usePathname } from "next/navigation";
-import icon from "@/shared/assets/brand/icon.png";
+import icon from "@/shared/assets/brand/icon-logo.png";
 import { useCart } from "@/features/cart";
 import { NAV_ITEMS, MOBILE_CONTEXTUAL_HEADER_ROUTES } from "../config/nav";
 import { NotificationPanel } from "./NotificationPanel";

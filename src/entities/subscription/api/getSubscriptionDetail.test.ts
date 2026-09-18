@@ -2,15 +2,14 @@ import { describe, it, expect } from "vitest";
 import { getSubscriptionDetail } from "./getSubscriptionDetail";
 
 describe("getSubscriptionDetail", () => {
-  it("존재하는 공고는 상세를 반환한다", async () => {
-    const detail = await getSubscriptionDetail("1");
-
-    expect(detail?.title).toBe("광진 자양 LH 주택");
-    expect(detail?.units.map((u) => u.size)).toEqual([59, 84, 114]);
-    expect(detail?.applyUrl).toMatch(/^https:\/\//);
+  it("returns a catalog property with stable layout keys", async () => {
+    const detail = await getSubscriptionDetail("gangnam-gaepo");
+    expect(detail?.title).toBe("강남개포동(T&K개포)");
+    expect(detail?.units.length).toBeGreaterThan(0);
+    expect(detail?.units.every((unit) => Boolean(unit.unitKey))).toBe(true);
   });
 
-  it("없는 공고는 null을 반환한다", async () => {
+  it("returns null for an unknown property", async () => {
     expect(await getSubscriptionDetail("999")).toBeNull();
   });
 });

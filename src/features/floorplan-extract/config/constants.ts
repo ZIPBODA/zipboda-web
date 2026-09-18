@@ -37,9 +37,6 @@ export const WALL_CROSS_SECTION_RATIO = 2;
  */
 export const WALL_PROFILE_TOLERANCE_RATIO = 0.34;
 
-// 방 영역
-export const ROOM_MIN_AREA_RATIO = 0.012;
-
 // OCR
 /**
  * 확대 배율은 도면 해상도에 맞춘다.
@@ -105,7 +102,6 @@ export const SCALE_MAX_FALLBACK_CONFIDENCE = 0.6;
 export const SCALE_AREA_CONFIDENCE = 0.7;
 
 // 기하
-export const DOUGLAS_PEUCKER_EPSILON_PX = 4;
 /**
  * 벽으로 인정할 최소 두께(mm).
  * 도면에는 침대·설비가 가는 윤곽선(14~55mm)으로 그려져 있어 그대로 두면 3D에서 벽으로 선다.

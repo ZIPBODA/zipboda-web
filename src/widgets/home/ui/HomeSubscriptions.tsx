@@ -2,7 +2,6 @@ import { SubscriptionSummaryRow, type Subscription } from "@/entities/subscripti
 import { HomeSection } from "./HomeSection";
 
 // 홈 전용 청약 썸네일(/mock/main/main-list-1~6). 초과분은 공고 기본 이미지로 폴백
-const HOME_LIST_IMAGES = 6;
 
 // figma 135:7075 LH/SH 공공 청약
 export function HomeSubscriptions({ items }: { items: Subscription[] }) {
@@ -14,8 +13,8 @@ export function HomeSubscriptions({ items }: { items: Subscription[] }) {
       actionHref="/subscriptions"
     >
       <div className="flex flex-col gap-5">
-        {items.map((item, i) => (
-          <SubscriptionSummaryRow key={item.id} item={item} image={i < HOME_LIST_IMAGES ? `/mock/main/main-list-${i + 1}.png` : undefined} />
+        {items.map((item) => (
+          <SubscriptionSummaryRow key={item.id} item={item} />
         ))}
       </div>
     </HomeSection>

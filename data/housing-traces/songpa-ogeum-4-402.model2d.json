@@ -1,0 +1,344 @@
+{
+  "scale": {
+    "mmPerPx": 10.833333333333334,
+    "source": "dimension-chain"
+  },
+  "outline": [
+    {
+      "x": 1500,
+      "z": 0
+    },
+    {
+      "x": 6900,
+      "z": 0
+    },
+    {
+      "x": 6900,
+      "z": 3800
+    },
+    {
+      "x": 1500,
+      "z": 3800
+    },
+    {
+      "x": 1500,
+      "z": 2400
+    },
+    {
+      "x": 0,
+      "z": 2400
+    },
+    {
+      "x": 0,
+      "z": 400
+    },
+    {
+      "x": 1500,
+      "z": 400
+    }
+  ],
+  "rooms": [
+    {
+      "id": "room-0",
+      "label": "거실",
+      "polygon": [
+        {
+          "x": 1550,
+          "z": 0
+        },
+        {
+          "x": 6850,
+          "z": 0
+        },
+        {
+          "x": 6850,
+          "z": 3100
+        },
+        {
+          "x": 5900,
+          "z": 3100
+        },
+        {
+          "x": 5900,
+          "z": 3800
+        },
+        {
+          "x": 1550,
+          "z": 3800
+        },
+        {
+          "x": 1550,
+          "z": 2400
+        },
+        {
+          "x": 1800,
+          "z": 2400
+        },
+        {
+          "x": 1800,
+          "z": 400
+        },
+        {
+          "x": 1550,
+          "z": 400
+        }
+      ],
+      "areaM2": 18.975
+    },
+    {
+      "id": "room-1",
+      "label": "욕실",
+      "polygon": [
+        {
+          "x": 50,
+          "z": 450
+        },
+        {
+          "x": 1750,
+          "z": 450
+        },
+        {
+          "x": 1750,
+          "z": 2400
+        },
+        {
+          "x": 50,
+          "z": 2400
+        }
+      ],
+      "areaM2": 3.315
+    },
+    {
+      "id": "room-2",
+      "label": "기타",
+      "polygon": [
+        {
+          "x": 5900,
+          "z": 3150
+        },
+        {
+          "x": 6850,
+          "z": 3150
+        },
+        {
+          "x": 6850,
+          "z": 3800
+        },
+        {
+          "x": 5900,
+          "z": 3800
+        }
+      ],
+      "areaM2": 0.6175
+    }
+  ],
+  "walls": [
+    {
+      "id": "w1",
+      "a": {
+        "x": 1500,
+        "z": 0
+      },
+      "b": {
+        "x": 6900,
+        "z": 0
+      },
+      "thicknessMm": 360,
+      "exterior": true
+    },
+    {
+      "id": "w2",
+      "a": {
+        "x": 6900,
+        "z": 0
+      },
+      "b": {
+        "x": 6900,
+        "z": 3800
+      },
+      "thicknessMm": 360,
+      "exterior": true
+    },
+    {
+      "id": "w3",
+      "a": {
+        "x": 1500,
+        "z": 3800
+      },
+      "b": {
+        "x": 6900,
+        "z": 3800
+      },
+      "thicknessMm": 190,
+      "exterior": true
+    },
+    {
+      "id": "w8",
+      "a": {
+        "x": 1500,
+        "z": 0
+      },
+      "b": {
+        "x": 1500,
+        "z": 400
+      },
+      "thicknessMm": 360,
+      "exterior": true
+    },
+    {
+      "id": "w4",
+      "a": {
+        "x": 1500,
+        "z": 2400
+      },
+      "b": {
+        "x": 1500,
+        "z": 3800
+      },
+      "thicknessMm": 360,
+      "exterior": true
+    },
+    {
+      "id": "w5",
+      "a": {
+        "x": 50,
+        "z": 2400
+      },
+      "b": {
+        "x": 1750,
+        "z": 2400
+      },
+      "thicknessMm": 380,
+      "exterior": true
+    },
+    {
+      "id": "w6",
+      "a": {
+        "x": 50,
+        "z": 400
+      },
+      "b": {
+        "x": 50,
+        "z": 2400
+      },
+      "thicknessMm": 380,
+      "exterior": true
+    },
+    {
+      "id": "w7",
+      "a": {
+        "x": 50,
+        "z": 400
+      },
+      "b": {
+        "x": 1750,
+        "z": 400
+      },
+      "thicknessMm": 390,
+      "exterior": true
+    },
+    {
+      "id": "w9",
+      "a": {
+        "x": 1750,
+        "z": 400
+      },
+      "b": {
+        "x": 1750,
+        "z": 2400
+      },
+      "thicknessMm": 140,
+      "exterior": false
+    },
+    {
+      "id": "w10",
+      "a": {
+        "x": 5900,
+        "z": 3100
+      },
+      "b": {
+        "x": 5900,
+        "z": 3800
+      },
+      "thicknessMm": 100,
+      "exterior": false
+    },
+    {
+      "id": "w11",
+      "a": {
+        "x": 5900,
+        "z": 3100
+      },
+      "b": {
+        "x": 6900,
+        "z": 3100
+      },
+      "thicknessMm": 100,
+      "exterior": false
+    }
+  ],
+  "openings": [
+    {
+      "wallId": "w9",
+      "type": "door",
+      "offsetMm": 1034,
+      "widthMm": 730
+    },
+    {
+      "wallId": "w4",
+      "type": "door",
+      "offsetMm": 249,
+      "widthMm": 900
+    },
+    {
+      "wallId": "w11",
+      "type": "door",
+      "offsetMm": 119,
+      "widthMm": 490
+    },
+    {
+      "wallId": "w1",
+      "type": "window",
+      "offsetMm": 1160,
+      "widthMm": 1550
+    },
+    {
+      "wallId": "w2",
+      "type": "window",
+      "offsetMm": 1543,
+      "widthMm": 1150
+    },
+    {
+      "wallId": "w2",
+      "type": "window",
+      "offsetMm": 3174,
+      "widthMm": 380
+    },
+    {
+      "wallId": "w7",
+      "type": "window",
+      "offsetMm": 755,
+      "widthMm": 480
+    }
+  ],
+  "printed": {
+    "exclusiveAreaM2": 23.265,
+    "dimensionChains": [
+      {
+        "axis": "x",
+        "values": [
+          1800,
+          5100
+        ]
+      }
+    ]
+  },
+  "confidence": {
+    "overall": 1,
+    "perRoom": {
+      "room-0": 1,
+      "room-1": 1,
+      "room-2": 1
+    }
+  }
+}

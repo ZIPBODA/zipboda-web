@@ -17,6 +17,7 @@ import { segmentRooms } from "./segmentRooms";
 import { estimateScale, scaleFromArea } from "./scaleFromChains";
 
 export interface ExtractOptions {
+  calibratedMmPerPx?: number;
   exclusiveAreaM2?: number;
   /** 치수 OCR이 실패했을 때 유닛 폭(mm)으로 스케일을 정하는 수동 폴백 */
   fallbackWidthMm?: number;
@@ -79,22 +80,24 @@ export async function extractFloorplan(image: HTMLImageElement, options: Extract
   const { imageData, canvas } = imageToImageData(image);
 
   const geometryWorker = createGeometryWorker(onProgress);
-  const ocr = await createOcrWorker();
+  let ocr: Awaited<ReturnType<typeof createOcrWorker>> | undefined;
   try {
+    ocr = await createOcrWorker();
     const crop = await geometryWorker.detectCrop(imageData);
     const upscale = computeOcrUpscale(canvas.width);
 
     onProgress?.({ stage: "scale", ratio: 0.3 });
     const band = topDimensionBand(crop, canvas.width);
-    const numbers = await readNumbers(ocr, canvas, band, upscale);
+    const numbers = options.calibratedMmPerPx || band.height <= 0 ? [] : await readNumbers(ocr, canvas, band, upscale);
     // 치수 체인 → 인쇄 전용면적 역산 → 수동 실측 폭 순으로 자동성이 높은 쪽을 먼저 쓴다
     const chainScale = estimateScale(
       numbers.map((t) => t.value),
       crop.width
     );
     const areaScale = scaleFromArea(exclusiveAreaM2, crop.width * crop.height);
-    const scale = chainScale ?? areaScale ?? manualScale(fallbackWidthMm, crop.width);
-    const scaleSource: ScaleSource = chainScale ? "dimension-chain" : areaScale ? "area" : "estimated";
+    const calibratedScale = options.calibratedMmPerPx === undefined ? null : manualScale(options.calibratedMmPerPx * crop.width, crop.width);
+    const scale = calibratedScale ?? chainScale ?? areaScale ?? manualScale(fallbackWidthMm, crop.width);
+    const scaleSource: ScaleSource = calibratedScale ? "estimated" : chainScale ? "dimension-chain" : areaScale ? "area" : "estimated";
     if (!scale) {
       const read = numbers.map((t) => t.value).join(", ");
       throw new Error(
@@ -162,6 +165,6 @@ export async function extractFloorplan(image: HTMLImageElement, options: Extract
     return { result: normalizeModel(model), geometry, dimension: { band, numbers }, labelTokens: cropTokens };
   } finally {
     geometryWorker.terminate();
-    await ocr.terminate();
+    await ocr?.terminate();
   }
 }

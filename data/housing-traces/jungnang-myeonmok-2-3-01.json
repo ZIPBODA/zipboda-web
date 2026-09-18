@@ -1,0 +1,24 @@
+{
+  "layoutKey": "jungnang-myeonmok-2-3-01",
+  "walls": [
+    { "a": [362, 352],   "b": [3526, 352],  "thicknessMm": 200 },
+    { "a": [3526, 352],  "b": [3526, 6225], "thicknessMm": 200 },
+    { "a": [362, 6225],  "b": [3526, 6225], "thicknessMm": 200 },
+    { "a": [362, 352],   "b": [362, 6225],  "thicknessMm": 200 },
+    { "a": [362, 1562],  "b": [3526, 1562], "thicknessMm": 150 },
+    { "a": [362, 4470],  "b": [1820, 4470], "thicknessMm": 100 },
+    { "a": [1820, 4470], "b": [1820, 6225], "thicknessMm": 100 }
+  ],
+  "labels": [
+    { "at": [2300, 3000], "label": "거실" },
+    { "at": [1000, 5300], "label": "욕실" },
+    { "at": [1500, 950],  "label": "발코니" }
+  ],
+  "openings": [
+    { "wall": 2, "alongMm": 2016, "type": "door",   "widthMm": 900 },
+    { "wall": 6, "alongMm": 450,  "type": "door",   "widthMm": 700 },
+    { "wall": 4, "alongMm": 1018, "type": "window", "widthMm": 1830 },
+    { "wall": 0, "alongMm": 1158, "type": "window", "widthMm": 1580 }
+  ],
+  "dimensionChains": [ { "axis": "x", "values": [3150] }, { "axis": "z", "values": [1200, 4650] } ]
+}

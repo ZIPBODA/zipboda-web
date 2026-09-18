@@ -14,27 +14,27 @@ import { DEFAULT_MOBILE_DETAIL_TAB, MOBILE_DETAIL_TABS, type MobileDetailTab } f
 interface Props {
   detail: SubscriptionDetail;
   floorplan: Floorplan | null;
-  selectedUnit: SubscriptionUnit;
+  selectedUnit: SubscriptionUnit | null;
   activeTab: MobileDetailTab;
   nearby: Subscription[];
 }
 
 // figma 419:10352 청약 상세(SUBS-03) 모바일 — 컨텍스트 헤더·히어로·정보·탭·뷰어·주변 매물
 export function MobileSubscriptionDetail({ detail, floorplan, selectedUnit, activeTab, nearby }: Props) {
-  const sizes = detail.units.map((u) => u.size);
-  const areaRange = `${Math.min(...sizes)}㎡ ~ ${Math.max(...sizes)}㎡`;
+  const sizes = detail.units.flatMap((u) => u.size === null ? [] : [u.size]);
+  const areaRange = sizes.length === 0 ? "" : `${Math.min(...sizes)}㎡ ~ ${Math.max(...sizes)}㎡`;
   const summary: [string, string][] = [
-    ["신청 기간", detail.applyPeriod],
-    ["세대수", detail.households],
+    ["신청 기간", detail.applyPeriod ?? ""],
+    ["세대수", detail.households ?? ""],
     ["전용면적", areaRange],
-    ["입주예정", detail.moveIn]
+    ["입주예정", detail.moveIn ?? ""]
   ];
 
-  const hrefFor = ({ tab, unit }: { tab?: MobileDetailTab; unit?: number }) => {
+  const hrefFor = ({ tab, unit }: { tab?: MobileDetailTab; unit?: string | number }) => {
     const query = new URLSearchParams();
-    const nextUnit = unit ?? selectedUnit.size;
+    const nextUnit = unit ?? selectedUnit?.unitKey ?? selectedUnit?.size;
     const nextTab = tab ?? activeTab;
-    if (nextUnit !== detail.defaultUnitSize) query.set("unit", String(nextUnit));
+    if (nextUnit !== (detail.defaultUnitKey ?? detail.defaultUnitSize)) query.set("unit", String(nextUnit));
     if (nextTab !== DEFAULT_MOBILE_DETAIL_TAB) query.set("tab", nextTab);
     const search = query.toString();
     return search ? `/subscriptions/${detail.id}?${search}` : `/subscriptions/${detail.id}`;
@@ -57,15 +57,15 @@ export function MobileSubscriptionDetail({ detail, floorplan, selectedUnit, acti
 
       {/* figma 419:10367 히어로 배너 — 사진 + 카운터 */}
       <div className="relative h-[200px] bg-surface-tertiary">
-        <Image src={detail.image} alt="" fill priority sizes="100vw" className="object-cover" />
+        {detail.image && <Image src={detail.image} alt="" fill priority sizes="100vw" className="object-cover" />}
         <span className="absolute bottom-4 right-4 rounded bg-black/70 px-2 py-1 text-caption font-semibold text-fg-ondark">1 / 1</span>
       </div>
 
       {/* figma 419:10370 배지 · 제목 · 위치 · 요약 */}
       <section className="flex flex-col gap-3 bg-surface p-5">
         <div className="flex flex-wrap gap-2">
-          <span className={`rounded-lg px-2.5 py-1 text-2xsmall font-semibold ${AGENCY_TAG_TONE[detail.agency]}`}>{detail.agencyLabel}</span>
-          <span className={`rounded-lg px-2.5 py-1 text-2xsmall font-semibold ${STATUS_BADGE_TONE[detail.status]}`}>{detail.status}</span>
+          {detail.agency && <span className={`rounded-lg px-2.5 py-1 text-2xsmall font-semibold ${AGENCY_TAG_TONE[detail.agency]}`}>{detail.agencyLabel}</span>}
+          {detail.status && <span className={`rounded-lg px-2.5 py-1 text-2xsmall font-semibold ${STATUS_BADGE_TONE[detail.status]}`}>{detail.status}</span>}
         </div>
         <div>
           <h1 className="text-h2 font-bold tracking-[-0.015em] text-fg-heading">{detail.title}</h1>
@@ -89,6 +89,7 @@ export function MobileSubscriptionDetail({ detail, floorplan, selectedUnit, acti
             <Link
               key={tab.key}
               href={hrefFor({ tab: tab.key })}
+              scroll={false}
               aria-current={active ? "true" : undefined}
               className={`rounded-lg border px-2 py-2.5 text-center text-compact ${
                 active ? "border-brand bg-brand/10 font-bold text-fg-heading" : "border-line font-medium text-fg-muted"
@@ -102,7 +103,7 @@ export function MobileSubscriptionDetail({ detail, floorplan, selectedUnit, acti
 
       {/* figma 419:10403 탭 콘텐츠 — 뷰어 · 방 치수 · 평형 · CTA · 링크 */}
       <section className="flex flex-col gap-4 bg-surface p-5">
-        <TabViewer activeTab={activeTab} floorplan={floorplan} detailId={detail.id} unitSize={selectedUnit.size} />
+        <TabViewer activeTab={activeTab} floorplan={floorplan} detailId={detail.id} unitSize={selectedUnit?.unitKey ?? selectedUnit?.size ?? null} />
 
         {floorplan && (activeTab === "2d" || activeTab === "3d") && (
           <ul className="grid grid-cols-2 gap-2">
@@ -119,17 +120,18 @@ export function MobileSubscriptionDetail({ detail, floorplan, selectedUnit, acti
           <h2 className="text-compact font-bold text-fg-heading">평형 타입 선택</h2>
           <div className="flex flex-wrap gap-2">
             {detail.units.map((unit) => {
-              const selected = unit.size === selectedUnit.size;
+              const selected = (unit.unitKey ?? unit.size) === (selectedUnit?.unitKey ?? selectedUnit?.size);
               return (
                 <Link
-                  key={unit.size}
-                  href={hrefFor({ unit: unit.size })}
+                  key={unit.unitKey ?? unit.size}
+                  href={hrefFor({ unit: unit.unitKey ?? unit.size ?? undefined })}
+                  scroll={false}
                   aria-current={selected ? "true" : undefined}
                   className={`rounded-lg border px-3 py-2 text-compact font-semibold ${
                     selected ? "border-brand bg-brand/10 text-fg-heading" : "border-line text-fg-muted"
                   }`}
                 >
-                  {unit.size}㎡ {unit.type}타입
+                  {unit.label ?? (unit.size === null ? "" : `${unit.size}㎡ ${unit.type}`)}
                 </Link>
               );
             })}
@@ -137,20 +139,20 @@ export function MobileSubscriptionDetail({ detail, floorplan, selectedUnit, acti
         </div>
 
         {/* figma 419:10445 외부 신청 CTA — 집보다는 신청을 대행하지 않는다(REQ-US-001) */}
-        <a
+        {detail.applyUrl && <a
           href={detail.applyUrl}
           target="_blank"
           rel="noreferrer noopener"
           className="flex items-center justify-center rounded-xl bg-brand px-6 py-3 text-sm font-bold text-brand-on shadow-md transition-colors hover:bg-brand-hover"
         >
           해당 기관에서 신청 ↗
-        </a>
+        </a>}
 
         {/* figma 419:10447 보조 링크 */}
         <div className="flex items-center justify-center gap-3 py-2 text-xs text-fg-muted">
-          <a href={detail.applyUrl} target="_blank" rel="noreferrer noopener" className="font-medium">
+          {detail.applyUrl && <a href={detail.applyUrl} target="_blank" rel="noreferrer noopener" className="font-medium">
             신청 바로가기
-          </a>
+          </a>}
           <span aria-hidden className="text-line">|</span>
           <Link href="/score" className="font-medium">
             가점 계산기
@@ -185,11 +187,11 @@ function TabViewer({
   activeTab: MobileDetailTab;
   floorplan: Floorplan | null;
   detailId: string;
-  unitSize: number;
+  unitSize: string | number | null;
 }) {
   const viewerHref = (view: "2d" | "3d") => `/subscriptions/${detailId}/floorplan?view=${view}&unit=${unitSize}`;
 
-  if (activeTab === "3d") {
+  if (activeTab === "3d" && floorplan?.has3d) {
     return (
       <Link
         href={viewerHref("3d")}

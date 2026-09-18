@@ -11,7 +11,7 @@ export interface FloorplanRoom {
 /** 메인 '인터랙티브 평면도' 섹션에 노출하는 대표 평면도 */
 export interface FloorplanShowcase {
   id: string;
-  size: number;
+  size: number | null;
   type: string;
   summary: string;
   has2d: boolean;
@@ -20,9 +20,13 @@ export interface FloorplanShowcase {
 }
 
 export interface Floorplan {
+  layoutKey?: string;
+  unitKey?: string;
+  sourcePdf?: string;
+  sourcePage?: number;
   id: string;
   subscriptionId: string;
-  size: number;
+  size: number | null;
   type: string;
   rooms: FloorplanRoom[];
   has3d: boolean;
@@ -36,6 +40,35 @@ export interface Floorplan {
 export interface PointMm {
   x: number;
   z: number;
+}
+
+/** 이미지·마스크 픽셀 좌표(좌상단 원점) */
+export interface PointPx {
+  x: number;
+  y: number;
+}
+
+/** 이진 마스크. 1=벽(또는 대상), 0=배경. row-major */
+export interface MaskImage {
+  data: Uint8Array;
+  width: number;
+  height: number;
+}
+
+/** 벽 마스크의 빈 공간을 플러드필로 나눈 한 영역(px) */
+export interface RoomRegion {
+  id: string;
+  bbox: { minX: number; minY: number; maxX: number; maxY: number };
+  /** 영역의 실제 윤곽(px, 픽셀 모서리 기준). bbox로는 ㄱ자 방의 면적이 부풀어 방끼리 겹친다 */
+  polygon: PointPx[];
+  areaPx: number;
+  touchesBorder: boolean;
+}
+
+export interface LabeledRegions {
+  regions: RoomRegion[];
+  /** 픽셀마다 속한 영역의 인덱스(regions 배열 기준). 벽·너무 작은 성분은 -1 */
+  owner: Int32Array;
 }
 
 export type RoomLabel = "거실" | "침실" | "주방" | "식당" | "욕실" | "현관" | "발코니" | "반침" | "드레스룸" | "기타";
@@ -94,6 +127,8 @@ export interface FloorplanModel2D {
 }
 
 export type NormalizeFlagCode =
+  | "geometry-invalid"
+  | "room-outside"
   | "scale-mismatch"
   | "scale-no-chain"
   | "area-mismatch"
@@ -113,4 +148,19 @@ export interface NormalizeResult {
   confidence: number;
   flags: NormalizeFlag[];
   autoAccept: boolean;
+}
+
+/** 검수를 통과해 3D로 내보내는 모델의 출처 기록(models/reviewed.json 한 줄) */
+export interface ReviewedModelEntry {
+  layoutKey: string;
+  property: string;
+  method: "extraction" | "traced";
+  reviewedAt: string;
+  reviewer: string;
+  note: string;
+  sourcePdf: string;
+  sourcePage: number;
+  image2dUrl: string;
+  /** 모델 (0,0)이 놓인 크롭 이미지 px — 검수 화면이 크롭 위에 모델을 겹칠 때 쓴다 */
+  originPx: { x: number; y: number };
 }

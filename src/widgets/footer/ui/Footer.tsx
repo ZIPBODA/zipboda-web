@@ -1,6 +1,6 @@
 import { Fragment } from "react";
 import Image from "next/image";
-import icon from "@/shared/assets/brand/icon.png";
+import icon from "@/shared/assets/brand/icon-logo.png";
 
 // figma 250:76 Footer (ZB-U-COM-03)
 const COLUMNS: { title: string; items: string[] }[] = [

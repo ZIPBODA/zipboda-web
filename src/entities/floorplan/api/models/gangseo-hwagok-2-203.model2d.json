@@ -1,0 +1,270 @@
+{
+  "scale": {
+    "mmPerPx": 8.790983606557377,
+    "source": "dimension-chain"
+  },
+  "outline": [
+    {
+      "x": 0,
+      "z": 0
+    },
+    {
+      "x": 3350,
+      "z": 0
+    },
+    {
+      "x": 3350,
+      "z": 4800
+    },
+    {
+      "x": 0,
+      "z": 4800
+    }
+  ],
+  "rooms": [
+    {
+      "id": "room-0",
+      "label": "기타",
+      "polygon": [
+        {
+          "x": 50,
+          "z": 50
+        },
+        {
+          "x": 1150,
+          "z": 50
+        },
+        {
+          "x": 1150,
+          "z": 1050
+        },
+        {
+          "x": 50,
+          "z": 1050
+        }
+      ],
+      "areaM2": 1.1
+    },
+    {
+      "id": "room-1",
+      "label": "거실",
+      "polygon": [
+        {
+          "x": 1150,
+          "z": 50
+        },
+        {
+          "x": 3300,
+          "z": 50
+        },
+        {
+          "x": 3300,
+          "z": 4750
+        },
+        {
+          "x": 1750,
+          "z": 4750
+        },
+        {
+          "x": 1750,
+          "z": 3350
+        },
+        {
+          "x": 50,
+          "z": 3350
+        },
+        {
+          "x": 50,
+          "z": 1100
+        },
+        {
+          "x": 1150,
+          "z": 1100
+        }
+      ],
+      "areaM2": 11.74
+    },
+    {
+      "id": "room-2",
+      "label": "욕실",
+      "polygon": [
+        {
+          "x": 50,
+          "z": 3400
+        },
+        {
+          "x": 1700,
+          "z": 3400
+        },
+        {
+          "x": 1700,
+          "z": 4750
+        },
+        {
+          "x": 50,
+          "z": 4750
+        }
+      ],
+      "areaM2": 2.2275
+    }
+  ],
+  "walls": [
+    {
+      "id": "w1",
+      "a": {
+        "x": 0,
+        "z": 50
+      },
+      "b": {
+        "x": 3300,
+        "z": 50
+      },
+      "thicknessMm": 200,
+      "exterior": true
+    },
+    {
+      "id": "w2",
+      "a": {
+        "x": 3300,
+        "z": 50
+      },
+      "b": {
+        "x": 3300,
+        "z": 4800
+      },
+      "thicknessMm": 160,
+      "exterior": true
+    },
+    {
+      "id": "w3",
+      "a": {
+        "x": 0,
+        "z": 4800
+      },
+      "b": {
+        "x": 3300,
+        "z": 4800
+      },
+      "thicknessMm": 160,
+      "exterior": true
+    },
+    {
+      "id": "w4",
+      "a": {
+        "x": 0,
+        "z": 50
+      },
+      "b": {
+        "x": 0,
+        "z": 4800
+      },
+      "thicknessMm": 200,
+      "exterior": true
+    },
+    {
+      "id": "w5",
+      "a": {
+        "x": 0,
+        "z": 1050
+      },
+      "b": {
+        "x": 1150,
+        "z": 1050
+      },
+      "thicknessMm": 100,
+      "exterior": false
+    },
+    {
+      "id": "w6",
+      "a": {
+        "x": 1150,
+        "z": 50
+      },
+      "b": {
+        "x": 1150,
+        "z": 1050
+      },
+      "thicknessMm": 75,
+      "exterior": false
+    },
+    {
+      "id": "w7",
+      "a": {
+        "x": 0,
+        "z": 3400
+      },
+      "b": {
+        "x": 1750,
+        "z": 3400
+      },
+      "thicknessMm": 100,
+      "exterior": false
+    },
+    {
+      "id": "w8",
+      "a": {
+        "x": 1750,
+        "z": 3400
+      },
+      "b": {
+        "x": 1750,
+        "z": 4800
+      },
+      "thicknessMm": 100,
+      "exterior": false
+    }
+  ],
+  "openings": [
+    {
+      "wallId": "w1",
+      "type": "window",
+      "offsetMm": 1448,
+      "widthMm": 1802
+    },
+    {
+      "wallId": "w3",
+      "type": "door",
+      "offsetMm": 1761.0000000000002,
+      "widthMm": 1000
+    },
+    {
+      "wallId": "w6",
+      "type": "door",
+      "offsetMm": 150,
+      "widthMm": 835
+    },
+    {
+      "wallId": "w8",
+      "type": "door",
+      "offsetMm": 109,
+      "widthMm": 651
+    }
+  ],
+  "printed": {
+    "exclusiveAreaM2": 15.68,
+    "dimensionChains": [
+      {
+        "axis": "x",
+        "values": [
+          1100,
+          2200
+        ]
+      },
+      {
+        "axis": "z",
+        "values": [
+          1050,
+          3700
+        ]
+      }
+    ]
+  },
+  "confidence": {
+    "overall": 1,
+    "perRoom": {
+      "room-0": 1,
+      "room-1": 1,
+      "room-2": 1
+    }
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "layoutKey": "gangnam-gaepo-2-3-03",
+  "walls": [
+    { "a": [82, 198], "b": [7182, 198], "thicknessMm": 380 },
+    { "a": [7182, 198], "b": [7182, 3259], "thicknessMm": 360 },
+    { "a": [4115, 3259], "b": [7182, 3259], "thicknessMm": 230 },
+    { "a": [4115, 3259], "b": [4115, 5890], "thicknessMm": 200 },
+    { "a": [82, 5890], "b": [4115, 5890], "thicknessMm": 360 },
+    { "a": [82, 198], "b": [82, 5890], "thicknessMm": 230 },
+    { "a": [4115, 198], "b": [4115, 3259], "thicknessMm": 190 },
+    { "a": [2829, 198], "b": [2829, 1973], "thicknessMm": 200 },
+    { "a": [2829, 1973], "b": [4115, 1973], "thicknessMm": 170 },
+    { "a": [1372, 4161], "b": [4115, 4161], "thicknessMm": 190 },
+    { "a": [1927, 4161], "b": [1927, 5890], "thicknessMm": 190 },
+    { "a": [82, 5000], "b": [1927, 5000], "thicknessMm": 0 }
+  ],
+  "labels": [
+    { "at": [1400, 2500], "label": "거실" },
+    { "at": [3450, 1100], "label": "기타" },
+    { "at": [5650, 1700], "label": "침실" },
+    { "at": [3000, 4900], "label": "욕실" },
+    { "at": [900, 5450], "label": "현관" }
+  ],
+  "openings": [
+    { "wall": 6, "alongMm": 2506, "type": "door", "widthMm": 870 },
+    { "wall": 8, "alongMm": 397, "type": "door", "widthMm": 580 },
+    { "wall": 10, "alongMm": 471, "type": "door", "widthMm": 730 },
+    { "wall": 4, "alongMm": 604, "type": "door", "widthMm": 1070 },
+    { "wall": 1, "alongMm": 1571, "type": "window", "widthMm": 1490 },
+    { "wall": 0, "alongMm": 1443, "type": "window", "widthMm": 1800 },
+    { "wall": 0, "alongMm": 3342, "type": "window", "widthMm": 610 }
+  ],
+  "dimensionChains": [{ "axis": "x", "values": [2800, 1300, 3000] }]
+}

@@ -1,0 +1,185 @@
+{
+  "layoutKey": "songpa-ogeum-5-501",
+  "walls": [
+    {
+      "a": [
+        1473,
+        90
+      ],
+      "b": [
+        7019,
+        90
+      ],
+      "thicknessMm": 200
+    },
+    {
+      "a": [
+        7019,
+        90
+      ],
+      "b": [
+        7019,
+        3820
+      ],
+      "thicknessMm": 350
+    },
+    {
+      "a": [
+        191,
+        3820
+      ],
+      "b": [
+        7019,
+        3820
+      ],
+      "thicknessMm": 350
+    },
+    {
+      "a": [
+        191,
+        1654
+      ],
+      "b": [
+        191,
+        3820
+      ],
+      "thicknessMm": 350
+    },
+    {
+      "a": [
+        191,
+        1654
+      ],
+      "b": [
+        1473,
+        1654
+      ],
+      "thicknessMm": 350
+    },
+    {
+      "a": [
+        1473,
+        90
+      ],
+      "b": [
+        1473,
+        1654
+      ],
+      "thicknessMm": 200
+    },
+    {
+      "a": [
+        1473,
+        1654
+      ],
+      "b": [
+        1882,
+        1654
+      ],
+      "thicknessMm": 150
+    },
+    {
+      "a": [
+        1882,
+        1654
+      ],
+      "b": [
+        1882,
+        3820
+      ],
+      "thicknessMm": 150
+    },
+    {
+      "a": [
+        6051,
+        90
+      ],
+      "b": [
+        6051,
+        775
+      ],
+      "thicknessMm": 150
+    },
+    {
+      "a": [
+        6051,
+        775
+      ],
+      "b": [
+        7019,
+        775
+      ],
+      "thicknessMm": 150
+    }
+  ],
+  "labels": [
+    {
+      "at": [
+        4460,
+        2477
+      ],
+      "label": "거실"
+    },
+    {
+      "at": [
+        981,
+        2675
+      ],
+      "label": "욕실"
+    },
+    {
+      "at": [
+        6548,
+        429
+      ],
+      "label": "기타"
+    }
+  ],
+  "openings": [
+    {
+      "wall": 5,
+      "alongMm": 826,
+      "type": "door",
+      "widthMm": 893
+    },
+    {
+      "wall": 7,
+      "alongMm": 587,
+      "type": "door",
+      "widthMm": 694
+    },
+    {
+      "wall": 9,
+      "alongMm": 347,
+      "type": "door",
+      "widthMm": 595
+    },
+    {
+      "wall": 1,
+      "alongMm": 1687,
+      "type": "window",
+      "widthMm": 992
+    },
+    {
+      "wall": 2,
+      "alongMm": 983,
+      "type": "window",
+      "widthMm": 446
+    },
+    {
+      "wall": 2,
+      "alongMm": 3379,
+      "type": "window",
+      "widthMm": 1537
+    }
+  ],
+  "dimensionChains": [
+    {
+      "axis": "x",
+      "values": [
+        1800,
+        5100
+      ]
+    }
+  ]
+}

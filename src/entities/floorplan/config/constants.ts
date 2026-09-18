@@ -21,6 +21,10 @@ export const WINDOW_SILL_M = 0.9;
 export const WINDOW_TOP_M = 2.1;
 export const MM_PER_M = 1000;
 
+// 벽 마스크 → 방 영역(px). 자동 추출과 수기 트레이서가 같은 플러드필을 쓴다
+export const ROOM_MIN_AREA_RATIO = 0.012;
+export const DOUGLAS_PEUCKER_EPSILON_PX = 4;
+
 // 자동 추출 모델 정규화·검증 기준(mm·비율). 소형 공공임대 도면은 직교 레이아웃이라 그리드 스냅이 유효하다
 export const NORMALIZE_GRID_MM = 50;
 export const POINT_MERGE_TOLERANCE_MM = 20;
@@ -48,6 +52,8 @@ export const REACHABILITY_EXEMPT_LABELS: RoomLabel[] = ["반침"];
 export const REACHABILITY_EXEMPT_UNLABELED_MAX_M2 = 1.5;
 export const ENTRANCE_LABEL: RoomLabel = "현관";
 export const CONFIDENCE_PENALTY: Record<NormalizeFlagCode, number> = {
+  "geometry-invalid": 1,
+  "room-outside": 1,
   "scale-mismatch": 0.15,
   "scale-no-chain": 0.1,
   "area-mismatch": 0.15,

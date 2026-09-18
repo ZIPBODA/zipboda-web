@@ -1,0 +1,2301 @@
+[
+  {
+    "property": "gangnam-gaepo",
+    "layoutKey": "gangnam-gaepo-2-3-01",
+    "unitKey": "gangnam-gaepo-2-3-01",
+    "exclusiveAreaM2": 28.81,
+    "sourceIssue": null,
+    "extraction": "draft",
+    "extractionError": null,
+    "extractionConfidence": 0,
+    "segments": 4,
+    "confidence": 0,
+    "flags": [
+      "geometry-invalid"
+    ],
+    "rooms": 3,
+    "walls": 4,
+    "openings": 0,
+    "doors": 0,
+    "scaleSource": "estimated",
+    "areaDeviation": null,
+    "draftStatus": "blocked",
+    "draftReasons": [
+      "geometry-invalid: 외곽·방은 교차하지 않는 직교 폴리곤이어야 합니다"
+    ],
+    "cause": "geometry",
+    "reviewedMethod": "traced",
+    "status": "reviewed",
+    "reasons": [
+      "registered: traced · Claude Fable 5.1 · 보정 3000mm=86px로 수정(치수 2300+2200=4500 실측), 치수 체인 x·z 정합, 오버레이 눈검사"
+    ]
+  },
+  {
+    "property": "gangnam-gaepo",
+    "layoutKey": "gangnam-gaepo-2-3-02",
+    "unitKey": "gangnam-gaepo-2-3-02",
+    "exclusiveAreaM2": 31.99,
+    "sourceIssue": null,
+    "extraction": "draft",
+    "extractionError": null,
+    "extractionConfidence": 0,
+    "segments": 7,
+    "confidence": 0,
+    "flags": [
+      "geometry-invalid"
+    ],
+    "rooms": 4,
+    "walls": 7,
+    "openings": 0,
+    "doors": 0,
+    "scaleSource": "estimated",
+    "areaDeviation": null,
+    "draftStatus": "blocked",
+    "draftReasons": [
+      "geometry-invalid: 외곽·방은 교차하지 않는 직교 폴리곤이어야 합니다"
+    ],
+    "cause": "geometry",
+    "reviewedMethod": "traced",
+    "status": "reviewed",
+    "reasons": [
+      "registered: traced · Claude Fable 5.1 · PDF 상단 치수 3000+1300+2800(x) 정합, 크롭 벽 중심선 실측, 현관은 개방 경계선, 오버레이 눈검사"
+    ]
+  },
+  {
+    "property": "gangnam-gaepo",
+    "layoutKey": "gangnam-gaepo-2-3-03",
+    "unitKey": "gangnam-gaepo-2-3-03",
+    "exclusiveAreaM2": 31.99,
+    "sourceIssue": null,
+    "extraction": "draft",
+    "extractionError": null,
+    "extractionConfidence": 0,
+    "segments": 7,
+    "confidence": 0.55,
+    "flags": [
+      "scale-no-chain",
+      "area-mismatch",
+      "no-doors"
+    ],
+    "rooms": 2,
+    "walls": 5,
+    "openings": 0,
+    "doors": 0,
+    "scaleSource": "estimated",
+    "areaDeviation": 0.7582838386995937,
+    "draftStatus": "needs-review",
+    "draftReasons": [
+      "area-mismatch: 방 합 7.73㎡·안목 환산 7.73㎡ vs 전용 31.99㎡ (발코니 등 제외 대상을 못 읽어 부족분만 검사)",
+      "no-doors: 문 미검출",
+      "신뢰도 55% < 85%",
+      "문 없음",
+      "면적 편차 75.8% (전용 31.99㎡ vs 방 합 7.73㎡·안목 환산 7.73㎡)"
+    ],
+    "cause": "opening",
+    "reviewedMethod": "traced",
+    "status": "reviewed",
+    "reasons": [
+      "registered: traced · Claude Fable 5.1 · PDF 상단 치수 2800+1300+3000(x) 정합, 크롭 벽 중심선 실측, 현관은 개방 경계선, 오버레이 눈검사"
+    ]
+  },
+  {
+    "property": "gangnam-gaepo",
+    "layoutKey": "gangnam-gaepo-2-3-04",
+    "unitKey": "gangnam-gaepo-2-3-04",
+    "exclusiveAreaM2": 28.81,
+    "sourceIssue": null,
+    "extraction": "draft",
+    "extractionError": null,
+    "extractionConfidence": 0.55,
+    "segments": 4,
+    "confidence": 0.55,
+    "flags": [
+      "scale-no-chain",
+      "area-mismatch",
+      "no-doors"
+    ],
+    "rooms": 2,
+    "walls": 4,
+    "openings": 0,
+    "doors": 0,
+    "scaleSource": "estimated",
+    "areaDeviation": 0.5871225269003818,
+    "draftStatus": "needs-review",
+    "draftReasons": [
+      "area-mismatch: 방 합 11.89㎡·안목 환산 11.71㎡ vs 전용 28.81㎡ (발코니 등 제외 대상을 못 읽어 부족분만 검사)",
+      "no-doors: 문 미검출",
+      "신뢰도 55% < 85%",
+      "문 없음",
+      "면적 편차 58.7% (전용 28.81㎡ vs 방 합 11.89㎡·안목 환산 11.71㎡)"
+    ],
+    "cause": "opening",
+    "reviewedMethod": "traced",
+    "status": "reviewed",
+    "reasons": [
+      "registered: traced · Claude Fable 5.1 · PDF 치수 2200+2300(x)·4400+1700+1300(z) 정합, 현관문은 좌측 외벽 탐침(3016~4104), 오버레이 눈검사"
+    ]
+  },
+  {
+    "property": "gangnam-gaepo",
+    "layoutKey": "gangnam-gaepo-4-401",
+    "unitKey": "gangnam-gaepo-4-401",
+    "exclusiveAreaM2": 30.76,
+    "sourceIssue": null,
+    "extraction": "draft",
+    "extractionError": null,
+    "extractionConfidence": 0.35,
+    "segments": 8,
+    "confidence": 0.35,
+    "flags": [
+      "scale-no-chain",
+      "area-mismatch",
+      "tiling-gap",
+      "no-doors"
+    ],
+    "rooms": 1,
+    "walls": 3,
+    "openings": 0,
+    "doors": 0,
+    "scaleSource": "estimated",
+    "areaDeviation": 0.9062906371911573,
+    "draftStatus": "needs-review",
+    "draftReasons": [
+      "area-mismatch: 방 합 2.88㎡·안목 환산 2.88㎡ vs 전용 30.76㎡ (발코니 등 제외 대상을 못 읽어 부족분만 검사)",
+      "tiling-gap: 방 면적 커버리지 45.3%",
+      "no-doors: 문 미검출",
+      "신뢰도 35% < 85%",
+      "벽 3개 < 4개(외곽을 둘러싸지 못함)",
+      "문 없음",
+      "면적 편차 90.6% (전용 30.76㎡ vs 방 합 2.88㎡·안목 환산 2.88㎡)"
+    ],
+    "cause": "wall-extraction",
+    "reviewedMethod": null,
+    "status": "needs-review",
+    "reasons": [
+      "area-mismatch: 방 합 2.88㎡·안목 환산 2.88㎡ vs 전용 30.76㎡ (발코니 등 제외 대상을 못 읽어 부족분만 검사)",
+      "tiling-gap: 방 면적 커버리지 45.3%",
+      "no-doors: 문 미검출",
+      "신뢰도 35% < 85%",
+      "벽 3개 < 4개(외곽을 둘러싸지 못함)",
+      "문 없음",
+      "면적 편차 90.6% (전용 30.76㎡ vs 방 합 2.88㎡·안목 환산 2.88㎡)"
+    ]
+  },
+  {
+    "property": "gangnam-gaepo",
+    "layoutKey": "gangnam-gaepo-4-402",
+    "unitKey": "gangnam-gaepo-4-402",
+    "exclusiveAreaM2": 26.99,
+    "sourceIssue": null,
+    "extraction": "draft",
+    "extractionError": null,
+    "extractionConfidence": 0.55,
+    "segments": 5,
+    "confidence": 0.55,
+    "flags": [
+      "scale-no-chain",
+      "area-mismatch",
+      "no-doors"
+    ],
+    "rooms": 2,
+    "walls": 4,
+    "openings": 0,
+    "doors": 0,
+    "scaleSource": "estimated",
+    "areaDeviation": 0.5197295294553538,
+    "draftStatus": "needs-review",
+    "draftReasons": [
+      "area-mismatch: 방 합 12.96㎡·안목 환산 12.04㎡ vs 전용 26.99㎡ (발코니 등 제외 대상을 못 읽어 부족분만 검사)",
+      "no-doors: 문 미검출",
+      "신뢰도 55% < 85%",
+      "문 없음",
+      "면적 편차 52.0% (전용 26.99㎡ vs 방 합 12.96㎡·안목 환산 12.04㎡)"
+    ],
+    "cause": "opening",
+    "reviewedMethod": "traced",
+    "status": "reviewed",
+    "reasons": [
+      "registered: traced · Codex · PDF 2쪽 402호 직접 실측. x=6000+2200. 거실·보일러실(기타)·욕실과 현관 옆 PS 벽, 개구부 실측 위치 반영. RoomLabel 열거형에 맞춰 보일러실을 기타로 정정(Claude)"
+    ]
+  },
+  {
+    "property": "gangnam-gaepo",
+    "layoutKey": "gangnam-gaepo-4-403",
+    "unitKey": "gangnam-gaepo-4-403",
+    "exclusiveAreaM2": 30.76,
+    "sourceIssue": null,
+    "extraction": "draft",
+    "extractionError": null,
+    "extractionConfidence": 0.35,
+    "segments": 8,
+    "confidence": 0.35,
+    "flags": [
+      "scale-no-chain",
+      "area-mismatch",
+      "tiling-gap",
+      "no-doors"
+    ],
+    "rooms": 1,
+    "walls": 3,
+    "openings": 0,
+    "doors": 0,
+    "scaleSource": "estimated",
+    "areaDeviation": 0.9040962288686606,
+    "draftStatus": "needs-review",
+    "draftReasons": [
+      "area-mismatch: 방 합 2.95㎡·안목 환산 2.95㎡ vs 전용 30.76㎡ (발코니 등 제외 대상을 못 읽어 부족분만 검사)",
+      "tiling-gap: 방 면적 커버리지 45.5%",
+      "no-doors: 문 미검출",
+      "신뢰도 35% < 85%",
+      "벽 3개 < 4개(외곽을 둘러싸지 못함)",
+      "문 없음",
+      "면적 편차 90.4% (전용 30.76㎡ vs 방 합 2.95㎡·안목 환산 2.95㎡)"
+    ],
+    "cause": "wall-extraction",
+    "reviewedMethod": null,
+    "status": "needs-review",
+    "reasons": [
+      "area-mismatch: 방 합 2.95㎡·안목 환산 2.95㎡ vs 전용 30.76㎡ (발코니 등 제외 대상을 못 읽어 부족분만 검사)",
+      "tiling-gap: 방 면적 커버리지 45.5%",
+      "no-doors: 문 미검출",
+      "신뢰도 35% < 85%",
+      "벽 3개 < 4개(외곽을 둘러싸지 못함)",
+      "문 없음",
+      "면적 편차 90.4% (전용 30.76㎡ vs 방 합 2.95㎡·안목 환산 2.95㎡)"
+    ]
+  },
+  {
+    "property": "gangnam-gaepo",
+    "layoutKey": "gangnam-gaepo-5-501",
+    "unitKey": "gangnam-gaepo-5-501",
+    "exclusiveAreaM2": 31.64,
+    "sourceIssue": null,
+    "extraction": "draft",
+    "extractionError": null,
+    "extractionConfidence": 0.55,
+    "segments": 5,
+    "confidence": 0.55,
+    "flags": [
+      "scale-no-chain",
+      "area-mismatch",
+      "no-doors"
+    ],
+    "rooms": 2,
+    "walls": 3,
+    "openings": 0,
+    "doors": 0,
+    "scaleSource": "estimated",
+    "areaDeviation": 0.8445006321112515,
+    "draftStatus": "needs-review",
+    "draftReasons": [
+      "area-mismatch: 방 합 4.92㎡·안목 환산 4.48㎡ vs 전용 31.64㎡ (발코니 등 제외 대상을 못 읽어 부족분만 검사)",
+      "no-doors: 문 미검출",
+      "신뢰도 55% < 85%",
+      "벽 3개 < 4개(외곽을 둘러싸지 못함)",
+      "문 없음",
+      "면적 편차 84.5% (전용 31.64㎡ vs 방 합 4.92㎡·안목 환산 4.48㎡)"
+    ],
+    "cause": "wall-extraction",
+    "reviewedMethod": null,
+    "status": "needs-review",
+    "reasons": [
+      "area-mismatch: 방 합 4.92㎡·안목 환산 4.48㎡ vs 전용 31.64㎡ (발코니 등 제외 대상을 못 읽어 부족분만 검사)",
+      "no-doors: 문 미검출",
+      "신뢰도 55% < 85%",
+      "벽 3개 < 4개(외곽을 둘러싸지 못함)",
+      "문 없음",
+      "면적 편차 84.5% (전용 31.64㎡ vs 방 합 4.92㎡·안목 환산 4.48㎡)"
+    ]
+  },
+  {
+    "property": "gangnam-gaepo",
+    "layoutKey": "gangnam-gaepo-5-502-drawing",
+    "unitKey": "gangnam-gaepo-5-502-drawing",
+    "exclusiveAreaM2": null,
+    "sourceIssue": "도면 502호 / 면적표 503호(32.91㎡, 확장 3.08㎡): 대응 미확정",
+    "extraction": "draft",
+    "extractionError": null,
+    "extractionConfidence": 0.7,
+    "segments": 3,
+    "confidence": 0.7,
+    "flags": [
+      "scale-no-chain",
+      "no-doors"
+    ],
+    "rooms": 2,
+    "walls": 3,
+    "openings": 0,
+    "doors": 0,
+    "scaleSource": "estimated",
+    "areaDeviation": null,
+    "draftStatus": "needs-review",
+    "draftReasons": [
+      "source: 도면 502호 / 면적표 503호(32.91㎡, 확장 3.08㎡): 대응 미확정",
+      "no-doors: 문 미검출",
+      "신뢰도 70% < 85%",
+      "벽 3개 < 4개(외곽을 둘러싸지 못함)",
+      "문 없음"
+    ],
+    "cause": "wall-extraction",
+    "reviewedMethod": null,
+    "status": "needs-review",
+    "reasons": [
+      "source: 도면 502호 / 면적표 503호(32.91㎡, 확장 3.08㎡): 대응 미확정",
+      "no-doors: 문 미검출",
+      "신뢰도 70% < 85%",
+      "벽 3개 < 4개(외곽을 둘러싸지 못함)",
+      "문 없음"
+    ]
+  },
+  {
+    "property": "gangseo-hwagok",
+    "layoutKey": "gangseo-hwagok-2-201",
+    "unitKey": "gangseo-hwagok-2-201",
+    "exclusiveAreaM2": 14.69,
+    "sourceIssue": null,
+    "extraction": "draft",
+    "extractionError": null,
+    "extractionConfidence": 0,
+    "segments": 28,
+    "confidence": 0,
+    "flags": [
+      "geometry-invalid"
+    ],
+    "rooms": 2,
+    "walls": 0,
+    "openings": 0,
+    "doors": 0,
+    "scaleSource": "estimated",
+    "areaDeviation": null,
+    "draftStatus": "blocked",
+    "draftReasons": [
+      "geometry-invalid: 외곽·방은 교차하지 않는 직교 폴리곤이어야 합니다"
+    ],
+    "cause": "geometry",
+    "reviewedMethod": "traced",
+    "status": "reviewed",
+    "reasons": [
+      "registered: traced · Claude Fable 5.1 · PDF 치수 체인 1800+1425(x) 정합, 현관문 1000·욕실 1400은 도면 치수, 오버레이 눈검사"
+    ]
+  },
+  {
+    "property": "gangseo-hwagok",
+    "layoutKey": "gangseo-hwagok-2-202",
+    "unitKey": "gangseo-hwagok-2-202",
+    "exclusiveAreaM2": 14.69,
+    "sourceIssue": null,
+    "extraction": "draft",
+    "extractionError": null,
+    "extractionConfidence": 0,
+    "segments": 29,
+    "confidence": 0,
+    "flags": [
+      "geometry-invalid"
+    ],
+    "rooms": 3,
+    "walls": 0,
+    "openings": 0,
+    "doors": 0,
+    "scaleSource": "estimated",
+    "areaDeviation": null,
+    "draftStatus": "blocked",
+    "draftReasons": [
+      "geometry-invalid: 외곽·방은 교차하지 않는 직교 폴리곤이어야 합니다"
+    ],
+    "cause": "geometry",
+    "reviewedMethod": null,
+    "status": "blocked",
+    "reasons": [
+      "geometry-invalid: 외곽·방은 교차하지 않는 직교 폴리곤이어야 합니다"
+    ]
+  },
+  {
+    "property": "gangseo-hwagok",
+    "layoutKey": "gangseo-hwagok-2-203",
+    "unitKey": "gangseo-hwagok-2-203",
+    "exclusiveAreaM2": 15.68,
+    "sourceIssue": null,
+    "extraction": "draft",
+    "extractionError": null,
+    "extractionConfidence": 0.7,
+    "segments": 29,
+    "confidence": 0.7,
+    "flags": [
+      "scale-no-chain",
+      "no-doors"
+    ],
+    "rooms": 2,
+    "walls": 0,
+    "openings": 0,
+    "doors": 0,
+    "scaleSource": "estimated",
+    "areaDeviation": 0,
+    "draftStatus": "needs-review",
+    "draftReasons": [
+      "no-doors: 문 미검출",
+      "신뢰도 70% < 85%",
+      "벽 0개 < 4개(외곽을 둘러싸지 못함)",
+      "문 없음",
+      "scene no-walls: 벽 없음"
+    ],
+    "cause": "wall-extraction",
+    "reviewedMethod": "traced",
+    "status": "reviewed",
+    "reasons": [
+      "registered: traced · Codex · PDF 2쪽 203호 직접 실측. x=1100+2200, z=1050+3700. 보일러실(기타)·욕실과 개구부 실측 위치 반영. RoomLabel 열거형에 맞춰 보일러실을 기타로 정정(Claude)"
+    ]
+  },
+  {
+    "property": "gangseo-hwagok",
+    "layoutKey": "gangseo-hwagok-2-204",
+    "unitKey": "gangseo-hwagok-2-204",
+    "exclusiveAreaM2": 15.68,
+    "sourceIssue": null,
+    "extraction": "draft",
+    "extractionError": null,
+    "extractionConfidence": 0,
+    "segments": 31,
+    "confidence": 0,
+    "flags": [
+      "geometry-invalid"
+    ],
+    "rooms": 1,
+    "walls": 0,
+    "openings": 0,
+    "doors": 0,
+    "scaleSource": "estimated",
+    "areaDeviation": null,
+    "draftStatus": "blocked",
+    "draftReasons": [
+      "geometry-invalid: 외곽·방은 교차하지 않는 직교 폴리곤이어야 합니다"
+    ],
+    "cause": "geometry",
+    "reviewedMethod": null,
+    "status": "blocked",
+    "reasons": [
+      "geometry-invalid: 외곽·방은 교차하지 않는 직교 폴리곤이어야 합니다"
+    ]
+  },
+  {
+    "property": "gangseo-hwagok",
+    "layoutKey": "gangseo-hwagok-2-205",
+    "unitKey": "gangseo-hwagok-2-205",
+    "exclusiveAreaM2": 15.68,
+    "sourceIssue": null,
+    "extraction": "draft",
+    "extractionError": null,
+    "extractionConfidence": 0.7,
+    "segments": 25,
+    "confidence": 0.7,
+    "flags": [
+      "scale-no-chain",
+      "no-doors"
+    ],
+    "rooms": 1,
+    "walls": 0,
+    "openings": 0,
+    "doors": 0,
+    "scaleSource": "estimated",
+    "areaDeviation": 0,
+    "draftStatus": "needs-review",
+    "draftReasons": [
+      "no-doors: 문 미검출",
+      "신뢰도 70% < 85%",
+      "벽 0개 < 4개(외곽을 둘러싸지 못함)",
+      "문 없음",
+      "scene no-walls: 벽 없음"
+    ],
+    "cause": "wall-extraction",
+    "reviewedMethod": null,
+    "status": "needs-review",
+    "reasons": [
+      "no-doors: 문 미검출",
+      "신뢰도 70% < 85%",
+      "벽 0개 < 4개(외곽을 둘러싸지 못함)",
+      "문 없음",
+      "scene no-walls: 벽 없음"
+    ]
+  },
+  {
+    "property": "gangseo-hwagok",
+    "layoutKey": "gangseo-hwagok-3-301",
+    "unitKey": "gangseo-hwagok-3-301",
+    "exclusiveAreaM2": 14.69,
+    "sourceIssue": null,
+    "extraction": "draft",
+    "extractionError": null,
+    "extractionConfidence": 0.7,
+    "segments": 22,
+    "confidence": 0.7,
+    "flags": [
+      "scale-no-chain",
+      "no-doors"
+    ],
+    "rooms": 2,
+    "walls": 0,
+    "openings": 0,
+    "doors": 0,
+    "scaleSource": "estimated",
+    "areaDeviation": 0,
+    "draftStatus": "needs-review",
+    "draftReasons": [
+      "no-doors: 문 미검출",
+      "신뢰도 70% < 85%",
+      "벽 0개 < 4개(외곽을 둘러싸지 못함)",
+      "문 없음",
+      "scene no-walls: 벽 없음"
+    ],
+    "cause": "wall-extraction",
+    "reviewedMethod": null,
+    "status": "needs-review",
+    "reasons": [
+      "no-doors: 문 미검출",
+      "신뢰도 70% < 85%",
+      "벽 0개 < 4개(외곽을 둘러싸지 못함)",
+      "문 없음",
+      "scene no-walls: 벽 없음"
+    ]
+  },
+  {
+    "property": "gangseo-hwagok",
+    "layoutKey": "gangseo-hwagok-3-302",
+    "unitKey": "gangseo-hwagok-3-302",
+    "exclusiveAreaM2": 14.69,
+    "sourceIssue": null,
+    "extraction": "draft",
+    "extractionError": null,
+    "extractionConfidence": 0,
+    "segments": 32,
+    "confidence": 0,
+    "flags": [
+      "geometry-invalid"
+    ],
+    "rooms": 4,
+    "walls": 0,
+    "openings": 0,
+    "doors": 0,
+    "scaleSource": "estimated",
+    "areaDeviation": null,
+    "draftStatus": "blocked",
+    "draftReasons": [
+      "geometry-invalid: 외곽·방은 교차하지 않는 직교 폴리곤이어야 합니다"
+    ],
+    "cause": "geometry",
+    "reviewedMethod": null,
+    "status": "blocked",
+    "reasons": [
+      "geometry-invalid: 외곽·방은 교차하지 않는 직교 폴리곤이어야 합니다"
+    ]
+  },
+  {
+    "property": "gangseo-hwagok",
+    "layoutKey": "gangseo-hwagok-4-401",
+    "unitKey": "gangseo-hwagok-4-401",
+    "exclusiveAreaM2": 14.69,
+    "sourceIssue": null,
+    "extraction": "draft",
+    "extractionError": null,
+    "extractionConfidence": 0,
+    "segments": 28,
+    "confidence": 0,
+    "flags": [
+      "geometry-invalid"
+    ],
+    "rooms": 1,
+    "walls": 0,
+    "openings": 0,
+    "doors": 0,
+    "scaleSource": "estimated",
+    "areaDeviation": null,
+    "draftStatus": "blocked",
+    "draftReasons": [
+      "geometry-invalid: 외곽·방은 교차하지 않는 직교 폴리곤이어야 합니다"
+    ],
+    "cause": "geometry",
+    "reviewedMethod": null,
+    "status": "blocked",
+    "reasons": [
+      "geometry-invalid: 외곽·방은 교차하지 않는 직교 폴리곤이어야 합니다"
+    ]
+  },
+  {
+    "property": "gangseo-hwagok",
+    "layoutKey": "gangseo-hwagok-4-402",
+    "unitKey": "gangseo-hwagok-4-402",
+    "exclusiveAreaM2": 14.69,
+    "sourceIssue": null,
+    "extraction": "draft",
+    "extractionError": null,
+    "extractionConfidence": 0.7,
+    "segments": 30,
+    "confidence": 0.7,
+    "flags": [
+      "scale-no-chain",
+      "no-doors"
+    ],
+    "rooms": 2,
+    "walls": 0,
+    "openings": 0,
+    "doors": 0,
+    "scaleSource": "estimated",
+    "areaDeviation": 0,
+    "draftStatus": "needs-review",
+    "draftReasons": [
+      "no-doors: 문 미검출",
+      "신뢰도 70% < 85%",
+      "벽 0개 < 4개(외곽을 둘러싸지 못함)",
+      "문 없음",
+      "scene no-walls: 벽 없음"
+    ],
+    "cause": "wall-extraction",
+    "reviewedMethod": null,
+    "status": "needs-review",
+    "reasons": [
+      "no-doors: 문 미검출",
+      "신뢰도 70% < 85%",
+      "벽 0개 < 4개(외곽을 둘러싸지 못함)",
+      "문 없음",
+      "scene no-walls: 벽 없음"
+    ]
+  },
+  {
+    "property": "gwanak-sillim",
+    "layoutKey": "gwanak-sillim-2-3-01",
+    "unitKey": "gwanak-sillim-2-3-01",
+    "exclusiveAreaM2": 15.3,
+    "sourceIssue": null,
+    "extraction": "draft",
+    "extractionError": null,
+    "extractionConfidence": 0,
+    "segments": 8,
+    "confidence": 0,
+    "flags": [
+      "geometry-invalid"
+    ],
+    "rooms": 1,
+    "walls": 1,
+    "openings": 0,
+    "doors": 0,
+    "scaleSource": "estimated",
+    "areaDeviation": null,
+    "draftStatus": "blocked",
+    "draftReasons": [
+      "geometry-invalid: 외곽·방은 교차하지 않는 직교 폴리곤이어야 합니다"
+    ],
+    "cause": "geometry",
+    "reviewedMethod": "traced",
+    "status": "reviewed",
+    "reasons": [
+      "registered: traced · Claude Fable 5.1 · PDF 치수 체인 3400(x)·4500+1200(z) 정합, 크롭 실측, 오버레이 눈검사"
+    ]
+  },
+  {
+    "property": "gwanak-sillim",
+    "layoutKey": "gwanak-sillim-2-3-02",
+    "unitKey": "gwanak-sillim-2-3-02",
+    "exclusiveAreaM2": 17.16,
+    "sourceIssue": null,
+    "extraction": "draft",
+    "extractionError": null,
+    "extractionConfidence": 0,
+    "segments": 10,
+    "confidence": 0.7,
+    "flags": [
+      "scale-no-chain",
+      "no-doors"
+    ],
+    "rooms": 2,
+    "walls": 0,
+    "openings": 0,
+    "doors": 0,
+    "scaleSource": "estimated",
+    "areaDeviation": 0,
+    "draftStatus": "needs-review",
+    "draftReasons": [
+      "no-doors: 문 미검출",
+      "신뢰도 70% < 85%",
+      "벽 0개 < 4개(외곽을 둘러싸지 못함)",
+      "문 없음",
+      "scene no-walls: 벽 없음"
+    ],
+    "cause": "wall-extraction",
+    "reviewedMethod": null,
+    "status": "needs-review",
+    "reasons": [
+      "no-doors: 문 미검출",
+      "신뢰도 70% < 85%",
+      "벽 0개 < 4개(외곽을 둘러싸지 못함)",
+      "문 없음",
+      "scene no-walls: 벽 없음"
+    ]
+  },
+  {
+    "property": "gwanak-sillim",
+    "layoutKey": "gwanak-sillim-2-3-03",
+    "unitKey": "gwanak-sillim-2-3-03",
+    "exclusiveAreaM2": 14.85,
+    "sourceIssue": null,
+    "extraction": "draft",
+    "extractionError": null,
+    "extractionConfidence": 0.7,
+    "segments": 6,
+    "confidence": 0.7,
+    "flags": [
+      "scale-no-chain",
+      "no-doors"
+    ],
+    "rooms": 2,
+    "walls": 0,
+    "openings": 0,
+    "doors": 0,
+    "scaleSource": "estimated",
+    "areaDeviation": 0,
+    "draftStatus": "needs-review",
+    "draftReasons": [
+      "no-doors: 문 미검출",
+      "신뢰도 70% < 85%",
+      "벽 0개 < 4개(외곽을 둘러싸지 못함)",
+      "문 없음",
+      "scene no-walls: 벽 없음"
+    ],
+    "cause": "wall-extraction",
+    "reviewedMethod": "traced",
+    "status": "reviewed",
+    "reasons": [
+      "registered: traced · Codex · PDF 2쪽 나형 3호 독립 실측. x=3300, z=4500+1200. 벽·욕실·발코니 및 문·창 오버레이 대조."
+    ]
+  },
+  {
+    "property": "gwanak-sillim",
+    "layoutKey": "gwanak-sillim-2-3-04",
+    "unitKey": "gwanak-sillim-2-3-04",
+    "exclusiveAreaM2": 14.85,
+    "sourceIssue": null,
+    "extraction": "draft",
+    "extractionError": null,
+    "extractionConfidence": 0,
+    "segments": 4,
+    "confidence": 0.7,
+    "flags": [
+      "scale-no-chain",
+      "no-doors"
+    ],
+    "rooms": 1,
+    "walls": 0,
+    "openings": 0,
+    "doors": 0,
+    "scaleSource": "estimated",
+    "areaDeviation": 0,
+    "draftStatus": "needs-review",
+    "draftReasons": [
+      "no-doors: 문 미검출",
+      "신뢰도 70% < 85%",
+      "벽 0개 < 4개(외곽을 둘러싸지 못함)",
+      "문 없음",
+      "scene no-walls: 벽 없음"
+    ],
+    "cause": "wall-extraction",
+    "reviewedMethod": null,
+    "status": "needs-review",
+    "reasons": [
+      "no-doors: 문 미검출",
+      "신뢰도 70% < 85%",
+      "벽 0개 < 4개(외곽을 둘러싸지 못함)",
+      "문 없음",
+      "scene no-walls: 벽 없음"
+    ]
+  },
+  {
+    "property": "gwanak-sillim",
+    "layoutKey": "gwanak-sillim-2-3-05",
+    "unitKey": "gwanak-sillim-2-3-05",
+    "exclusiveAreaM2": 17.16,
+    "sourceIssue": null,
+    "extraction": "draft",
+    "extractionError": null,
+    "extractionConfidence": 0,
+    "segments": 5,
+    "confidence": 0.7,
+    "flags": [
+      "scale-no-chain",
+      "no-doors"
+    ],
+    "rooms": 2,
+    "walls": 1,
+    "openings": 0,
+    "doors": 0,
+    "scaleSource": "estimated",
+    "areaDeviation": 0,
+    "draftStatus": "needs-review",
+    "draftReasons": [
+      "no-doors: 문 미검출",
+      "신뢰도 70% < 85%",
+      "벽 1개 < 4개(외곽을 둘러싸지 못함)",
+      "문 없음"
+    ],
+    "cause": "wall-extraction",
+    "reviewedMethod": null,
+    "status": "needs-review",
+    "reasons": [
+      "no-doors: 문 미검출",
+      "신뢰도 70% < 85%",
+      "벽 1개 < 4개(외곽을 둘러싸지 못함)",
+      "문 없음"
+    ]
+  },
+  {
+    "property": "gwanak-sillim",
+    "layoutKey": "gwanak-sillim-4-401",
+    "unitKey": "gwanak-sillim-4-401",
+    "exclusiveAreaM2": 17.64,
+    "sourceIssue": null,
+    "extraction": "draft",
+    "extractionError": null,
+    "extractionConfidence": 0.7,
+    "segments": 6,
+    "confidence": 0.7,
+    "flags": [
+      "scale-no-chain",
+      "no-doors"
+    ],
+    "rooms": 3,
+    "walls": 1,
+    "openings": 0,
+    "doors": 0,
+    "scaleSource": "estimated",
+    "areaDeviation": 0,
+    "draftStatus": "needs-review",
+    "draftReasons": [
+      "no-doors: 문 미검출",
+      "신뢰도 70% < 85%",
+      "벽 1개 < 4개(외곽을 둘러싸지 못함)",
+      "문 없음"
+    ],
+    "cause": "wall-extraction",
+    "reviewedMethod": null,
+    "status": "needs-review",
+    "reasons": [
+      "no-doors: 문 미검출",
+      "신뢰도 70% < 85%",
+      "벽 1개 < 4개(외곽을 둘러싸지 못함)",
+      "문 없음"
+    ]
+  },
+  {
+    "property": "gwanak-sillim",
+    "layoutKey": "gwanak-sillim-4-402",
+    "unitKey": "gwanak-sillim-4-402",
+    "exclusiveAreaM2": 14.85,
+    "sourceIssue": null,
+    "extraction": "draft",
+    "extractionError": null,
+    "extractionConfidence": 0.7,
+    "segments": 4,
+    "confidence": 0.7,
+    "flags": [
+      "scale-no-chain",
+      "no-doors"
+    ],
+    "rooms": 2,
+    "walls": 0,
+    "openings": 0,
+    "doors": 0,
+    "scaleSource": "estimated",
+    "areaDeviation": 0,
+    "draftStatus": "needs-review",
+    "draftReasons": [
+      "no-doors: 문 미검출",
+      "신뢰도 70% < 85%",
+      "벽 0개 < 4개(외곽을 둘러싸지 못함)",
+      "문 없음",
+      "scene no-walls: 벽 없음"
+    ],
+    "cause": "wall-extraction",
+    "reviewedMethod": null,
+    "status": "needs-review",
+    "reasons": [
+      "no-doors: 문 미검출",
+      "신뢰도 70% < 85%",
+      "벽 0개 < 4개(외곽을 둘러싸지 못함)",
+      "문 없음",
+      "scene no-walls: 벽 없음"
+    ]
+  },
+  {
+    "property": "gwanak-sillim",
+    "layoutKey": "gwanak-sillim-4-403",
+    "unitKey": "gwanak-sillim-4-403",
+    "exclusiveAreaM2": 17.06,
+    "sourceIssue": null,
+    "extraction": "draft",
+    "extractionError": null,
+    "extractionConfidence": 0,
+    "segments": 7,
+    "confidence": 0,
+    "flags": [
+      "geometry-invalid"
+    ],
+    "rooms": 2,
+    "walls": 1,
+    "openings": 0,
+    "doors": 0,
+    "scaleSource": "estimated",
+    "areaDeviation": null,
+    "draftStatus": "blocked",
+    "draftReasons": [
+      "geometry-invalid: 외곽·방은 교차하지 않는 직교 폴리곤이어야 합니다"
+    ],
+    "cause": "geometry",
+    "reviewedMethod": null,
+    "status": "blocked",
+    "reasons": [
+      "geometry-invalid: 외곽·방은 교차하지 않는 직교 폴리곤이어야 합니다"
+    ]
+  },
+  {
+    "property": "dobong-banghak",
+    "layoutKey": "dobong-banghak-2-3-01",
+    "unitKey": "dobong-banghak-2-3-01",
+    "exclusiveAreaM2": 13.66,
+    "sourceIssue": null,
+    "extraction": "draft",
+    "extractionError": null,
+    "extractionConfidence": 0.7,
+    "segments": 28,
+    "confidence": 0.7,
+    "flags": [
+      "scale-no-chain",
+      "no-doors"
+    ],
+    "rooms": 1,
+    "walls": 0,
+    "openings": 0,
+    "doors": 0,
+    "scaleSource": "estimated",
+    "areaDeviation": 0,
+    "draftStatus": "needs-review",
+    "draftReasons": [
+      "no-doors: 문 미검출",
+      "신뢰도 70% < 85%",
+      "벽 0개 < 4개(외곽을 둘러싸지 못함)",
+      "문 없음",
+      "scene no-walls: 벽 없음"
+    ],
+    "cause": "wall-extraction",
+    "reviewedMethod": "traced",
+    "status": "reviewed",
+    "reasons": [
+      "registered: traced · Claude Fable 5.1 · PDF 치수 체인 1200+2500+1450(x) 정합, 문 폭 1000은 도면 치수, 오버레이 눈검사"
+    ]
+  },
+  {
+    "property": "dobong-banghak",
+    "layoutKey": "dobong-banghak-2-3-02",
+    "unitKey": "dobong-banghak-2-3-02",
+    "exclusiveAreaM2": 13.86,
+    "sourceIssue": null,
+    "extraction": "draft",
+    "extractionError": null,
+    "extractionConfidence": 0.7,
+    "segments": 25,
+    "confidence": 0.7,
+    "flags": [
+      "scale-no-chain",
+      "no-doors"
+    ],
+    "rooms": 2,
+    "walls": 0,
+    "openings": 0,
+    "doors": 0,
+    "scaleSource": "estimated",
+    "areaDeviation": 0,
+    "draftStatus": "needs-review",
+    "draftReasons": [
+      "no-doors: 문 미검출",
+      "신뢰도 70% < 85%",
+      "벽 0개 < 4개(외곽을 둘러싸지 못함)",
+      "문 없음",
+      "scene no-walls: 벽 없음"
+    ],
+    "cause": "wall-extraction",
+    "reviewedMethod": "traced",
+    "status": "reviewed",
+    "reasons": [
+      "registered: traced · Codex · PDF 2쪽 202호 독립 실측. x=1100+1800+700, z=1200+2550+1450. 벽·문·창 오버레이 대조."
+    ]
+  },
+  {
+    "property": "dobong-banghak",
+    "layoutKey": "dobong-banghak-2-3-03",
+    "unitKey": "dobong-banghak-2-3-03",
+    "exclusiveAreaM2": 13.86,
+    "sourceIssue": null,
+    "extraction": "draft",
+    "extractionError": null,
+    "extractionConfidence": 0,
+    "segments": 29,
+    "confidence": 0,
+    "flags": [
+      "geometry-invalid"
+    ],
+    "rooms": 1,
+    "walls": 0,
+    "openings": 0,
+    "doors": 0,
+    "scaleSource": "estimated",
+    "areaDeviation": null,
+    "draftStatus": "blocked",
+    "draftReasons": [
+      "geometry-invalid: 외곽·방은 교차하지 않는 직교 폴리곤이어야 합니다"
+    ],
+    "cause": "geometry",
+    "reviewedMethod": null,
+    "status": "blocked",
+    "reasons": [
+      "geometry-invalid: 외곽·방은 교차하지 않는 직교 폴리곤이어야 합니다"
+    ]
+  },
+  {
+    "property": "dobong-banghak",
+    "layoutKey": "dobong-banghak-2-3-04",
+    "unitKey": "dobong-banghak-2-3-04",
+    "exclusiveAreaM2": 13.86,
+    "sourceIssue": null,
+    "extraction": "draft",
+    "extractionError": null,
+    "extractionConfidence": 0.7,
+    "segments": 24,
+    "confidence": 0.7,
+    "flags": [
+      "scale-no-chain",
+      "no-doors"
+    ],
+    "rooms": 1,
+    "walls": 0,
+    "openings": 0,
+    "doors": 0,
+    "scaleSource": "estimated",
+    "areaDeviation": 0,
+    "draftStatus": "needs-review",
+    "draftReasons": [
+      "no-doors: 문 미검출",
+      "신뢰도 70% < 85%",
+      "벽 0개 < 4개(외곽을 둘러싸지 못함)",
+      "문 없음",
+      "scene no-walls: 벽 없음"
+    ],
+    "cause": "wall-extraction",
+    "reviewedMethod": null,
+    "status": "needs-review",
+    "reasons": [
+      "no-doors: 문 미검출",
+      "신뢰도 70% < 85%",
+      "벽 0개 < 4개(외곽을 둘러싸지 못함)",
+      "문 없음",
+      "scene no-walls: 벽 없음"
+    ]
+  },
+  {
+    "property": "dobong-banghak",
+    "layoutKey": "dobong-banghak-4-401",
+    "unitKey": "dobong-banghak-4-401",
+    "exclusiveAreaM2": 13.66,
+    "sourceIssue": null,
+    "extraction": "draft",
+    "extractionError": null,
+    "extractionConfidence": 0.7,
+    "segments": 31,
+    "confidence": 0.7,
+    "flags": [
+      "scale-no-chain",
+      "no-doors"
+    ],
+    "rooms": 2,
+    "walls": 0,
+    "openings": 0,
+    "doors": 0,
+    "scaleSource": "estimated",
+    "areaDeviation": 0,
+    "draftStatus": "needs-review",
+    "draftReasons": [
+      "no-doors: 문 미검출",
+      "신뢰도 70% < 85%",
+      "벽 0개 < 4개(외곽을 둘러싸지 못함)",
+      "문 없음",
+      "scene no-walls: 벽 없음"
+    ],
+    "cause": "wall-extraction",
+    "reviewedMethod": null,
+    "status": "needs-review",
+    "reasons": [
+      "no-doors: 문 미검출",
+      "신뢰도 70% < 85%",
+      "벽 0개 < 4개(외곽을 둘러싸지 못함)",
+      "문 없음",
+      "scene no-walls: 벽 없음"
+    ]
+  },
+  {
+    "property": "dobong-banghak",
+    "layoutKey": "dobong-banghak-4-402",
+    "unitKey": "dobong-banghak-4-402",
+    "exclusiveAreaM2": 13.66,
+    "sourceIssue": null,
+    "extraction": "draft",
+    "extractionError": null,
+    "extractionConfidence": 0,
+    "segments": 26,
+    "confidence": 0,
+    "flags": [
+      "geometry-invalid"
+    ],
+    "rooms": 2,
+    "walls": 0,
+    "openings": 0,
+    "doors": 0,
+    "scaleSource": "estimated",
+    "areaDeviation": null,
+    "draftStatus": "blocked",
+    "draftReasons": [
+      "geometry-invalid: 외곽·방은 교차하지 않는 직교 폴리곤이어야 합니다"
+    ],
+    "cause": "geometry",
+    "reviewedMethod": null,
+    "status": "blocked",
+    "reasons": [
+      "geometry-invalid: 외곽·방은 교차하지 않는 직교 폴리곤이어야 합니다"
+    ]
+  },
+  {
+    "property": "seocho-iris",
+    "layoutKey": "seocho-iris-2-3-01",
+    "unitKey": "seocho-iris-2-3-01",
+    "exclusiveAreaM2": null,
+    "sourceIssue": "전용면적·실측 치수 없음: 2D 전용",
+    "extraction": "blocked",
+    "extractionError": "실측 스케일 근거 없음",
+    "extractionConfidence": null,
+    "segments": null,
+    "confidence": null,
+    "flags": [],
+    "rooms": 0,
+    "walls": 0,
+    "openings": 0,
+    "doors": 0,
+    "scaleSource": null,
+    "areaDeviation": null,
+    "draftStatus": "blocked",
+    "draftReasons": [
+      "실측 스케일 근거 없음"
+    ],
+    "cause": "scale",
+    "reviewedMethod": null,
+    "status": "blocked",
+    "reasons": [
+      "실측 스케일 근거 없음"
+    ]
+  },
+  {
+    "property": "seocho-iris",
+    "layoutKey": "seocho-iris-2-3-02",
+    "unitKey": "seocho-iris-2-3-02",
+    "exclusiveAreaM2": null,
+    "sourceIssue": "전용면적·실측 치수 없음: 2D 전용",
+    "extraction": "blocked",
+    "extractionError": "실측 스케일 근거 없음",
+    "extractionConfidence": null,
+    "segments": null,
+    "confidence": null,
+    "flags": [],
+    "rooms": 0,
+    "walls": 0,
+    "openings": 0,
+    "doors": 0,
+    "scaleSource": null,
+    "areaDeviation": null,
+    "draftStatus": "blocked",
+    "draftReasons": [
+      "실측 스케일 근거 없음"
+    ],
+    "cause": "scale",
+    "reviewedMethod": null,
+    "status": "blocked",
+    "reasons": [
+      "실측 스케일 근거 없음"
+    ]
+  },
+  {
+    "property": "seocho-iris",
+    "layoutKey": "seocho-iris-2-3-03",
+    "unitKey": "seocho-iris-2-3-03",
+    "exclusiveAreaM2": null,
+    "sourceIssue": "전용면적·실측 치수 없음: 2D 전용",
+    "extraction": "blocked",
+    "extractionError": "실측 스케일 근거 없음",
+    "extractionConfidence": null,
+    "segments": null,
+    "confidence": null,
+    "flags": [],
+    "rooms": 0,
+    "walls": 0,
+    "openings": 0,
+    "doors": 0,
+    "scaleSource": null,
+    "areaDeviation": null,
+    "draftStatus": "blocked",
+    "draftReasons": [
+      "실측 스케일 근거 없음"
+    ],
+    "cause": "scale",
+    "reviewedMethod": null,
+    "status": "blocked",
+    "reasons": [
+      "실측 스케일 근거 없음"
+    ]
+  },
+  {
+    "property": "seocho-iris",
+    "layoutKey": "seocho-iris-2-3-04",
+    "unitKey": "seocho-iris-2-3-04",
+    "exclusiveAreaM2": null,
+    "sourceIssue": "전용면적·실측 치수 없음: 2D 전용",
+    "extraction": "blocked",
+    "extractionError": "실측 스케일 근거 없음",
+    "extractionConfidence": null,
+    "segments": null,
+    "confidence": null,
+    "flags": [],
+    "rooms": 0,
+    "walls": 0,
+    "openings": 0,
+    "doors": 0,
+    "scaleSource": null,
+    "areaDeviation": null,
+    "draftStatus": "blocked",
+    "draftReasons": [
+      "실측 스케일 근거 없음"
+    ],
+    "cause": "scale",
+    "reviewedMethod": null,
+    "status": "blocked",
+    "reasons": [
+      "실측 스케일 근거 없음"
+    ]
+  },
+  {
+    "property": "seocho-iris",
+    "layoutKey": "seocho-iris-2-3-05",
+    "unitKey": "seocho-iris-2-3-05",
+    "exclusiveAreaM2": null,
+    "sourceIssue": "전용면적·실측 치수 없음: 2D 전용",
+    "extraction": "blocked",
+    "extractionError": "실측 스케일 근거 없음",
+    "extractionConfidence": null,
+    "segments": null,
+    "confidence": null,
+    "flags": [],
+    "rooms": 0,
+    "walls": 0,
+    "openings": 0,
+    "doors": 0,
+    "scaleSource": null,
+    "areaDeviation": null,
+    "draftStatus": "blocked",
+    "draftReasons": [
+      "실측 스케일 근거 없음"
+    ],
+    "cause": "scale",
+    "reviewedMethod": null,
+    "status": "blocked",
+    "reasons": [
+      "실측 스케일 근거 없음"
+    ]
+  },
+  {
+    "property": "seocho-iris",
+    "layoutKey": "seocho-iris-2-3-06",
+    "unitKey": "seocho-iris-2-3-06",
+    "exclusiveAreaM2": null,
+    "sourceIssue": "전용면적·실측 치수 없음: 2D 전용",
+    "extraction": "blocked",
+    "extractionError": "실측 스케일 근거 없음",
+    "extractionConfidence": null,
+    "segments": null,
+    "confidence": null,
+    "flags": [],
+    "rooms": 0,
+    "walls": 0,
+    "openings": 0,
+    "doors": 0,
+    "scaleSource": null,
+    "areaDeviation": null,
+    "draftStatus": "blocked",
+    "draftReasons": [
+      "실측 스케일 근거 없음"
+    ],
+    "cause": "scale",
+    "reviewedMethod": null,
+    "status": "blocked",
+    "reasons": [
+      "실측 스케일 근거 없음"
+    ]
+  },
+  {
+    "property": "seocho-iris",
+    "layoutKey": "seocho-iris-4-01",
+    "unitKey": "seocho-iris-4-01",
+    "exclusiveAreaM2": null,
+    "sourceIssue": "전용면적·실측 치수 없음: 2D 전용",
+    "extraction": "blocked",
+    "extractionError": "실측 스케일 근거 없음",
+    "extractionConfidence": null,
+    "segments": null,
+    "confidence": null,
+    "flags": [],
+    "rooms": 0,
+    "walls": 0,
+    "openings": 0,
+    "doors": 0,
+    "scaleSource": null,
+    "areaDeviation": null,
+    "draftStatus": "blocked",
+    "draftReasons": [
+      "실측 스케일 근거 없음"
+    ],
+    "cause": "scale",
+    "reviewedMethod": null,
+    "status": "blocked",
+    "reasons": [
+      "실측 스케일 근거 없음"
+    ]
+  },
+  {
+    "property": "seocho-iris",
+    "layoutKey": "seocho-iris-4-02",
+    "unitKey": "seocho-iris-4-02",
+    "exclusiveAreaM2": null,
+    "sourceIssue": "전용면적·실측 치수 없음: 2D 전용",
+    "extraction": "blocked",
+    "extractionError": "실측 스케일 근거 없음",
+    "extractionConfidence": null,
+    "segments": null,
+    "confidence": null,
+    "flags": [],
+    "rooms": 0,
+    "walls": 0,
+    "openings": 0,
+    "doors": 0,
+    "scaleSource": null,
+    "areaDeviation": null,
+    "draftStatus": "blocked",
+    "draftReasons": [
+      "실측 스케일 근거 없음"
+    ],
+    "cause": "scale",
+    "reviewedMethod": null,
+    "status": "blocked",
+    "reasons": [
+      "실측 스케일 근거 없음"
+    ]
+  },
+  {
+    "property": "seocho-iris",
+    "layoutKey": "seocho-iris-4-03",
+    "unitKey": "seocho-iris-4-03",
+    "exclusiveAreaM2": null,
+    "sourceIssue": "전용면적·실측 치수 없음: 2D 전용",
+    "extraction": "blocked",
+    "extractionError": "실측 스케일 근거 없음",
+    "extractionConfidence": null,
+    "segments": null,
+    "confidence": null,
+    "flags": [],
+    "rooms": 0,
+    "walls": 0,
+    "openings": 0,
+    "doors": 0,
+    "scaleSource": null,
+    "areaDeviation": null,
+    "draftStatus": "blocked",
+    "draftReasons": [
+      "실측 스케일 근거 없음"
+    ],
+    "cause": "scale",
+    "reviewedMethod": null,
+    "status": "blocked",
+    "reasons": [
+      "실측 스케일 근거 없음"
+    ]
+  },
+  {
+    "property": "seocho-iris",
+    "layoutKey": "seocho-iris-4-04",
+    "unitKey": "seocho-iris-4-04",
+    "exclusiveAreaM2": null,
+    "sourceIssue": "전용면적·실측 치수 없음: 2D 전용",
+    "extraction": "blocked",
+    "extractionError": "실측 스케일 근거 없음",
+    "extractionConfidence": null,
+    "segments": null,
+    "confidence": null,
+    "flags": [],
+    "rooms": 0,
+    "walls": 0,
+    "openings": 0,
+    "doors": 0,
+    "scaleSource": null,
+    "areaDeviation": null,
+    "draftStatus": "blocked",
+    "draftReasons": [
+      "실측 스케일 근거 없음"
+    ],
+    "cause": "scale",
+    "reviewedMethod": null,
+    "status": "blocked",
+    "reasons": [
+      "실측 스케일 근거 없음"
+    ]
+  },
+  {
+    "property": "seocho-iris",
+    "layoutKey": "seocho-iris-5-01",
+    "unitKey": "seocho-iris-5-01",
+    "exclusiveAreaM2": null,
+    "sourceIssue": "전용면적·실측 치수 없음: 2D 전용",
+    "extraction": "blocked",
+    "extractionError": "실측 스케일 근거 없음",
+    "extractionConfidence": null,
+    "segments": null,
+    "confidence": null,
+    "flags": [],
+    "rooms": 0,
+    "walls": 0,
+    "openings": 0,
+    "doors": 0,
+    "scaleSource": null,
+    "areaDeviation": null,
+    "draftStatus": "blocked",
+    "draftReasons": [
+      "실측 스케일 근거 없음"
+    ],
+    "cause": "scale",
+    "reviewedMethod": null,
+    "status": "blocked",
+    "reasons": [
+      "실측 스케일 근거 없음"
+    ]
+  },
+  {
+    "property": "seocho-iris",
+    "layoutKey": "seocho-iris-5-02",
+    "unitKey": "seocho-iris-5-02",
+    "exclusiveAreaM2": null,
+    "sourceIssue": "전용면적·실측 치수 없음: 2D 전용",
+    "extraction": "blocked",
+    "extractionError": "실측 스케일 근거 없음",
+    "extractionConfidence": null,
+    "segments": null,
+    "confidence": null,
+    "flags": [],
+    "rooms": 0,
+    "walls": 0,
+    "openings": 0,
+    "doors": 0,
+    "scaleSource": null,
+    "areaDeviation": null,
+    "draftStatus": "blocked",
+    "draftReasons": [
+      "실측 스케일 근거 없음"
+    ],
+    "cause": "scale",
+    "reviewedMethod": null,
+    "status": "blocked",
+    "reasons": [
+      "실측 스케일 근거 없음"
+    ]
+  },
+  {
+    "property": "seocho-iris",
+    "layoutKey": "seocho-iris-5-03",
+    "unitKey": "seocho-iris-5-03",
+    "exclusiveAreaM2": null,
+    "sourceIssue": "전용면적·실측 치수 없음: 2D 전용",
+    "extraction": "blocked",
+    "extractionError": "실측 스케일 근거 없음",
+    "extractionConfidence": null,
+    "segments": null,
+    "confidence": null,
+    "flags": [],
+    "rooms": 0,
+    "walls": 0,
+    "openings": 0,
+    "doors": 0,
+    "scaleSource": null,
+    "areaDeviation": null,
+    "draftStatus": "blocked",
+    "draftReasons": [
+      "실측 스케일 근거 없음"
+    ],
+    "cause": "scale",
+    "reviewedMethod": null,
+    "status": "blocked",
+    "reasons": [
+      "실측 스케일 근거 없음"
+    ]
+  },
+  {
+    "property": "seocho-iris",
+    "layoutKey": "seocho-iris-5-04",
+    "unitKey": "seocho-iris-5-04",
+    "exclusiveAreaM2": null,
+    "sourceIssue": "전용면적·실측 치수 없음: 2D 전용",
+    "extraction": "blocked",
+    "extractionError": "실측 스케일 근거 없음",
+    "extractionConfidence": null,
+    "segments": null,
+    "confidence": null,
+    "flags": [],
+    "rooms": 0,
+    "walls": 0,
+    "openings": 0,
+    "doors": 0,
+    "scaleSource": null,
+    "areaDeviation": null,
+    "draftStatus": "blocked",
+    "draftReasons": [
+      "실측 스케일 근거 없음"
+    ],
+    "cause": "scale",
+    "reviewedMethod": null,
+    "status": "blocked",
+    "reasons": [
+      "실측 스케일 근거 없음"
+    ]
+  },
+  {
+    "property": "seongdong-yongdap",
+    "layoutKey": "seongdong-yongdap-3-15-1",
+    "unitKey": "seongdong-yongdap-3-15-1",
+    "exclusiveAreaM2": 34.98,
+    "sourceIssue": "치수 체인(3,200+3,000 / 3,100+3,200)과 크롭 실측 외곽이 2~4% 불일치, 회전·저해상 스캔: 3D 트레이싱 보류",
+    "extraction": "draft",
+    "extractionError": null,
+    "extractionConfidence": 0,
+    "segments": 53,
+    "confidence": 0,
+    "flags": [
+      "geometry-invalid"
+    ],
+    "rooms": 4,
+    "walls": 5,
+    "openings": 0,
+    "doors": 0,
+    "scaleSource": "estimated",
+    "areaDeviation": null,
+    "draftStatus": "blocked",
+    "draftReasons": [
+      "source: 치수 체인(3,200+3,000 / 3,100+3,200)과 크롭 실측 외곽이 2~4% 불일치, 회전·저해상 스캔: 3D 트레이싱 보류",
+      "geometry-invalid: 외곽·방은 교차하지 않는 직교 폴리곤이어야 합니다"
+    ],
+    "cause": "geometry",
+    "reviewedMethod": null,
+    "status": "blocked",
+    "reasons": [
+      "source: 치수 체인(3,200+3,000 / 3,100+3,200)과 크롭 실측 외곽이 2~4% 불일치, 회전·저해상 스캔: 3D 트레이싱 보류",
+      "geometry-invalid: 외곽·방은 교차하지 않는 직교 폴리곤이어야 합니다"
+    ]
+  },
+  {
+    "property": "seongdong-yongdap",
+    "layoutKey": "seongdong-yongdap-3-15-2",
+    "unitKey": "seongdong-yongdap-3-15-2",
+    "exclusiveAreaM2": 34.78,
+    "sourceIssue": "치수 체인(3,200+3,000 / 3,100+3,200)과 크롭 실측 외곽이 2~4% 불일치, 회전·저해상 스캔: 3D 트레이싱 보류",
+    "extraction": "draft",
+    "extractionError": null,
+    "extractionConfidence": 0,
+    "segments": 53,
+    "confidence": 0,
+    "flags": [
+      "geometry-invalid"
+    ],
+    "rooms": 7,
+    "walls": 8,
+    "openings": 1,
+    "doors": 0,
+    "scaleSource": "estimated",
+    "areaDeviation": null,
+    "draftStatus": "blocked",
+    "draftReasons": [
+      "source: 치수 체인(3,200+3,000 / 3,100+3,200)과 크롭 실측 외곽이 2~4% 불일치, 회전·저해상 스캔: 3D 트레이싱 보류",
+      "geometry-invalid: 외곽·방은 교차하지 않는 직교 폴리곤이어야 합니다"
+    ],
+    "cause": "geometry",
+    "reviewedMethod": null,
+    "status": "blocked",
+    "reasons": [
+      "source: 치수 체인(3,200+3,000 / 3,100+3,200)과 크롭 실측 외곽이 2~4% 불일치, 회전·저해상 스캔: 3D 트레이싱 보류",
+      "geometry-invalid: 외곽·방은 교차하지 않는 직교 폴리곤이어야 합니다"
+    ]
+  },
+  {
+    "property": "seongdong-yongdap",
+    "layoutKey": "seongdong-yongdap-3-15-4",
+    "unitKey": "seongdong-yongdap-3-15-4",
+    "exclusiveAreaM2": 34.98,
+    "sourceIssue": "치수 체인(3,200+3,000 / 3,100+3,200)과 크롭 실측 외곽이 2~4% 불일치, 회전·저해상 스캔: 3D 트레이싱 보류",
+    "extraction": "draft",
+    "extractionError": null,
+    "extractionConfidence": 0,
+    "segments": 50,
+    "confidence": 0,
+    "flags": [
+      "geometry-invalid"
+    ],
+    "rooms": 3,
+    "walls": 3,
+    "openings": 1,
+    "doors": 1,
+    "scaleSource": "estimated",
+    "areaDeviation": null,
+    "draftStatus": "blocked",
+    "draftReasons": [
+      "source: 치수 체인(3,200+3,000 / 3,100+3,200)과 크롭 실측 외곽이 2~4% 불일치, 회전·저해상 스캔: 3D 트레이싱 보류",
+      "geometry-invalid: 외곽·방은 교차하지 않는 직교 폴리곤이어야 합니다"
+    ],
+    "cause": "geometry",
+    "reviewedMethod": null,
+    "status": "blocked",
+    "reasons": [
+      "source: 치수 체인(3,200+3,000 / 3,100+3,200)과 크롭 실측 외곽이 2~4% 불일치, 회전·저해상 스캔: 3D 트레이싱 보류",
+      "geometry-invalid: 외곽·방은 교차하지 않는 직교 폴리곤이어야 합니다"
+    ]
+  },
+  {
+    "property": "songpa-ogeum",
+    "layoutKey": "songpa-ogeum-2-3-01",
+    "unitKey": "songpa-ogeum-2-3-01",
+    "exclusiveAreaM2": 24.43,
+    "sourceIssue": null,
+    "extraction": "draft",
+    "extractionError": null,
+    "extractionConfidence": 0.55,
+    "segments": 2,
+    "confidence": 0.55,
+    "flags": [
+      "scale-no-chain",
+      "area-mismatch",
+      "no-doors"
+    ],
+    "rooms": 1,
+    "walls": 2,
+    "openings": 0,
+    "doors": 0,
+    "scaleSource": "estimated",
+    "areaDeviation": 0.8722881702824395,
+    "draftStatus": "needs-review",
+    "draftReasons": [
+      "area-mismatch: 방 합 3.12㎡·안목 환산 2.56㎡ vs 전용 24.43㎡ (발코니 등 제외 대상을 못 읽어 부족분만 검사)",
+      "no-doors: 문 미검출",
+      "신뢰도 55% < 85%",
+      "벽 2개 < 4개(외곽을 둘러싸지 못함)",
+      "문 없음",
+      "면적 편차 87.2% (전용 24.43㎡ vs 방 합 3.12㎡·안목 환산 2.56㎡)"
+    ],
+    "cause": "wall-extraction",
+    "reviewedMethod": "traced",
+    "status": "reviewed",
+    "reasons": [
+      "registered: traced · Claude Fable 5.1 · PDF 치수 체인 1800+5100(x) 정합, 크롭 벽 중심선 실측, 오버레이 눈검사"
+    ]
+  },
+  {
+    "property": "songpa-ogeum",
+    "layoutKey": "songpa-ogeum-2-3-02",
+    "unitKey": "songpa-ogeum-2-3-02",
+    "exclusiveAreaM2": 23.265,
+    "sourceIssue": null,
+    "extraction": "draft",
+    "extractionError": null,
+    "extractionConfidence": 0,
+    "segments": 2,
+    "confidence": 0,
+    "flags": [
+      "geometry-invalid"
+    ],
+    "rooms": 1,
+    "walls": 2,
+    "openings": 0,
+    "doors": 0,
+    "scaleSource": "estimated",
+    "areaDeviation": null,
+    "draftStatus": "blocked",
+    "draftReasons": [
+      "geometry-invalid: 외곽·방은 교차하지 않는 직교 폴리곤이어야 합니다"
+    ],
+    "cause": "geometry",
+    "reviewedMethod": "traced",
+    "status": "reviewed",
+    "reasons": [
+      "registered: traced · Claude Fable 5.1 · PDF 상단 치수 1800+5100(x) 정합, 크롭 벽 중심선 실측, 현관문은 PDF 도면의 문 호 위치(좌측 벽, 크롭 마스크로 가려짐), 오버레이 눈검사"
+    ]
+  },
+  {
+    "property": "songpa-ogeum",
+    "layoutKey": "songpa-ogeum-2-3-03",
+    "unitKey": "songpa-ogeum-2-3-03",
+    "exclusiveAreaM2": 23.225,
+    "sourceIssue": null,
+    "extraction": "draft",
+    "extractionError": null,
+    "extractionConfidence": 0.55,
+    "segments": 5,
+    "confidence": 0.55,
+    "flags": [
+      "scale-no-chain",
+      "area-mismatch",
+      "no-doors"
+    ],
+    "rooms": 1,
+    "walls": 4,
+    "openings": 0,
+    "doors": 0,
+    "scaleSource": "estimated",
+    "areaDeviation": 0.8275565123789022,
+    "draftStatus": "needs-review",
+    "draftReasons": [
+      "area-mismatch: 방 합 4.00㎡·안목 환산 3.93㎡ vs 전용 23.225㎡ (발코니 등 제외 대상을 못 읽어 부족분만 검사)",
+      "no-doors: 문 미검출",
+      "신뢰도 55% < 85%",
+      "문 없음",
+      "면적 편차 82.8% (전용 23.225㎡ vs 방 합 4.00㎡·안목 환산 3.93㎡)",
+      "scene bounds-abnormal: 유닛 크기 5.80×1.15m"
+    ],
+    "cause": "opening",
+    "reviewedMethod": "traced",
+    "status": "reviewed",
+    "reasons": [
+      "registered: traced · Claude Fable 5.1 · 크롭 벽 중심선 실측(외곽 8선·내벽 2선). 현관문은 PDF 도면의 문 호 위치(우측 벽, 크롭 마스크로 가려짐). 치수 체인은 외곽과 기준이 달라 넣지 않음. 오버레이 눈검사"
+    ]
+  },
+  {
+    "property": "songpa-ogeum",
+    "layoutKey": "songpa-ogeum-2-3-04",
+    "unitKey": "songpa-ogeum-2-3-04",
+    "exclusiveAreaM2": 22.86,
+    "sourceIssue": null,
+    "extraction": "draft",
+    "extractionError": null,
+    "extractionConfidence": 0.55,
+    "segments": 7,
+    "confidence": 0.55,
+    "flags": [
+      "scale-no-chain",
+      "area-mismatch",
+      "no-doors"
+    ],
+    "rooms": 1,
+    "walls": 6,
+    "openings": 0,
+    "doors": 0,
+    "scaleSource": "estimated",
+    "areaDeviation": 0.8412073490813649,
+    "draftStatus": "needs-review",
+    "draftReasons": [
+      "area-mismatch: 방 합 3.63㎡·안목 환산 2.97㎡ vs 전용 22.86㎡ (발코니 등 제외 대상을 못 읽어 부족분만 검사)",
+      "no-doors: 문 미검출",
+      "신뢰도 55% < 85%",
+      "문 없음",
+      "면적 편차 84.1% (전용 22.86㎡ vs 방 합 3.63㎡·안목 환산 2.97㎡)"
+    ],
+    "cause": "opening",
+    "reviewedMethod": null,
+    "status": "needs-review",
+    "reasons": [
+      "area-mismatch: 방 합 3.63㎡·안목 환산 2.97㎡ vs 전용 22.86㎡ (발코니 등 제외 대상을 못 읽어 부족분만 검사)",
+      "no-doors: 문 미검출",
+      "신뢰도 55% < 85%",
+      "문 없음",
+      "면적 편차 84.1% (전용 22.86㎡ vs 방 합 3.63㎡·안목 환산 2.97㎡)"
+    ]
+  },
+  {
+    "property": "songpa-ogeum",
+    "layoutKey": "songpa-ogeum-4-401",
+    "unitKey": "songpa-ogeum-4-401",
+    "exclusiveAreaM2": 23.43,
+    "sourceIssue": null,
+    "extraction": "draft",
+    "extractionError": null,
+    "extractionConfidence": 0.55,
+    "segments": 5,
+    "confidence": 0.55,
+    "flags": [
+      "scale-no-chain",
+      "area-mismatch",
+      "no-doors"
+    ],
+    "rooms": 1,
+    "walls": 4,
+    "openings": 0,
+    "doors": 0,
+    "scaleSource": "estimated",
+    "areaDeviation": 0.8618224498506188,
+    "draftStatus": "needs-review",
+    "draftReasons": [
+      "area-mismatch: 방 합 3.24㎡·안목 환산 3.17㎡ vs 전용 23.43㎡ (발코니 등 제외 대상을 못 읽어 부족분만 검사)",
+      "no-doors: 문 미검출",
+      "신뢰도 55% < 85%",
+      "문 없음",
+      "면적 편차 86.2% (전용 23.43㎡ vs 방 합 3.24㎡·안목 환산 3.17㎡)"
+    ],
+    "cause": "opening",
+    "reviewedMethod": "traced",
+    "status": "reviewed",
+    "reasons": [
+      "registered: traced · Claude Fable 5.1 · 2~301호와 같은 타입. 401호 크롭에서 굵은 벽 선 8개를 실측해 좌표를 확정(잔차 최대 6mm), 오버레이 눈검사"
+    ]
+  },
+  {
+    "property": "songpa-ogeum",
+    "layoutKey": "songpa-ogeum-4-402",
+    "unitKey": "songpa-ogeum-4-402",
+    "exclusiveAreaM2": 23.265,
+    "sourceIssue": null,
+    "extraction": "draft",
+    "extractionError": null,
+    "extractionConfidence": 0.55,
+    "segments": 2,
+    "confidence": 0.55,
+    "flags": [
+      "scale-no-chain",
+      "area-mismatch",
+      "no-doors"
+    ],
+    "rooms": 1,
+    "walls": 2,
+    "openings": 0,
+    "doors": 0,
+    "scaleSource": "estimated",
+    "areaDeviation": 0.8686868686868687,
+    "draftStatus": "needs-review",
+    "draftReasons": [
+      "area-mismatch: 방 합 3.06㎡·안목 환산 2.49㎡ vs 전용 23.265㎡ (발코니 등 제외 대상을 못 읽어 부족분만 검사)",
+      "no-doors: 문 미검출",
+      "신뢰도 55% < 85%",
+      "벽 2개 < 4개(외곽을 둘러싸지 못함)",
+      "문 없음",
+      "면적 편차 86.9% (전용 23.265㎡ vs 방 합 3.06㎡·안목 환산 2.49㎡)"
+    ],
+    "cause": "wall-extraction",
+    "reviewedMethod": "traced",
+    "status": "reviewed",
+    "reasons": [
+      "registered: traced · Claude Fable 5.1 · 2~302호와 같은 타입. 402호 크롭에서 굵은 벽 선 10개를 실측해 좌표를 확정(잔차 x/z 최대 14mm), 오버레이 눈검사"
+    ]
+  },
+  {
+    "property": "songpa-ogeum",
+    "layoutKey": "songpa-ogeum-4-403",
+    "unitKey": "songpa-ogeum-4-403",
+    "exclusiveAreaM2": 24.585,
+    "sourceIssue": null,
+    "extraction": "draft",
+    "extractionError": null,
+    "extractionConfidence": 0.55,
+    "segments": 2,
+    "confidence": 0.55,
+    "flags": [
+      "scale-no-chain",
+      "area-mismatch",
+      "no-doors"
+    ],
+    "rooms": 1,
+    "walls": 2,
+    "openings": 0,
+    "doors": 0,
+    "scaleSource": "estimated",
+    "areaDeviation": 0.7588977018507219,
+    "draftStatus": "needs-review",
+    "draftReasons": [
+      "area-mismatch: 방 합 5.93㎡·안목 환산 5.33㎡ vs 전용 24.585㎡ (발코니 등 제외 대상을 못 읽어 부족분만 검사)",
+      "no-doors: 문 미검출",
+      "신뢰도 55% < 85%",
+      "벽 2개 < 4개(외곽을 둘러싸지 못함)",
+      "문 없음",
+      "면적 편차 75.9% (전용 24.585㎡ vs 방 합 5.93㎡·안목 환산 5.33㎡)"
+    ],
+    "cause": "wall-extraction",
+    "reviewedMethod": null,
+    "status": "needs-review",
+    "reasons": [
+      "area-mismatch: 방 합 5.93㎡·안목 환산 5.33㎡ vs 전용 24.585㎡ (발코니 등 제외 대상을 못 읽어 부족분만 검사)",
+      "no-doors: 문 미검출",
+      "신뢰도 55% < 85%",
+      "벽 2개 < 4개(외곽을 둘러싸지 못함)",
+      "문 없음",
+      "면적 편차 75.9% (전용 24.585㎡ vs 방 합 5.93㎡·안목 환산 5.33㎡)"
+    ]
+  },
+  {
+    "property": "songpa-ogeum",
+    "layoutKey": "songpa-ogeum-5-501",
+    "unitKey": "songpa-ogeum-5-501",
+    "exclusiveAreaM2": 23.43,
+    "sourceIssue": null,
+    "extraction": "draft",
+    "extractionError": null,
+    "extractionConfidence": 0.55,
+    "segments": 2,
+    "confidence": 0.55,
+    "flags": [
+      "scale-no-chain",
+      "area-mismatch",
+      "no-doors"
+    ],
+    "rooms": 1,
+    "walls": 2,
+    "openings": 0,
+    "doors": 0,
+    "scaleSource": "estimated",
+    "areaDeviation": 0.8697183098591549,
+    "draftStatus": "needs-review",
+    "draftReasons": [
+      "area-mismatch: 방 합 3.05㎡·안목 환산 2.51㎡ vs 전용 23.43㎡ (발코니 등 제외 대상을 못 읽어 부족분만 검사)",
+      "no-doors: 문 미검출",
+      "신뢰도 55% < 85%",
+      "벽 2개 < 4개(외곽을 둘러싸지 못함)",
+      "문 없음",
+      "면적 편차 87.0% (전용 23.43㎡ vs 방 합 3.05㎡·안목 환산 2.51㎡)"
+    ],
+    "cause": "wall-extraction",
+    "reviewedMethod": "traced",
+    "status": "reviewed",
+    "reasons": [
+      "registered: traced · Claude Fable 5.1 · 2~301호와 같은 타입. 3쪽 501호 크롭에서 굵은 벽 선 8개를 실측해 좌표를 확정(잔차 최대 4mm), 오버레이 눈검사"
+    ]
+  },
+  {
+    "property": "songpa-ogeum",
+    "layoutKey": "songpa-ogeum-5-502",
+    "unitKey": "songpa-ogeum-5-502",
+    "exclusiveAreaM2": 23.265,
+    "sourceIssue": null,
+    "extraction": "draft",
+    "extractionError": null,
+    "extractionConfidence": 0.55,
+    "segments": 2,
+    "confidence": 0.55,
+    "flags": [
+      "scale-no-chain",
+      "area-mismatch",
+      "no-doors"
+    ],
+    "rooms": 1,
+    "walls": 2,
+    "openings": 0,
+    "doors": 0,
+    "scaleSource": "estimated",
+    "areaDeviation": 0.8636363636363636,
+    "draftStatus": "needs-review",
+    "draftReasons": [
+      "area-mismatch: 방 합 3.17㎡·안목 환산 2.63㎡ vs 전용 23.265㎡ (발코니 등 제외 대상을 못 읽어 부족분만 검사)",
+      "no-doors: 문 미검출",
+      "신뢰도 55% < 85%",
+      "벽 2개 < 4개(외곽을 둘러싸지 못함)",
+      "문 없음",
+      "면적 편차 86.4% (전용 23.265㎡ vs 방 합 3.17㎡·안목 환산 2.63㎡)"
+    ],
+    "cause": "wall-extraction",
+    "reviewedMethod": "traced",
+    "status": "reviewed",
+    "reasons": [
+      "registered: traced · Claude Fable 5.1 · 2~302호와 같은 타입. 3쪽 502호 크롭에서 굵은 벽 선 10개를 실측해 좌표를 확정(잔차 x/z 최대 14mm), 오버레이 눈검사"
+    ]
+  },
+  {
+    "property": "songpa-ogeum",
+    "layoutKey": "songpa-ogeum-5-503",
+    "unitKey": "songpa-ogeum-5-503",
+    "exclusiveAreaM2": 23.445,
+    "sourceIssue": "대각 외벽: 직교 추출 결과 검수 필수",
+    "extraction": "draft",
+    "extractionError": null,
+    "extractionConfidence": 0,
+    "segments": 1,
+    "confidence": 0,
+    "flags": [
+      "geometry-invalid"
+    ],
+    "rooms": 1,
+    "walls": 1,
+    "openings": 0,
+    "doors": 0,
+    "scaleSource": "estimated",
+    "areaDeviation": null,
+    "draftStatus": "blocked",
+    "draftReasons": [
+      "source: 대각 외벽: 직교 추출 결과 검수 필수",
+      "geometry-invalid: 외곽·방은 교차하지 않는 직교 폴리곤이어야 합니다"
+    ],
+    "cause": "geometry",
+    "reviewedMethod": null,
+    "status": "blocked",
+    "reasons": [
+      "source: 대각 외벽: 직교 추출 결과 검수 필수",
+      "geometry-invalid: 외곽·방은 교차하지 않는 직교 폴리곤이어야 합니다"
+    ]
+  },
+  {
+    "property": "jungnang-myeonmok",
+    "layoutKey": "jungnang-myeonmok-2-3-01",
+    "unitKey": "jungnang-myeonmok-2-3-01",
+    "exclusiveAreaM2": 14.6475,
+    "sourceIssue": null,
+    "extraction": "draft",
+    "extractionError": null,
+    "extractionConfidence": 0.55,
+    "segments": 7,
+    "confidence": 0.55,
+    "flags": [
+      "scale-no-chain",
+      "area-mismatch",
+      "no-doors"
+    ],
+    "rooms": 2,
+    "walls": 0,
+    "openings": 0,
+    "doors": 0,
+    "scaleSource": "estimated",
+    "areaDeviation": 0.3072196620583718,
+    "draftStatus": "needs-review",
+    "draftReasons": [
+      "area-mismatch: 방 합 10.15㎡·안목 환산 10.15㎡ vs 전용 14.6475㎡ (발코니 등 제외 대상을 못 읽어 부족분만 검사)",
+      "no-doors: 문 미검출",
+      "신뢰도 55% < 85%",
+      "벽 0개 < 4개(외곽을 둘러싸지 못함)",
+      "문 없음",
+      "면적 편차 30.7% (전용 14.6475㎡ vs 방 합 10.15㎡·안목 환산 10.15㎡)",
+      "scene no-walls: 벽 없음"
+    ],
+    "cause": "wall-extraction",
+    "reviewedMethod": "traced",
+    "status": "reviewed",
+    "reasons": [
+      "registered: traced · Claude Fable 5.1 · PDF 치수 체인 3150(x)·1200+4650(z) 정합, 현관문은 하단 벽 안쪽면 탐침(1899~2857), 오버레이 눈검사"
+    ]
+  },
+  {
+    "property": "jungnang-myeonmok",
+    "layoutKey": "jungnang-myeonmok-2-3-02",
+    "unitKey": "jungnang-myeonmok-2-3-02",
+    "exclusiveAreaM2": 14.6475,
+    "sourceIssue": null,
+    "extraction": "draft",
+    "extractionError": null,
+    "extractionConfidence": 0.55,
+    "segments": 9,
+    "confidence": 0.55,
+    "flags": [
+      "scale-no-chain",
+      "area-mismatch",
+      "no-doors"
+    ],
+    "rooms": 3,
+    "walls": 0,
+    "openings": 0,
+    "doors": 0,
+    "scaleSource": "estimated",
+    "areaDeviation": 0.3859020310633215,
+    "draftStatus": "needs-review",
+    "draftReasons": [
+      "area-mismatch: 방 합 8.99㎡·안목 환산 8.99㎡ vs 전용 14.6475㎡",
+      "no-doors: 문 미검출",
+      "신뢰도 55% < 85%",
+      "벽 0개 < 4개(외곽을 둘러싸지 못함)",
+      "문 없음",
+      "면적 편차 38.6% (전용 14.6475㎡ vs 방 합 8.99㎡·안목 환산 8.99㎡)",
+      "scene no-walls: 벽 없음"
+    ],
+    "cause": "wall-extraction",
+    "reviewedMethod": null,
+    "status": "needs-review",
+    "reasons": [
+      "area-mismatch: 방 합 8.99㎡·안목 환산 8.99㎡ vs 전용 14.6475㎡",
+      "no-doors: 문 미검출",
+      "신뢰도 55% < 85%",
+      "벽 0개 < 4개(외곽을 둘러싸지 못함)",
+      "문 없음",
+      "면적 편차 38.6% (전용 14.6475㎡ vs 방 합 8.99㎡·안목 환산 8.99㎡)",
+      "scene no-walls: 벽 없음"
+    ]
+  },
+  {
+    "property": "jungnang-myeonmok",
+    "layoutKey": "jungnang-myeonmok-2-3-03",
+    "unitKey": "jungnang-myeonmok-2-3-03",
+    "exclusiveAreaM2": 14.64,
+    "sourceIssue": null,
+    "extraction": "draft",
+    "extractionError": null,
+    "extractionConfidence": 0,
+    "segments": 6,
+    "confidence": 0,
+    "flags": [
+      "geometry-invalid"
+    ],
+    "rooms": 3,
+    "walls": 0,
+    "openings": 0,
+    "doors": 0,
+    "scaleSource": "estimated",
+    "areaDeviation": null,
+    "draftStatus": "blocked",
+    "draftReasons": [
+      "geometry-invalid: 외곽·방은 교차하지 않는 직교 폴리곤이어야 합니다"
+    ],
+    "cause": "geometry",
+    "reviewedMethod": "traced",
+    "status": "reviewed",
+    "reasons": [
+      "registered: traced · Codex · PDF 2쪽 3호 독립 실측. x=3050, z=4800+1200. 욕실·발코니·현관문과 창 오버레이 대조."
+    ]
+  },
+  {
+    "property": "jungnang-myeonmok",
+    "layoutKey": "jungnang-myeonmok-2-3-04",
+    "unitKey": "jungnang-myeonmok-2-3-04",
+    "exclusiveAreaM2": 14.64,
+    "sourceIssue": null,
+    "extraction": "draft",
+    "extractionError": null,
+    "extractionConfidence": 0,
+    "segments": 6,
+    "confidence": 0,
+    "flags": [
+      "geometry-invalid"
+    ],
+    "rooms": 1,
+    "walls": 0,
+    "openings": 0,
+    "doors": 0,
+    "scaleSource": "estimated",
+    "areaDeviation": null,
+    "draftStatus": "blocked",
+    "draftReasons": [
+      "geometry-invalid: 외곽·방은 교차하지 않는 직교 폴리곤이어야 합니다"
+    ],
+    "cause": "geometry",
+    "reviewedMethod": null,
+    "status": "blocked",
+    "reasons": [
+      "geometry-invalid: 외곽·방은 교차하지 않는 직교 폴리곤이어야 합니다"
+    ]
+  },
+  {
+    "property": "jungnang-myeonmok",
+    "layoutKey": "jungnang-myeonmok-2-3-05",
+    "unitKey": "jungnang-myeonmok-2-3-05",
+    "exclusiveAreaM2": 14.64,
+    "sourceIssue": null,
+    "extraction": "draft",
+    "extractionError": null,
+    "extractionConfidence": 0,
+    "segments": 1,
+    "confidence": 0,
+    "flags": [
+      "geometry-invalid"
+    ],
+    "rooms": 2,
+    "walls": 0,
+    "openings": 0,
+    "doors": 0,
+    "scaleSource": "estimated",
+    "areaDeviation": null,
+    "draftStatus": "blocked",
+    "draftReasons": [
+      "geometry-invalid: 외곽·방은 교차하지 않는 직교 폴리곤이어야 합니다"
+    ],
+    "cause": "geometry",
+    "reviewedMethod": null,
+    "status": "blocked",
+    "reasons": [
+      "geometry-invalid: 외곽·방은 교차하지 않는 직교 폴리곤이어야 합니다"
+    ]
+  },
+  {
+    "property": "jungnang-myeonmok",
+    "layoutKey": "jungnang-myeonmok-4-01-drawing",
+    "unitKey": "jungnang-myeonmok-4-01-drawing",
+    "exclusiveAreaM2": null,
+    "sourceIssue": "도면 1호는 분홍색, 표 401호는 파란색: 전용면적 대응 미확정",
+    "extraction": "draft",
+    "extractionError": null,
+    "extractionConfidence": 0,
+    "segments": 4,
+    "confidence": 0,
+    "flags": [
+      "geometry-invalid"
+    ],
+    "rooms": 1,
+    "walls": 0,
+    "openings": 0,
+    "doors": 0,
+    "scaleSource": "estimated",
+    "areaDeviation": null,
+    "draftStatus": "blocked",
+    "draftReasons": [
+      "source: 도면 1호는 분홍색, 표 401호는 파란색: 전용면적 대응 미확정",
+      "geometry-invalid: 외곽·방은 교차하지 않는 직교 폴리곤이어야 합니다"
+    ],
+    "cause": "geometry",
+    "reviewedMethod": null,
+    "status": "blocked",
+    "reasons": [
+      "source: 도면 1호는 분홍색, 표 401호는 파란색: 전용면적 대응 미확정",
+      "geometry-invalid: 외곽·방은 교차하지 않는 직교 폴리곤이어야 합니다"
+    ]
+  },
+  {
+    "property": "jungnang-myeonmok",
+    "layoutKey": "jungnang-myeonmok-4-02-drawing",
+    "unitKey": "jungnang-myeonmok-4-02-drawing",
+    "exclusiveAreaM2": null,
+    "sourceIssue": "도면 2호는 파란색, 표 402호는 분홍색: 전용면적 대응 미확정",
+    "extraction": "draft",
+    "extractionError": null,
+    "extractionConfidence": 0,
+    "segments": 4,
+    "confidence": 0.7,
+    "flags": [
+      "scale-no-chain",
+      "no-doors"
+    ],
+    "rooms": 1,
+    "walls": 0,
+    "openings": 0,
+    "doors": 0,
+    "scaleSource": "estimated",
+    "areaDeviation": null,
+    "draftStatus": "needs-review",
+    "draftReasons": [
+      "source: 도면 2호는 파란색, 표 402호는 분홍색: 전용면적 대응 미확정",
+      "no-doors: 문 미검출",
+      "신뢰도 70% < 85%",
+      "벽 0개 < 4개(외곽을 둘러싸지 못함)",
+      "문 없음",
+      "scene no-walls: 벽 없음"
+    ],
+    "cause": "wall-extraction",
+    "reviewedMethod": null,
+    "status": "needs-review",
+    "reasons": [
+      "source: 도면 2호는 파란색, 표 402호는 분홍색: 전용면적 대응 미확정",
+      "no-doors: 문 미검출",
+      "신뢰도 70% < 85%",
+      "벽 0개 < 4개(외곽을 둘러싸지 못함)",
+      "문 없음",
+      "scene no-walls: 벽 없음"
+    ]
+  }
+]

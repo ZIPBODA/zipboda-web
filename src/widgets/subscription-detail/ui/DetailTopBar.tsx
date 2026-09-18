@@ -4,8 +4,8 @@ import { AGENCY_TAG_TONE, type AgencyCode } from "@/entities/subscription";
 interface Props {
   title: string;
   unitLabel: string;
-  dday: number;
-  agency: AgencyCode;
+  dday: number | null;
+  agency: AgencyCode | null;
   agencyLabel: string;
 }
 
@@ -29,8 +29,8 @@ export function DetailTopBar({ title, unitLabel, dday, agency, agencyLabel }: Pr
           {title} · {unitLabel}
         </p>
         <div className="ml-auto flex shrink-0 items-center gap-2">
-          <span className="rounded-md bg-brand px-2.5 py-1 text-xs font-bold text-brand-on md:px-3 md:py-1.5">D-{dday}</span>
-          <span className={`hidden rounded-md px-3 py-1.5 text-xs font-semibold sm:inline ${AGENCY_TAG_TONE[agency]}`}>{agencyLabel}</span>
+          {dday !== null && <span className="rounded-md bg-brand px-2.5 py-1 text-xs font-bold text-brand-on md:px-3 md:py-1.5">D-{dday}</span>}
+          {agency && <span className={`hidden rounded-md px-3 py-1.5 text-xs font-semibold sm:inline ${AGENCY_TAG_TONE[agency]}`}>{agencyLabel}</span>}
         </div>
       </div>
     </div>

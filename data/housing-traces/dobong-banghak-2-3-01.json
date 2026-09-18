@@ -1,0 +1,24 @@
+{
+  "layoutKey": "dobong-banghak-2-3-01",
+  "walls": [
+    { "a": [302, 87],    "b": [5448, 87],   "thicknessMm": 200 },
+    { "a": [5448, 87],   "b": [5448, 3856], "thicknessMm": 250 },
+    { "a": [302, 3856],  "b": [5448, 3856], "thicknessMm": 300 },
+    { "a": [302, 87],    "b": [302, 3856],  "thicknessMm": 250 },
+    { "a": [1503, 87],   "b": [1503, 3856], "thicknessMm": 150 },
+    { "a": [3997, 1918], "b": [5448, 1918], "thicknessMm": 100 },
+    { "a": [3997, 1918], "b": [3997, 3856], "thicknessMm": 100 }
+  ],
+  "labels": [
+    { "at": [2700, 1200], "label": "거실" },
+    { "at": [4700, 2900], "label": "욕실" },
+    { "at": [900, 2200],  "label": "발코니" }
+  ],
+  "openings": [
+    { "wall": 0, "alongMm": 4098, "type": "door",   "widthMm": 1000 },
+    { "wall": 5, "alongMm": 458,  "type": "door",   "widthMm": 700 },
+    { "wall": 4, "alongMm": 1603, "type": "window", "widthMm": 1800 },
+    { "wall": 3, "alongMm": 1613, "type": "window", "widthMm": 1800 }
+  ],
+  "dimensionChains": [ { "axis": "x", "values": [1200, 2500, 1450] } ]
+}

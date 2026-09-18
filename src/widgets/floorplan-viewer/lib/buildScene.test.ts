@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
-import type { FloorplanModel2D } from "@/entities/floorplan";
-import { buildScene, clampWallsToHeight, polygonCentroid, solidSpans, yawTowards } from "./buildScene";
+import { pointInPolygon, type FloorplanModel2D, type PointMm } from "@/entities/floorplan";
+import { buildScene, clampWallsToHeight, solidSpans, yawTowards } from "./buildScene";
 
 const rect = (x: number, z: number, w: number, d: number) => [
   { x, z },
@@ -49,25 +49,6 @@ describe("clampWallsToHeight", () => {
       expect(w.height).toBeCloseTo(1.2);
       expect(w.yCenter).toBeCloseTo(0.6);
     }
-  });
-});
-
-describe("polygonCentroid", () => {
-  it("L자 폴리곤의 면적 가중 중심을 계산한다", () => {
-    const c = polygonCentroid([
-      { x: 0, z: 0 },
-      { x: 2, z: 0 },
-      { x: 2, z: 1 },
-      { x: 1, z: 1 },
-      { x: 1, z: 2 },
-      { x: 0, z: 2 }
-    ]);
-    expect(c.x).toBeCloseTo(5 / 6);
-    expect(c.z).toBeCloseTo(5 / 6);
-  });
-
-  it("퇴화 폴리곤은 bbox 중심으로 대체한다", () => {
-    expect(polygonCentroid([{ x: 0, z: 0 }, { x: 4, z: 0 }])).toEqual({ x: 2, z: 0 });
   });
 });
 
@@ -156,6 +137,29 @@ describe("buildScene", () => {
     expect(scene.spawn.z).toBeCloseTo(-2.5);
     // 거실은 현관의 +z 방향 → three.js 전방 (-sin yaw, -cos yaw) = (0, +1) → yaw = π
     expect(Math.abs(scene.spawn.yaw)).toBeCloseTo(Math.PI);
+  });
+
+  it("ㄱ자 현관이어도 방 안에서 시작한다(무게중심은 패인 자리에 떨어진다)", () => {
+    // 가로 3000×1000 팔 + 세로 1000×3000 팔 — 무게중심 (1100, 1100)은 덜어낸 자리라 방 밖이다
+    const entrance: PointMm[] = [
+      { x: 0, z: 0 },
+      { x: 3000, z: 0 },
+      { x: 3000, z: 1000 },
+      { x: 1000, z: 1000 },
+      { x: 1000, z: 3000 },
+      { x: 0, z: 3000 }
+    ];
+    expect(pointInPolygon({ x: 1100, z: 1100 }, entrance)).toBe(false);
+
+    const model = baseModel();
+    model.rooms = [
+      { id: "entrance", label: "현관", polygon: entrance },
+      { id: "living", label: "거실", polygon: rect(0, 3000, 4000, 3000) }
+    ];
+    const scene = buildScene(model);
+    // 씬 좌표는 유닛(4000×6000) 중앙 원점 — mm로 되돌려 방 안인지 본다
+    const spawnMm: PointMm = { x: scene.spawn.x * 1000 + 2000, z: scene.spawn.z * 1000 + 3000 };
+    expect(pointInPolygon(spawnMm, entrance)).toBe(true);
   });
 
   it("설비 폴리곤을 높이가 지정된 박스로 변환한다", () => {

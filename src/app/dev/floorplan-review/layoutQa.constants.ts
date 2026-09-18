@@ -1,0 +1,10 @@
+/** 개발 검수 화면(?layout=) 오버레이 색 — 운영 화면이 아니라 토큰 대신 판독성 위주 */
+export const QA_ROOM_FILL = "rgba(255, 186, 23, 0.25)";
+export const QA_ROOM_STROKE = "#111111";
+export const QA_EXTERIOR_WALL_STROKE = "#FF6467";
+export const QA_INTERIOR_WALL_STROKE = "#2B7FFF";
+export const QA_DOOR_STROKE = "#00BC7D";
+export const QA_WINDOW_STROKE = "#2B7FFF";
+export const QA_WALL_STROKE_PX = 3;
+export const QA_OPENING_STROKE_PX = 6;
+export const QA_IMAGE_MAX_WIDTH_PX = 420;

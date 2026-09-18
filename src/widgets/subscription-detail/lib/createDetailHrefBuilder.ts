@@ -3,8 +3,8 @@ import type { DetailHrefBuilder } from "../model/types";
 
 interface Params {
   id: string;
-  defaultUnitSize: number;
-  unit: number;
+  defaultUnitSize: string | number | null;
+  unit: string | number | null;
   view: FloorplanViewMode;
   viewpoint: Viewpoint;
 }

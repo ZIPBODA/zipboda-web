@@ -65,3 +65,14 @@ export const MAX_FRAME_DT_S = 0.05;
 export const MINIMAP_CANVAS = { width: 224, height: 224, padding: 12 } as const;
 export const MINIMAP_COLOR = { floor: "#F3F4F6", wall: "#9CA3AF", pose: "#FFBA17", poseStroke: "#FFFFFF", cone: "rgba(255, 186, 23, 0.35)" } as const;
 export const MINIMAP_POSE = { radiusPx: 4, coneLengthPx: 20, coneHalfAngleRad: 0.45, wallWidthPx: 2, strokeWidthPx: 1.5 } as const;
+
+/**
+ * 씬 검증에서 정상으로 보는 유닛 한 변의 범위(미터).
+ * 현재 현황도는 13~35㎡ 원룸(한 변 3~9m)이고, 스케일을 잘못 잡으면 0.3m나 60m 같은 값이 나온다
+ */
+export const SCENE_EXTENT_M = { min: 1.5, max: 40 } as const;
+
+// 자동 승격(reviewed) 문턱. normalizeModel의 자동 확정 기준(0.85)과 같게 두어 두 판정이 어긋나지 않게 한다
+export const REVIEW_MIN_CONFIDENCE = 0.85;
+/** 방 하나를 둘러싸는 데 필요한 최소 벽 수 — 이보다 적으면 외곽이 닫히지 않은 추출이다 */
+export const REVIEW_MIN_WALLS = 4;

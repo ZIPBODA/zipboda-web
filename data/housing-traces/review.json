@@ -1,0 +1,62 @@
+[
+  {
+    "layoutKey": "dobong-banghak-2-3-02",
+    "sourcePdf": "/reference/현황도_도봉구_방학동_도당로13다길15-7.pdf",
+    "sourceSha256": "9d8cc99ac65f4f221fabdf8487559e189040e2b1889c4d34b67ca6155c923692",
+    "sourcePage": 2,
+    "traceSpec": "data/housing-traces/dobong-banghak-2-3-02.json",
+    "status": "reviewed",
+    "reason": null,
+    "overlay": "tmp/housing-review/overlay-dobong-banghak-2-3-02.png"
+  },
+  {
+    "layoutKey": "gangseo-hwagok-2-203",
+    "sourcePdf": "/reference/현황도_강서구_화곡동_초록마을로12길20.pdf",
+    "sourceSha256": "402c9e7306cdebef50acdcf3e009b220fe6ff6e403d59181646b2503785c120a",
+    "sourcePage": 2,
+    "traceSpec": "data/housing-traces/gangseo-hwagok-2-203.json",
+    "status": "reviewed",
+    "reason": null,
+    "overlay": "tmp/housing-review/overlay-gangseo-hwagok-2-203.png"
+  },
+  {
+    "layoutKey": "gwanak-sillim-2-3-03",
+    "sourcePdf": "/reference/현황도_관악구_신림동_대학2길6.pdf",
+    "sourceSha256": "b58cb91738b171b38382249930937e23a61c5551533bc4621a1922a9b4cad894",
+    "sourcePage": 2,
+    "traceSpec": "data/housing-traces/gwanak-sillim-2-3-03.json",
+    "status": "reviewed",
+    "reason": null,
+    "overlay": "tmp/housing-review/overlay-gwanak-sillim-2-3-03.png"
+  },
+  {
+    "layoutKey": "gangnam-gaepo-4-402",
+    "sourcePdf": "/reference/현황도_강남구_개포동_논현로12길23-5_T&K개포.pdf",
+    "sourceSha256": "f466f08ae52368ccc6cfe93f764088cc4eb8c727a09d02bc541ecc00141a0f32",
+    "sourcePage": 2,
+    "traceSpec": "data/housing-traces/gangnam-gaepo-4-402.json",
+    "status": "reviewed",
+    "reason": null,
+    "overlay": "tmp/housing-review/overlay-gangnam-gaepo-4-402.png"
+  },
+  {
+    "layoutKey": "jungnang-myeonmok-2-3-03",
+    "sourcePdf": "/reference/현황도_중랑구_면목동_면목천로23길52.pdf",
+    "sourceSha256": "f3d4005e732b64bfc6b30e2e87f69feb4dff86c3e67701ba3854a64ce793fa1a",
+    "sourcePage": 2,
+    "traceSpec": "data/housing-traces/jungnang-myeonmok-2-3-03.json",
+    "status": "reviewed",
+    "reason": null,
+    "overlay": "tmp/housing-review/overlay-jungnang-myeonmok-2-3-03.png"
+  },
+  {
+    "layoutKey": "songpa-ogeum-2-3-04",
+    "sourcePdf": "/reference/현황도_송파구_오금동_마천로8길19-12_더트라이앵글.pdf",
+    "sourceSha256": "4218ec58b89a4a747e7cf7557a8278a929a33733b4d9aa79623526889dd2f5d5",
+    "sourcePage": 2,
+    "traceSpec": "data/housing-traces/songpa-ogeum-2-3-04.json",
+    "status": "needs-review",
+    "reason": "scale-mismatch: z 체인 합 3300 vs 정규화 외곽 3400",
+    "overlay": "tmp/housing-review/overlay-songpa-ogeum-2-3-04.png"
+  }
+]

@@ -1,0 +1,146 @@
+{
+  "layoutKey": "jungnang-myeonmok-2-3-03",
+  "walls": [
+    {
+      "a": [
+        121,
+        223
+      ],
+      "b": [
+        3202,
+        223
+      ],
+      "thicknessMm": 200
+    },
+    {
+      "a": [
+        3202,
+        223
+      ],
+      "b": [
+        3202,
+        6310
+      ],
+      "thicknessMm": 200
+    },
+    {
+      "a": [
+        121,
+        6310
+      ],
+      "b": [
+        3202,
+        6310
+      ],
+      "thicknessMm": 200
+    },
+    {
+      "a": [
+        121,
+        223
+      ],
+      "b": [
+        121,
+        6310
+      ],
+      "thicknessMm": 200
+    },
+    {
+      "a": [
+        121,
+        5054
+      ],
+      "b": [
+        3202,
+        5054
+      ],
+      "thicknessMm": 100
+    },
+    {
+      "a": [
+        1731,
+        223
+      ],
+      "b": [
+        1731,
+        1973
+      ],
+      "thicknessMm": 100
+    },
+    {
+      "a": [
+        1731,
+        1973
+      ],
+      "b": [
+        3202,
+        1973
+      ],
+      "thicknessMm": 100
+    }
+  ],
+  "labels": [
+    {
+      "at": [
+        1396,
+        3537
+      ],
+      "label": "거실"
+    },
+    {
+      "at": [
+        2327,
+        1210
+      ],
+      "label": "욕실"
+    },
+    {
+      "at": [
+        1396,
+        5677
+      ],
+      "label": "발코니"
+    }
+  ],
+  "openings": [
+    {
+      "wall": 0,
+      "alongMm": 1042,
+      "type": "door",
+      "widthMm": 903
+    },
+    {
+      "wall": 5,
+      "alongMm": 1294,
+      "type": "door",
+      "widthMm": 679
+    },
+    {
+      "wall": 4,
+      "alongMm": 1042,
+      "type": "window",
+      "widthMm": 1545
+    },
+    {
+      "wall": 2,
+      "alongMm": 1042,
+      "type": "window",
+      "widthMm": 1545
+    }
+  ],
+  "dimensionChains": [
+    {
+      "axis": "x",
+      "values": [
+        3050
+      ]
+    },
+    {
+      "axis": "z",
+      "values": [
+        4800,
+        1200
+      ]
+    }
+  ]
+}

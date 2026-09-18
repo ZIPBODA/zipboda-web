@@ -8,8 +8,9 @@ vi.mock("next/link", () => ({
   default: ({
     href,
     children,
+    scroll: _scroll,
     ...rest
-  }: { href: string; children: ReactNode } & AnchorHTMLAttributes<HTMLAnchorElement>) =>
+  }: { href: string; children: ReactNode; scroll?: boolean } & AnchorHTMLAttributes<HTMLAnchorElement>) =>
     createElement("a", { href, ...rest }, children)
 }));
 

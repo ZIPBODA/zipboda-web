@@ -26,7 +26,7 @@ export default async function SubscriptionsPage({ searchParams }: PageProps) {
       {/* figma PC 413:645 / Mobile 419:10092 헤더(타이틀 + 뷰 토글) */}
       <PageHeader
         title="공공주택"
-        description={`진행중 공고 ${items.length}건 · 2025년 7월 22일 업데이트`}
+        description={`현황도 기반 주택 ${items.length}건`}
         actions={
           <>
             {/* PC: 목록/지도 세그먼트 */}
