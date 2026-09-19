@@ -10,6 +10,7 @@ import {
 } from "@/entities/subscription";
 import type { Floorplan } from "@/entities/floorplan";
 import { DEFAULT_MOBILE_DETAIL_TAB, MOBILE_DETAIL_TABS, type MobileDetailTab } from "../config/constants";
+import { LocationCard } from "./LocationCard";
 
 interface Props {
   detail: SubscriptionDetail;
@@ -81,8 +82,8 @@ export function MobileSubscriptionDetail({ detail, floorplan, selectedUnit, acti
         </dl>
       </section>
 
-      {/* figma 419:10394 탭 바 4종 */}
-      <nav aria-label="상세 보기 전환" className="grid grid-cols-4 gap-2 bg-surface px-5 pb-1">
+      {/* figma 419:10394 탭 바 */}
+      <nav aria-label="상세 보기 전환" className="grid grid-cols-3 gap-2 bg-surface px-5 pb-1">
         {MOBILE_DETAIL_TABS.map((tab) => {
           const active = tab.key === activeTab;
           return (
@@ -103,7 +104,13 @@ export function MobileSubscriptionDetail({ detail, floorplan, selectedUnit, acti
 
       {/* figma 419:10403 탭 콘텐츠 — 뷰어 · 방 치수 · 평형 · CTA · 링크 */}
       <section className="flex flex-col gap-4 bg-surface p-5">
-        <TabViewer activeTab={activeTab} floorplan={floorplan} detailId={detail.id} unitSize={selectedUnit?.unitKey ?? selectedUnit?.size ?? null} />
+        <TabViewer
+          activeTab={activeTab}
+          floorplan={floorplan}
+          detailId={detail.id}
+          unitSize={selectedUnit?.unitKey ?? selectedUnit?.size ?? null}
+          detail={detail}
+        />
 
         {floorplan && (activeTab === "2d" || activeTab === "3d") && (
           <ul className="grid grid-cols-2 gap-2">
@@ -177,17 +184,19 @@ export function MobileSubscriptionDetail({ detail, floorplan, selectedUnit, acti
   );
 }
 
-// figma 419:10404 뷰어 — 2D는 도면 프리뷰, 3D는 전용 워크스루 라우트 진입(SUBS-08). 단지/위치는 빈 상태(A3)
+// figma 419:10404 뷰어 — 2D는 도면 프리뷰, 3D는 전용 워크스루 라우트 진입(SUBS-08)
 function TabViewer({
   activeTab,
   floorplan,
   detailId,
-  unitSize
+  unitSize,
+  detail
 }: {
   activeTab: MobileDetailTab;
   floorplan: Floorplan | null;
   detailId: string;
   unitSize: string | number | null;
+  detail: SubscriptionDetail;
 }) {
   const viewerHref = (view: "2d" | "3d") => `/subscriptions/${detailId}/floorplan?view=${view}&unit=${unitSize}`;
 
@@ -204,19 +213,8 @@ function TabViewer({
       </Link>
     );
   }
-  if (activeTab === "complex") {
-    return (
-      <div className="flex h-[240px] items-center justify-center rounded-xl border border-line bg-surface-secondary text-sm font-medium text-fg-muted">
-        단지배치도 준비 중
-      </div>
-    );
-  }
   if (activeTab === "location") {
-    return (
-      <div className="flex h-[240px] items-center justify-center rounded-xl border border-line bg-surface-secondary text-sm font-medium text-fg-muted">
-        위치 지도 준비 중
-      </div>
-    );
+    return <LocationCard title={detail.title} address={detail.address} coord={detail.coord} className="h-[240px]" />;
   }
   if (!floorplan) {
     return (

@@ -3,34 +3,30 @@
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { Floorplan } from "@/entities/floorplan";
+import { MAP_LEVEL } from "@/shared/config/map";
+import type { GeoPoint } from "@/shared/lib/geo";
+import { MapFallback, MapViewLoader } from "@/shared/ui/map";
 import type { Axis, RigPose } from "../lib/types";
 import { buildScene, type BuiltScene } from "../lib/buildScene";
 import { isWebGLAvailable } from "../lib/detectWebGL";
-import { LOOK_DRAG_SENSITIVITY, MOUSE_LOOK_SENSITIVITY, PITCH_LIMIT_RAD } from "../config/constants";
+import { FLOORPLAN_TABS, LOOK_DRAG_SENSITIVITY, MOUSE_LOOK_SENSITIVITY, PITCH_LIMIT_RAD, type FloorplanTab } from "../config/constants";
 import { Scene2D } from "./Scene2D";
 import { Scene3D } from "./Scene3D";
 import { Joystick } from "./controls/Joystick";
 import { MiniMap } from "./controls/MiniMap";
 import { FloorplanUnsupported } from "./FloorplanUnsupported";
 
-export type FloorplanTab = "2d" | "3d" | "complex" | "location";
-
-const TABS: { key: FloorplanTab; label: string }[] = [
-  { key: "2d", label: "2D 평면도" },
-  { key: "3d", label: "3D 평면도" },
-  { key: "complex", label: "단지배치도" },
-  { key: "location", label: "위치" }
-];
-
 export interface FloorplanExperienceProps {
   floorplan: Floorplan;
   title: string;
   backHref: string;
+  /** 위치 탭에 쓸 주소와 좌표. 뷰어가 청약 도메인을 모르도록 페이지가 넣어준다 */
+  location?: { address: string; coord?: GeoPoint | null };
   initialTab?: FloorplanTab;
   initialWalk?: boolean;
 }
 
-export default function FloorplanExperience({ floorplan, title, backHref, initialTab = "2d", initialWalk = false }: FloorplanExperienceProps) {
+export default function FloorplanExperience({ floorplan, title, backHref, location, initialTab = "2d", initialWalk = false }: FloorplanExperienceProps) {
   const [tab, setTab] = useState<FloorplanTab>(initialTab);
   const [walk, setWalk] = useState(initialWalk);
   const [webgl, setWebgl] = useState<boolean | null>(null);
@@ -108,8 +104,8 @@ export default function FloorplanExperience({ floorplan, title, backHref, initia
       <TopBar title={title} backHref={backHref} />
 
       {/* figma 353:3818 탭 선택 */}
-      <nav aria-label="평면도 보기 전환" className="grid grid-cols-4 gap-1.5 px-4 pb-3">
-        {TABS.map((t) => {
+      <nav aria-label="평면도 보기 전환" className="grid grid-cols-3 gap-1.5 px-4 pb-3">
+        {FLOORPLAN_TABS.map((t) => {
           const active = t.key === tab;
           return (
             <button
@@ -131,11 +127,23 @@ export default function FloorplanExperience({ floorplan, title, backHref, initia
 
       {tab === "3d" && <OrbitTab scene={scene} webgl={webgl} rigRef={rigRef} moveRef={moveRef} lookRef={lookRef} onView2D={() => setTab("2d")} onWalk={() => setWalk(true)} />}
 
-      {(tab === "complex" || tab === "location") && (
-        <div className="flex flex-1 items-center justify-center p-6 text-center text-sm font-medium text-fg-muted">
-          {tab === "complex" ? "단지배치도 준비 중" : "위치 지도 준비 중"}
-        </div>
-      )}
+      {tab === "location" &&
+        (location ? (
+          <div className="flex flex-1 flex-col overflow-hidden">
+            <MapViewLoader
+              markers={location.coord ? [{ id: "property", point: location.coord, label: title }] : []}
+              center={location.coord ?? null}
+              level={MAP_LEVEL.detail}
+              ariaLabel={`${title} 위치 지도`}
+              fallback={<MapFallback name={title} point={location.coord ?? null} query={location.address} />}
+              className="flex-1"
+            />
+            {/* 지도가 떠도 번지까지 읽을 수 있게 주소를 남긴다 */}
+            <p className="shrink-0 px-4 py-3 text-center text-sm text-fg-muted">{location.address}</p>
+          </div>
+        ) : (
+          <div className="flex flex-1 items-center justify-center p-6 text-center text-sm font-medium text-fg-muted">위치 정보 준비 중</div>
+        ))}
     </div>
   );
 }

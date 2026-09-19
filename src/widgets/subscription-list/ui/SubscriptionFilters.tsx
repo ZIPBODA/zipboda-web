@@ -1,10 +1,10 @@
 "use client";
 
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
-import { REGION_OPTIONS, SIZE_OPTIONS, AGENCY_OPTIONS, SORT_OPTIONS, DEFAULT_SORT } from "@/entities/subscription";
+import { SORT_OPTIONS, DEFAULT_SORT, FILTER_ALL, type SubscriptionFilterOptions } from "@/entities/subscription";
 
 // figma 135:5618 필터 바 — 가로 1줄(지역·면적·공급기관 | 정렬 우측). 상태는 URL 쿼리 파라미터(frontend-rule P6)
-export function SubscriptionFilters() {
+export function SubscriptionFilters({ options }: { options: SubscriptionFilterOptions }) {
   const router = useRouter();
   const pathname = usePathname();
   const params = useSearchParams();
@@ -26,30 +26,30 @@ export function SubscriptionFilters() {
         : "border border-line bg-surface text-fg-muted hover:bg-surface-tertiary"
     }`;
 
-  const current = (key: string) => params.get(key) ?? "전체";
+  const current = (key: string) => params.get(key) ?? FILTER_ALL;
   const currentSort = params.get("sort") ?? DEFAULT_SORT;
 
   return (
     <div className="flex items-center gap-4 overflow-x-auto rounded-xl bg-surface-secondary p-5">
       <FilterGroup label="지역">
-        {REGION_OPTIONS.map((o) => (
-          <button key={o} type="button" aria-pressed={current("region") === o} className={chipClass(current("region") === o, "brand")} onClick={() => update("region", o, o === "전체")}>
+        {options.regions.map((o) => (
+          <button key={o} type="button" aria-pressed={current("region") === o} className={chipClass(current("region") === o, "brand")} onClick={() => update("region", o, o === FILTER_ALL)}>
             {o}
           </button>
         ))}
       </FilterGroup>
       <Divider />
       <FilterGroup label="면적">
-        {SIZE_OPTIONS.map((o) => (
-          <button key={o} type="button" aria-pressed={current("size") === o} className={chipClass(current("size") === o, "brand")} onClick={() => update("size", o, o === "전체")}>
-            {o === "전체" ? o : `${o}㎡`}
+        {options.sizeRanges.map((o) => (
+          <button key={o.value} type="button" aria-pressed={current("size") === o.value} className={chipClass(current("size") === o.value, "brand")} onClick={() => update("size", o.value, o.value === FILTER_ALL)}>
+            {o.label}
           </button>
         ))}
       </FilterGroup>
       <Divider />
       <FilterGroup label="공급기관">
-        {AGENCY_OPTIONS.map((o) => (
-          <button key={o} type="button" aria-pressed={current("agency") === o} className={chipClass(current("agency") === o, "brand")} onClick={() => update("agency", o, o === "전체")}>
+        {options.agencies.map((o) => (
+          <button key={o} type="button" aria-pressed={current("agency") === o} className={chipClass(current("agency") === o, "brand")} onClick={() => update("agency", o, o === FILTER_ALL)}>
             {o}
           </button>
         ))}

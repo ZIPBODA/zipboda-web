@@ -1,3 +1,5 @@
+import type { GeoPoint } from "@/shared/lib/geo";
+
 export type AgencyCode = "LH" | "SH" | "GH" | "IH";
 
 export type SubscriptionSort = "DEADLINE" | "COMPETITION" | "HOUSEHOLDS";
@@ -11,6 +13,8 @@ export interface Subscription {
   title: string;
   region: string;
   location: string;
+  /** 주소를 좌표로 바꾼 결과. 지오코딩 전이거나 실패하면 없다 */
+  coord?: GeoPoint | null;
   sizes: number[];
   applicants: number | null;
   households: number | null;
@@ -19,6 +23,13 @@ export interface Subscription {
   deadline: string | null;
   dday: number | null;
   image: string | null;
+}
+
+/** 지금 데이터로 고를 수 있는 필터 칩. 서버에서 만들어 목록 화면에 내려준다 */
+export interface SubscriptionFilterOptions {
+  regions: string[];
+  agencies: string[];
+  sizeRanges: { value: string; label: string }[];
 }
 
 export interface SubscriptionFilter {
@@ -48,9 +59,15 @@ export interface SubscriptionDetail {
   status: SubscriptionStatus | null;
   title: string;
   address: string;
+  /** 주소를 좌표로 바꾼 결과. 지오코딩 전이거나 실패하면 없다 */
+  coord?: GeoPoint | null;
   dday: number | null;
   applyPeriod: string | null;
   households: string | null;
+  /** 이번 공고로 공급하는 호수. 건물 전체 세대수(households)와 다르다 */
+  supplyUnits?: number | null;
+  /** 예비입주자를 포함한 모집 인원 */
+  recruitCount?: number | null;
   supplyType: string | null;
   competition: string | null;
   contractDate: string | null;

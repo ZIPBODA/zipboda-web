@@ -30,9 +30,9 @@ export const MOCK_WISHLIST: WishlistItem[] = [
 
 // figma 135:2096·135:2111·135:2126 주문내역
 export const MOCK_ORDERS: Order[] = [
-  { id: "1", brand: "바움 스튜디오", name: "노르딕 3인 소파", orderDate: "2025년 7월 10일 주문", price: 1280000, status: "배송완료", image: "/mock/mypage/mypage-1.png" },
-  { id: "2", brand: "폼 스튜디오", name: "메소 액센트 체어", orderDate: "2025년 7월 18일 주문", price: 485000, status: "배송중", image: "/mock/mypage/mypage-2.png" },
-  { id: "3", brand: "루네 오브제", name: "할로 라운지 체어", orderDate: "2025년 7월 20일 주문", price: 398000, status: "준비중", image: "/mock/mypage/mypage-3.png" }
+  { id: "1", brand: "바움 스튜디오", name: "노르딕 3인 소파", orderDate: "2026년 9월 8일 주문", price: 1280000, status: "배송완료", image: "/mock/mypage/mypage-1.png" },
+  { id: "2", brand: "폼 스튜디오", name: "메소 액센트 체어", orderDate: "2026년 9월 15일 주문", price: 485000, status: "배송중", image: "/mock/mypage/mypage-2.png" },
+  { id: "3", brand: "루네 오브제", name: "할로 라운지 체어", orderDate: "2026년 9월 18일 주문", price: 398000, status: "준비중", image: "/mock/mypage/mypage-3.png" }
 ];
 
 // figma 208:263 프로필 수정 초기값

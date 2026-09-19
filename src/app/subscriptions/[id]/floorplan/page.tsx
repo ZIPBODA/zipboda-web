@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getSubscriptionDetail, selectSubscriptionUnit } from "@/entities/subscription";
 import { getFloorplan } from "@/entities/floorplan";
-import { FloorplanExperienceLoader, type FloorplanTab } from "@/widgets/floorplan-viewer";
+import { DEFAULT_FLOORPLAN_TAB, FLOORPLAN_TAB_KEYS, FloorplanExperienceLoader, type FloorplanTab } from "@/widgets/floorplan-viewer";
 
 interface PageProps {
   params: { id: string };
@@ -25,7 +25,7 @@ export default async function FloorplanViewerPage({ params, searchParams }: Page
   const floorplan = key === null ? null : await getFloorplan(detail.id, key);
   if (!floorplan) notFound();
 
-  const initialTab: FloorplanTab = searchParams.view === "3d" ? "3d" : "2d";
+  const initialTab: FloorplanTab = FLOORPLAN_TAB_KEYS.includes(searchParams.view ?? "") ? (searchParams.view as FloorplanTab) : DEFAULT_FLOORPLAN_TAB;
   const initialWalk = searchParams.mode === "walk";
 
   return (
@@ -33,6 +33,7 @@ export default async function FloorplanViewerPage({ params, searchParams }: Page
       floorplan={floorplan}
       title={detail.title}
       backHref={`/subscriptions/${detail.id}?unit=${encodeURIComponent(String(key))}`}
+      location={{ address: detail.address, coord: detail.coord }}
       initialTab={initialTab}
       initialWalk={initialWalk}
     />

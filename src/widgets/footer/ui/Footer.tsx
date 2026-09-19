@@ -45,7 +45,7 @@ export function Footer() {
 
         {/* figma 353:2981 하단 — 저작권 · 정책 · 언어. 모바일은 세로 스택(gap 16) */}
         <div className="mt-6 flex flex-col gap-4 border-t border-white/10 pt-4 md:mt-14 md:flex-row md:items-center md:justify-between md:pt-8">
-          <p className="text-xs text-fg-body">© 2025 집보다 Inc. All rights reserved.</p>
+          <p className="text-xs text-fg-body">© 2026 집보다 Inc. All rights reserved.</p>
           {/* figma 353:2983 모바일은 항목 사이에 구분점(·), PC는 간격만 */}
           <div className="flex items-center gap-2 text-xs text-fg-body md:gap-6">
             {POLICIES.map((p, i) => (

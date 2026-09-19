@@ -28,7 +28,7 @@ export const HOME_QUICK_MENU: { icon: string; label: string; href: string }[] = 
 // figma 419:10668 모바일 프로모 캐러셀. 슬라이드1=Figma 확정, 2·3=기존 앱 섹션 카피 재사용
 // TODO(API): 프로모션 배너 API 연동 시 mock 제거(A1). Figma는 3-dot(1/3)만 정의, 슬라이드 콘텐츠는 1건만 확정(D6)
 export const HOME_PROMO_SLIDES: { image: string; badge?: string; title: string; subtitle: string }[] = [
-  { image: "/mock/main/main-banner.png", badge: "🏠 NEW", title: "2025년 3분기 LH 청약 오픈", subtitle: "이번 주 마감 공고 3건" },
+  { image: "/mock/main/main-banner.png", badge: "🏠 NEW", title: "2026년 3분기 LH 청약 오픈", subtitle: "이번 주 마감 공고 3건" },
   { image: "/mock/main/main-interactive-1.png", title: "인터랙티브 3D 평면도", subtitle: "2D·3D 미리보기 + 가구 매칭" },
   { image: "/mock/main/main-furniture-1.png", title: "인기 가구 추천", subtitle: "새 집을 위한 엄선된 가구" }
 ];

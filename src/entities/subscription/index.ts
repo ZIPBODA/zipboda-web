@@ -5,12 +5,12 @@ export type {
   SubscriptionStatus,
   AgencyCode,
   SubscriptionSort,
-  SubscriptionFilter
+  SubscriptionFilter,
+  SubscriptionFilterOptions
 } from "./model/types";
 export {
-  REGION_OPTIONS,
-  SIZE_OPTIONS,
-  AGENCY_OPTIONS,
+  SIZE_RANGE_OPTIONS,
+  FILTER_ALL,
   SORT_OPTIONS,
   DEFAULT_SORT,
   DDAY_URGENT_THRESHOLD,
@@ -19,6 +19,7 @@ export {
   STATUS_BADGE_TONE
 } from "./config/constants";
 export { getSubscriptions } from "./api/getSubscriptions";
+export { getSubscriptionFilterOptions } from "./api/getSubscriptionFilterOptions";
 export { getSubscriptionDetail } from "./api/getSubscriptionDetail";
 export { SubscriptionCard } from "./ui/SubscriptionCard";
 export { SubscriptionCardMobile } from "./ui/SubscriptionCardMobile";
@@ -27,3 +28,4 @@ export { AgencyBadge } from "./ui/AgencyBadge";
 export { DdayBadge } from "./ui/DdayBadge";
 
 export { selectSubscriptionUnit } from "./lib/selectUnit";
+export { toMapMarker, toMapMarkers } from "./lib/toMapMarker";

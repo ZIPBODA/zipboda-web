@@ -11,7 +11,7 @@ export function HomeHero() {
       <div className="relative mx-auto flex h-full w-full max-w-7xl items-center px-6">
         <div className="w-[576px]">
           <span className="inline-flex items-center rounded-full bg-brand px-3 py-1.5 text-xs font-bold text-brand-on">
-            🏠 2025년 3분기 청약 오픈 — 신규 14건
+            🏠 2026년 3분기 청약 오픈 — 신규 14건
           </span>
           <h1 className="mt-6 whitespace-pre-line text-display-lg font-bold tracking-[-0.03125em] text-fg-ondark">
             {"꿈꾸는 집을 찾고\n평면도를 꾸며보세요"}
@@ -23,7 +23,7 @@ export function HomeHero() {
             type="button"
             className="mt-8 rounded-lg bg-brand px-6 py-3.5 text-sm font-bold text-brand-on shadow-lg transition-colors hover:bg-brand-hover"
           >
-            지금 신청 — 2025년 3분기 오픈
+            지금 신청 — 2026년 3분기 오픈
           </button>
         </div>
 
