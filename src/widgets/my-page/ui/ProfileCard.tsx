@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import type { MyProfile } from "../model/types";
 
@@ -12,7 +13,9 @@ export function ProfileCard({ profile, onEdit }: { profile: MyProfile; onEdit: (
       <div className="md:hidden">
         <div className="flex items-center gap-4 rounded-2xl border border-line-subtle bg-surface p-4">
           <div className="relative shrink-0">
-            <div className="size-14 rounded-2xl bg-surface-tertiary" />
+            <div className="relative size-14 overflow-hidden rounded-2xl bg-surface-tertiary">
+              {profile.avatar && <Image src={profile.avatar} alt="" fill sizes="56px" className="object-cover" />}
+            </div>
             <span className="absolute -bottom-1 -right-1 flex size-5 items-center justify-center rounded-full bg-brand text-caption shadow" aria-hidden>
               ✏️
             </span>
@@ -41,7 +44,9 @@ export function ProfileCard({ profile, onEdit }: { profile: MyProfile; onEdit: (
       {/* PC(≥768) */}
       <div className="hidden items-center gap-6 rounded-3xl border border-line-subtle bg-surface p-8 md:flex">
         <div className="relative shrink-0">
-          <div className="h-20 w-20 rounded-2xl bg-surface-tertiary" />
+          <div className="relative h-20 w-20 overflow-hidden rounded-2xl bg-surface-tertiary">
+            {profile.avatar && <Image src={profile.avatar} alt="" fill sizes="80px" className="object-cover" />}
+          </div>
           <span className="absolute -bottom-1 -right-1 flex h-7 w-7 items-center justify-center rounded-full bg-brand text-xs shadow-md" aria-hidden>
             ✏️
           </span>

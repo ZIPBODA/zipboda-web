@@ -25,6 +25,11 @@ describe("ProductCard", () => {
     // 디자인상 정가는 취소선 없이 연한 회색으로만 구분한다
     expect(screen.getByText("1,780,000원")).not.toHaveClass("line-through");
     expect(screen.getByRole("img", { name: "5 / 5" })).toBeInTheDocument();
+  });
+
+  it("담기 버튼은 넘겨준 것만 그린다 — 장바구니는 features라 카드가 직접 부를 수 없다", () => {
+    render(<ProductCard item={item} action={<button type="button">장바구니 담기</button>} />);
+
     expect(screen.getByRole("button", { name: "장바구니 담기" })).toBeInTheDocument();
   });
 

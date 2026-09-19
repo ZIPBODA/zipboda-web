@@ -9,6 +9,7 @@ import {
   type SubscriptionUnit
 } from "@/entities/subscription";
 import type { Floorplan } from "@/entities/floorplan";
+import { ShareButton } from "@/shared/ui/ShareButton";
 import { DEFAULT_MOBILE_DETAIL_TAB, MOBILE_DETAIL_TABS, type MobileDetailTab } from "../config/constants";
 import { LocationCard } from "./LocationCard";
 
@@ -51,9 +52,9 @@ export function MobileSubscriptionDetail({ detail, floorplan, selectedUnit, acti
           </Link>
           <span className="truncate text-base font-bold text-fg-heading">{detail.title}</span>
         </div>
-        <button type="button" aria-label="공유" className="shrink-0 text-fg-heading">
+        <ShareButton title={detail.title} className="shrink-0 text-fg-heading">
           <ShareIcon />
-        </button>
+        </ShareButton>
       </div>
 
       {/* figma 419:10367 히어로 배너 — 사진 + 카운터 */}

@@ -16,6 +16,10 @@ export const MY_TABS = [
 
 export type MyTabId = (typeof MY_TABS)[number]["id"];
 
+export const MY_TAB_KEYS: readonly string[] = MY_TABS.map((tab) => tab.id);
+
+export const DEFAULT_MY_TAB: MyTabId = "subscriptions";
+
 // figma 135:2096 주문 상태 — 배지 배경 없이 색상 텍스트만(Figma 데이터 그대로)
 export const ORDER_STATUS_TONE: Record<OrderStatus, string> = {
   배송완료: "text-brand",

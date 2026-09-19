@@ -1,6 +1,11 @@
 import { MOCK_SHOP_PRODUCTS } from "./shopProducts.mock";
 import type { ProductDetail } from "../../model/types";
 
+/** 상품마다 준비된 사진 장수. 상세 갤러리가 이 수만큼 썸네일을 그린다 */
+const SHOT_COUNT: Record<string, number> = { s1: 2, s2: 2, s3: 3, s4: 3, s5: 3, s6: 3, s7: 3, s8: 3 };
+
+const shotsOf = (id: string) => Array.from({ length: SHOT_COUNT[id] ?? 1 }, (_, i) => `/mock/shop/${id}-${i + 1}.webp`);
+
 // figma 135:3933~3936 색상 스와치(전 상품 공통 mock)
 const COLORS = ["#D4C5A9", "#8BA3A0", "#C4956A", "#1A1A1A"];
 
@@ -19,6 +24,6 @@ const EXTRAS: Record<string, { rating: number; description: string }> = {
 export const MOCK_PRODUCT_DETAILS: Record<string, ProductDetail> = Object.fromEntries(
   MOCK_SHOP_PRODUCTS.map((p) => [
     p.id,
-    { ...p, rating: EXTRAS[p.id].rating, reviewCount: p.reviewCount ?? 0, inStock: true, colors: COLORS, description: EXTRAS[p.id].description }
+    { ...p, rating: EXTRAS[p.id].rating, reviewCount: p.reviewCount ?? 0, inStock: true, colors: COLORS, images: shotsOf(p.id), description: EXTRAS[p.id].description }
   ])
 );

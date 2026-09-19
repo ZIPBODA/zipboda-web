@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import type { Metadata } from "next";
 import { PageContainer } from "@/shared/ui";
 import { getMyPage, getWishlist, getOrders, getProfileEdit, MyProfileSection, MyPageContent } from "@/widgets/my-page";
@@ -20,7 +21,10 @@ export default async function MyPage() {
     <PageContainer>
       <h1 className="sr-only">마이페이지</h1>
       <MyProfileSection profile={profile} editData={profileEdit} />
-      <MyPageContent listings={listings} wishlist={wishlist} orders={orders} />
+      {/* 탭 상태를 URL에서 읽으므로 경계를 둔다. 없으면 정적 생성 단계에서 막힌다 */}
+      <Suspense fallback={<div className="mt-6 h-64 md:mt-10" />}>
+        <MyPageContent listings={listings} wishlist={wishlist} orders={orders} />
+      </Suspense>
     </PageContainer>
   );
 }

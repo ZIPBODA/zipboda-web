@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import { HOME_HERO_STATS } from "../config/constants";
 
 // figma 135:7753 히어로 — 배경 이미지 + 그라디언트/문구는 디자인 그대로
@@ -19,12 +20,12 @@ export function HomeHero() {
           <p className="mt-5 w-[448px] text-base text-white/75">
             공공주택 공고 탐색, 인터랙티브 3D 평면도 체험, 맞춤 가구 쇼핑까지 — 한곳에서 모두 가능합니다.
           </p>
-          <button
-            type="button"
-            className="mt-8 rounded-lg bg-brand px-6 py-3.5 text-sm font-bold text-brand-on shadow-lg transition-colors hover:bg-brand-hover"
+          <Link
+            href="/subscriptions"
+            className="mt-8 inline-block rounded-lg bg-brand px-6 py-3.5 text-sm font-bold text-brand-on shadow-lg transition-colors hover:bg-brand-hover"
           >
             지금 신청 — 2026년 3분기 오픈
-          </button>
+          </Link>
         </div>
 
         {/* figma 135:7776 지표 카드 */}

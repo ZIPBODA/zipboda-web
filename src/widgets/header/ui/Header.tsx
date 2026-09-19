@@ -55,9 +55,9 @@ export function Header({ authenticated = false }: { authenticated?: boolean }) {
             {authenticated ? (
               <>
                 <span className="hidden md:order-2 md:inline-flex">
-                  <IconButton label="찜">
+                  <Link href="/my?tab=wishlist" aria-label="찜" className="relative inline-flex rounded-lg p-2 text-fg-muted transition-colors hover:bg-surface-secondary">
                     <HeartIcon />
-                  </IconButton>
+                  </Link>
                 </span>
                 <div className="relative order-1 md:order-3">
                   <button type="button" onClick={() => toggle("notifications")} aria-label="알림" aria-expanded={panel === "notifications"} className="relative rounded-lg p-2 text-fg-muted transition-colors hover:bg-surface-secondary">
@@ -111,14 +111,6 @@ export function Header({ authenticated = false }: { authenticated?: boolean }) {
         </nav>
       </div>
     </header>
-  );
-}
-
-function IconButton({ label, children }: { label: string; children: React.ReactNode }) {
-  return (
-    <button type="button" aria-label={label} className="relative rounded-lg p-2 text-fg-muted transition-colors hover:bg-surface-secondary">
-      {children}
-    </button>
   );
 }
 

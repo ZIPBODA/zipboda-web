@@ -30,5 +30,5 @@ export const HOME_QUICK_MENU: { icon: string; label: string; href: string }[] = 
 export const HOME_PROMO_SLIDES: { image: string; badge?: string; title: string; subtitle: string }[] = [
   { image: "/mock/main/main-banner.png", badge: "🏠 NEW", title: "2026년 3분기 LH 청약 오픈", subtitle: "이번 주 마감 공고 3건" },
   { image: "/mock/main/main-interactive-1.png", title: "인터랙티브 3D 평면도", subtitle: "2D·3D 미리보기 + 가구 매칭" },
-  { image: "/mock/main/main-furniture-1.png", title: "인기 가구 추천", subtitle: "새 집을 위한 엄선된 가구" }
+  { image: "/mock/shop/s3-1.webp", title: "인기 가구 추천", subtitle: "새 집을 위한 엄선된 가구" }
 ];

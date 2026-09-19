@@ -4,6 +4,7 @@ import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { ShareButton } from "@/shared/ui/ShareButton";
 import type { CommunityPostDetail } from "@/entities/community";
 
 // figma PC 199:216 / Mobile 419:11567 커뮤니티 글 상세 — 좋아요 토글·댓글 입력은 클라이언트 상태
@@ -72,7 +73,7 @@ export function CommunityDetailView({ post, editSlot }: { post: CommunityPostDet
           </button>
           <span className="flex items-center gap-1.5 rounded-lg bg-surface-tertiary px-3 py-2 text-sm font-semibold text-gray-700">💬 {post.commentCount.toLocaleString()}</span>
           <button type="button" className="flex items-center gap-1.5 rounded-lg border border-line-strong px-3 py-2 text-sm text-gray-700 hover:bg-surface-secondary">🔖 저장</button>
-          <button type="button" className="flex items-center gap-1.5 rounded-lg border border-line-strong px-3 py-2 text-sm text-gray-700 hover:bg-surface-secondary">🔗 공유</button>
+          <ShareButton title={post.title} className="flex items-center gap-1.5 rounded-lg border border-line-strong px-3 py-2 text-sm text-gray-700 hover:bg-surface-secondary">🔗 공유</ShareButton>
         </div>
 
         <section className="mt-8 flex flex-col gap-5">
