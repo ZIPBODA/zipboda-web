@@ -1,16 +1,25 @@
 import type { Metadata } from "next";
 import { getSubscriptions, type SubscriptionSort } from "@/entities/subscription";
 import { PageContainer, PageHeader } from "@/shared/ui";
-import { SubscriptionFilters, MobileSubscriptionFilters, SubscriptionListView } from "@/widgets/subscription-list";
+import {
+  SubscriptionFilters,
+  MobileSubscriptionFilters,
+  SubscriptionListView,
+  SubscriptionMapView,
+  ListViewToggle,
+  DEFAULT_SUBSCRIPTION_LIST_VIEW,
+  SUBSCRIPTION_LIST_VIEW_KEYS,
+  type SubscriptionListViewKey
+} from "@/widgets/subscription-list";
 
 export const metadata: Metadata = {
   title: "공공주택 청약 | 집보다",
   description: "LH·SH·GH·IH 공공주택 청약 공고 목록"
 };
 
-interface PageProps {
-  searchParams: { region?: string; size?: string; agency?: string; sort?: string };
-}
+type PageProps = {
+  searchParams: { region?: string; size?: string; agency?: string; sort?: string; view?: string };
+};
 
 // figma 135:5601 청약 공고 목록(SUBS-01)
 export default async function SubscriptionsPage({ searchParams }: PageProps) {
@@ -21,27 +30,18 @@ export default async function SubscriptionsPage({ searchParams }: PageProps) {
     sort: searchParams.sort as SubscriptionSort | undefined
   });
 
+  // 모르는 값은 목록으로 되돌린다 — 예전 링크나 오타가 빈 화면이 되지 않게
+  const view: SubscriptionListViewKey = SUBSCRIPTION_LIST_VIEW_KEYS.includes(searchParams.view ?? "")
+    ? (searchParams.view as SubscriptionListViewKey)
+    : DEFAULT_SUBSCRIPTION_LIST_VIEW;
+
   return (
     <PageContainer>
       {/* figma PC 413:645 / Mobile 419:10092 헤더(타이틀 + 뷰 토글) */}
       <PageHeader
         title="공공주택"
         description={`현황도 기반 주택 ${items.length}건`}
-        actions={
-          <>
-            {/* PC: 목록/지도 세그먼트 */}
-            <div className="hidden rounded-lg bg-surface-tertiary p-1 md:flex">
-              <span className="rounded-md bg-surface px-4 py-2 text-sm font-semibold text-fg-heading shadow-sm">목록</span>
-              <span aria-disabled className="flex cursor-not-allowed items-center gap-1.5 rounded-md px-4 py-2 text-sm font-semibold text-fg-disabled">
-                📍 지도
-              </span>
-            </div>
-            {/* 모바일: 지도 단일 버튼 */}
-            <span aria-disabled className="flex cursor-not-allowed items-center gap-1 rounded-lg bg-surface-tertiary px-3 py-1.5 text-2xsmall font-medium text-fg-muted md:hidden">
-              📍 지도
-            </span>
-          </>
-        }
+        actions={<ListViewToggle searchParams={searchParams} view={view} />}
       />
 
       {/* PC 필터 바 / 모바일 칩레일 */}
@@ -54,7 +54,7 @@ export default async function SubscriptionsPage({ searchParams }: PageProps) {
         </div>
       </div>
       <div className="mt-4 md:mt-6">
-        <SubscriptionListView items={items} />
+        {view === "map" ? <SubscriptionMapView items={items} /> : <SubscriptionListView items={items} />}
       </div>
     </PageContainer>
   );

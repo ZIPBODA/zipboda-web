@@ -5,7 +5,7 @@
 | 항목 | 내용 |
 |------|------|
 | 문서명 | 집보다 Codex 서비스 맥락 |
-| 버전 | v1.0.0 |
+| 버전 | v1.1.0 |
 | 작성일 | 2026-09-17 |
 | 기반 문서 | CLAUDE.md, package.json, next.config.mjs, docs/ZIPBODA_development-plan_v0.1.md, docs/ZIPBODA_handover_2026-08-05.md, docs/ZIPBODA_design-system.md, docs/ZIPBODA_nodeId.md, docs/ZIPBODA_design_nodeId.md, docs/ZIPBODA_요구사항정의서_v0.1.xlsx, docs/ZIPBODA_화면설계서_v0.1.xlsx |
 
@@ -14,6 +14,7 @@
 | 버전 | 날짜 | 작성자 | 변경 내용 |
 |------|------|--------|-----------|
 | v1.0.0 | 2026-09-17 | Codex | 공개 GitHub 소개·로컬 정의서·소스 대조, 서비스 도메인·반응형 범위·문서 불일치·확인 한계 기록 |
+| v1.1.0 | 2026-09-18 | Claude | 청약 목록 지도 전환 항목을 카카오맵 구현 상태(`?view=map`·`shared/ui/map`·`NEXT_PUBLIC_KAKAO_MAP_APP_KEY`·`geocode.json`)로 갱신 |
 
 ---
 
@@ -65,7 +66,7 @@
 - `src/app/page.tsx`는 서버에서 홈 데이터를 조회하고, Mobile과 PC 컴포넌트를 `md:hidden` / `hidden md:block`으로 나눈다.
 - `MobilePromoCarousel.tsx`는 `HOME_PROMO_SLIDES`를 소비한다. 4초 자동 전환·도트 선택·카운터 코드가 있고, 배너 콘텐츠는 임시 데이터다. 현재 열려 있다는 사실만으로 수정 대상으로 삼지 않는다.
 - `entities/*/api`와 `widgets/my-page/api`의 주요 조회는 `__mocks__`를 참조한다. 인증 화면에도 미연동 TODO가 있다. 화면 존재와 실제 서비스 연동 완료를 구분한다.
-- 청약 목록의 지도 전환은 비활성 표시다. 전체화면 평면도 라우트와 `FloorplanExperienceLoader`의 CSR 동적 로딩은 구현되어 있다.
+- 청약 목록의 지도 전환은 `/subscriptions?view=map`으로 동작한다. 지도는 카카오맵이며 `shared/ui/map`의 `MapViewLoader`가 유일한 진입점이다. `NEXT_PUBLIC_KAKAO_MAP_APP_KEY`가 없으면 스크립트를 주입하지 않고 카카오맵 링크 대체 표시로 간다. 좌표는 `shared/api/housing-data/geocode.json`에 따로 두며, 비어 있으면 지도 자리는 대체 표시가 된다. 전체화면 평면도 라우트와 `FloorplanExperienceLoader`의 CSR 동적 로딩은 구현되어 있다.
 - `AppChrome`은 전체화면 평면도 경로에서 공통 셸을 숨기고, 일반 모바일 화면에서는 고정 하단 탭 여백을 제공한다.
 - 모바일 하단 탭은 현재 코드상 **홈·청약·쇼핑·커뮤니티·마이페이지**다.
 - `page.dev.tsx`는 `next.config.mjs`에서 개발 서버에만 등록한다. `/dev/floorplan-review`와 `/ds-check`는 일반 사용자 운영 화면과 구분한다.

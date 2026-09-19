@@ -32,6 +32,7 @@ export function KakaoMapView({
   useEffect(() => {
     if (!hasPlace) return;
     let cancelled = false;
+    const placed = markerRef.current;
 
     void loadKakaoMaps().then((result) => {
       if (cancelled) return;
@@ -53,8 +54,8 @@ export function KakaoMapView({
 
     return () => {
       cancelled = true;
-      markerRef.current.forEach((marker) => marker.setMap(null));
-      markerRef.current.clear();
+      placed.forEach((marker) => marker.setMap(null));
+      placed.clear();
       mapRef.current = null;
     };
     // 지도 인스턴스는 한 번만 만든다. 이후 변화는 아래 effect들이 반영한다

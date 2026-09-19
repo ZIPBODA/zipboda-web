@@ -33,6 +33,7 @@ export default async function FloorplanViewerPage({ params, searchParams }: Page
       floorplan={floorplan}
       title={detail.title}
       backHref={`/subscriptions/${detail.id}?unit=${encodeURIComponent(String(key))}`}
+      location={{ address: detail.address, coord: detail.coord }}
       initialTab={initialTab}
       initialWalk={initialWalk}
     />
