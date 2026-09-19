@@ -30,7 +30,7 @@ describe("Header", () => {
   it("로그인 후 내 정보 아이콘을 누르면 프로필 패널이 열린다", () => {
     renderHeader(true);
     fireEvent.click(screen.getByRole("button", { name: "내 정보" }));
-    expect(screen.getByText("김민지")).toBeInTheDocument();
+    expect(screen.getByText("박지훈")).toBeInTheDocument();
     expect(screen.getByRole("link", { name: /설정/ })).toHaveAttribute("href", "/my/profile");
   });
 
@@ -38,7 +38,8 @@ describe("Header", () => {
   it("모바일에서는 찜·내 정보를 감춘다", () => {
     renderHeader(true);
 
-    expect(screen.getByRole("button", { name: "찜" }).parentElement).toHaveClass("hidden", "md:inline-flex");
+    expect(screen.getByRole("link", { name: "찜" })).toHaveAttribute("href", "/my?tab=wishlist");
+    expect(screen.getByRole("link", { name: "찜" }).parentElement).toHaveClass("hidden", "md:inline-flex");
     expect(screen.getByRole("button", { name: "내 정보" }).parentElement).toHaveClass("hidden", "md:block");
   });
 

@@ -1,15 +1,22 @@
 "use client";
 
-import { useState } from "react";
-import { MY_TABS, type MyTabId } from "../config/constants";
+import Link from "next/link";
+import { useSearchParams } from "next/navigation";
+import { DEFAULT_MY_TAB, MY_TABS, MY_TAB_KEYS, type MyTabId } from "../config/constants";
 import { MySubscriptionList } from "./MySubscriptionList";
 import { WishlistGrid } from "./WishlistGrid";
 import { OrderList } from "./OrderList";
 import type { MyListing, WishlistItem, Order } from "../model/types";
 
-// figma 135:1556 마이페이지 탭 — 한 페이지 안에서 콘텐츠 전환(별도 라우트 아님)
+/**
+ * figma 135:1556 마이페이지 탭 — 한 페이지 안에서 콘텐츠 전환(별도 라우트 아님).
+ * 어느 탭을 보고 있는지는 URL에 남긴다. 헤더의 찜 아이콘처럼 밖에서 특정 탭을 바로 열 수 있어야 한다.
+ */
 export function MyPageContent({ listings, wishlist, orders }: { listings: MyListing[]; wishlist: WishlistItem[]; orders: Order[] }) {
-  const [tab, setTab] = useState<MyTabId>("subscriptions");
+  const params = useSearchParams();
+  const requested = params.get("tab") ?? "";
+  const tab: MyTabId = MY_TAB_KEYS.includes(requested) ? (requested as MyTabId) : DEFAULT_MY_TAB;
+  const hrefFor = (id: MyTabId) => (id === DEFAULT_MY_TAB ? "/my" : `/my?tab=${id}`);
 
   return (
     <>
@@ -22,14 +29,14 @@ export function MyPageContent({ listings, wishlist, orders }: { listings: MyList
         {MY_TABS.map((t) => {
           const active = tab === t.id;
           return (
-            <button
+            <Link
               key={t.id}
-              type="button"
+              href={hrefFor(t.id)}
+              scroll={false}
               role="tab"
               id={`my-tab-${t.id}`}
               aria-selected={active}
               aria-controls={`my-panel-${t.id}`}
-              onClick={() => setTab(t.id)}
               className={`flex-1 rounded-lg px-3 py-2 text-xs font-medium transition-colors md:flex-none md:rounded-none md:border-b-2 md:px-5 md:py-3 md:text-sm ${
                 active
                   ? "bg-surface text-fg-heading shadow-sm md:border-brand md:bg-transparent md:shadow-none"
@@ -37,7 +44,7 @@ export function MyPageContent({ listings, wishlist, orders }: { listings: MyList
               }`}
             >
               {t.label}
-            </button>
+            </Link>
           );
         })}
       </div>
