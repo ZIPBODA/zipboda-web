@@ -9,7 +9,7 @@ describe("HomeHero", () => {
 
     expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent("꿈꾸는 집을 찾고");
     expect(screen.getByText(/한곳에서 모두 가능합니다/)).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: /지금 신청/ })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /지금 신청/ })).toHaveAttribute("href", "/subscriptions");
 
     for (const stat of HOME_HERO_STATS) {
       expect(screen.getByText(stat.value)).toBeInTheDocument();
