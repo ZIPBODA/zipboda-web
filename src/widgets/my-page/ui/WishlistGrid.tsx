@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
+import { AddToCartButton } from "@/features/cart";
 import type { WishlistItem } from "../model/types";
 
 // figma 135:1818 찜 목록 — 3열 상품 그리드(찜 하트 토글은 클라이언트 상태)
@@ -40,7 +41,7 @@ function WishlistCard({ item }: { item: WishlistItem }) {
             <p className="text-sm font-bold text-fg-heading">{item.price.toLocaleString()}원</p>
             <p className="text-xs text-line-strong line-through">{item.originalPrice.toLocaleString()}원</p>
           </div>
-          <button type="button" className="rounded-lg bg-brand px-3 py-2 text-xs font-bold text-brand-on">장바구니 담기</button>
+          <AddToCartButton item={{ id: item.id, brand: item.brand, name: item.name, price: item.price }} className="rounded-lg bg-brand px-3 py-2 text-xs font-bold text-brand-on" />
         </div>
       </div>
     </div>

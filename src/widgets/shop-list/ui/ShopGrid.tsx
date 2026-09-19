@@ -1,4 +1,5 @@
 import { ProductCard, type Product } from "@/entities/product";
+import { AddToCartButton } from "@/features/cart";
 
 // figma 135:3430 가구 쇼핑 상품 그리드
 export function ShopGrid({ items }: { items: Product[] }) {
@@ -13,7 +14,7 @@ export function ShopGrid({ items }: { items: Product[] }) {
   return (
     <div className="grid grid-cols-2 gap-4 sm:gap-6 lg:grid-cols-3">
       {items.map((item) => (
-        <ProductCard key={item.id} item={item} href={`/shop/${item.id}`} />
+        <ProductCard key={item.id} item={item} href={`/shop/${item.id}`} action={<AddToCartButton item={{ id: item.id, brand: item.brand, name: item.name, price: item.price }} />} />
       ))}
     </div>
   );

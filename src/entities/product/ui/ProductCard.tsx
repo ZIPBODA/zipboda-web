@@ -1,10 +1,14 @@
 import Image from "next/image";
 import Link from "next/link";
+import type { ReactNode } from "react";
 import { Rating } from "@/shared/ui";
 import type { Product } from "../model/types";
 
-// figma 135:7381·135:3431 가구 상품 카드 — 할인 배지 · 평점 · 장바구니 담기. href 주면 카드 전체가 상세 진입(stretched-link)
-export function ProductCard({ item, href }: { item: Product; href?: string }) {
+/**
+ * figma 135:7381·135:3431 가구 상품 카드 — 할인 배지 · 평점 · 담기. href 주면 카드 전체가 상세 진입(stretched-link).
+ * 담기 버튼은 action으로 받는다 — 장바구니는 features라 entities에서 직접 부를 수 없다.
+ */
+export function ProductCard({ item, href, action }: { item: Product; href?: string; action?: ReactNode }) {
   return (
     <article className="relative flex flex-col overflow-hidden rounded-xl border border-line-subtle bg-surface">
       {href && <Link href={href} aria-label={item.name} className="absolute inset-0 z-10" />}
@@ -41,14 +45,7 @@ export function ProductCard({ item, href }: { item: Product; href?: string }) {
               <p className="text-xs text-line-strong">{item.originalPrice.toLocaleString()}원</p>
             )}
           </div>
-          <button
-            type="button"
-            aria-label="장바구니 담기"
-            className="relative z-20 shrink-0 rounded-lg bg-brand px-3 py-2 text-xs font-bold text-brand-on transition-colors hover:bg-brand-hover"
-          >
-            <span aria-hidden className="md:hidden">+ 담기</span>
-            <span aria-hidden className="hidden md:inline">장바구니 담기</span>
-          </button>
+          {action}
         </div>
       </div>
     </article>
