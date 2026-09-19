@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { MAP_LEVEL, MAP_SINGLE_MARKER_LEVEL } from "../../config/map";
 import { boundsOf } from "../../lib/geo";
 import { loadKakaoMaps, type MapSdkStatus } from "../../lib/kakaoMapLoader";
@@ -92,11 +92,13 @@ export function KakaoMapView({
     }
   }, [markers, onSelect, status]);
 
-  // 화면을 마커에 맞춘다. center를 직접 받은 경우는 그 위치를 지킨다
-  useEffect(() => {
-    const map = mapRef.current;
+  /**
+   * 화면을 마커에 맞춘다. center를 직접 받은 경우는 그 위치를 지킨다.
+   * 크기가 바뀔 때도 같은 규칙을 다시 쓴다 — 첫 마커로만 중심을 잡으면 나머지 마커가 화면 밖으로 밀린다.
+   */
+  const frame = useCallback((map: kakao.maps.Map) => {
     const maps = window.kakao?.maps;
-    if (!map || !maps) return;
+    if (!maps) return;
 
     if (center) {
       map.setCenter(new maps.LatLng(center.lat, center.lng));
@@ -110,7 +112,12 @@ export function KakaoMapView({
       return;
     }
     map.setBounds(new maps.LatLngBounds(new maps.LatLng(bounds.south, bounds.west), new maps.LatLng(bounds.north, bounds.east)));
-  }, [markers, center, status]);
+  }, [center, markers]);
+
+  useEffect(() => {
+    const map = mapRef.current;
+    if (map) frame(map);
+  }, [frame, status]);
 
   // 선택된 마커를 앞으로 올린다
   useEffect(() => {
@@ -129,13 +136,11 @@ export function KakaoMapView({
       const map = mapRef.current;
       if (!map || container.clientWidth === 0) return;
       map.relayout();
-      const origin = center ?? markers[0]?.point ?? null;
-      const maps = window.kakao?.maps;
-      if (origin && maps) map.setCenter(new maps.LatLng(origin.lat, origin.lng));
+      frame(map);
     });
     observer.observe(container);
     return () => observer.disconnect();
-  }, [status, center, markers]);
+  }, [status, frame]);
 
   if (!hasPlace || status === "disabled" || status === "failed") {
     return <div className={className}>{fallback}</div>;
