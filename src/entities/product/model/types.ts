@@ -27,5 +27,7 @@ export interface ProductDetail extends Product {
   inStock: boolean;
   /** 색상 스와치(hex) */
   colors: string[];
+  /** 갤러리 사진. 첫 장이 목록 카드에 쓰는 대표 사진이다 */
+  images: string[];
   description: string;
 }

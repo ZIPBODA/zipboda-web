@@ -45,7 +45,7 @@ export default async function ProductDetailPage({ params }: { params: { id: stri
 
       <div className="mt-4 flex flex-col gap-6 md:mt-8 lg:flex-row lg:gap-12">
         <div className="lg:flex-1">
-          <ProductGallery name={product.name} image={product.image} />
+          <ProductGallery name={product.name} images={product.images} />
         </div>
         <div className="min-w-0 lg:flex-1">
           <ProductInfoPanel product={product} />
