@@ -57,6 +57,10 @@ export interface SubscriptionDetail {
   dday: number | null;
   applyPeriod: string | null;
   households: string | null;
+  /** 이번 공고로 공급하는 호수. 건물 전체 세대수(households)와 다르다 */
+  supplyUnits?: number | null;
+  /** 예비입주자를 포함한 모집 인원 */
+  recruitCount?: number | null;
   supplyType: string | null;
   competition: string | null;
   contractDate: string | null;

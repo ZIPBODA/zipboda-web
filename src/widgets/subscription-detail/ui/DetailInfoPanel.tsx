@@ -18,6 +18,8 @@ export function DetailInfoPanel({ detail, selectedSize, hrefFor }: Props) {
   const specs: [string, string][] = [
     ["신청 기간", detail.applyPeriod ?? ""],
     ["총 세대수", detail.households ?? ""],
+    ["공급 호수", detail.supplyUnits === null || detail.supplyUnits === undefined ? "" : `${detail.supplyUnits}호`],
+    ["모집 인원", detail.recruitCount === null || detail.recruitCount === undefined ? "" : `${detail.recruitCount}명`],
     ["공급 유형", detail.supplyType ?? ""],
     ["경쟁률", detail.competition ?? ""],
     ["계약일", detail.contractDate ?? ""],
