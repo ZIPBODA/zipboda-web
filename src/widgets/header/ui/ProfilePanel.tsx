@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { HEADER_PROFILE, PROFILE_MENU } from "../config/notifications";
+import { PENDING_CLASS, PENDING_TITLE } from "@/shared/config/pending";
 
 // figma 170:70 내 정보 패널 — 헤더 프로필 아이콘 드롭다운
 export function ProfilePanel({ onNavigate }: { onNavigate?: () => void }) {
@@ -34,7 +35,7 @@ export function ProfilePanel({ onNavigate }: { onNavigate?: () => void }) {
 
       <div className="border-t border-line-subtle py-2">
         {/* TODO(AUTH): 로그아웃 API 연동 */}
-        <button type="button" className="flex w-full items-center gap-3 px-5 py-3 text-sm font-medium text-gray-700 transition-colors hover:bg-surface-secondary">
+        <button type="button" disabled title={PENDING_TITLE} className={`flex w-full items-center gap-3 px-5 py-3 text-sm font-medium text-gray-700 ${PENDING_CLASS}`}>
           <span aria-hidden className="text-lg">
             🚪
           </span>

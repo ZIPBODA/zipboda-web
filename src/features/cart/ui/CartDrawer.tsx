@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useCart } from "../model/store";
 import type { CartItem } from "../model/types";
+import { PENDING_CLASS, PENDING_TITLE } from "@/shared/config/pending";
 
 // figma 135:8433(데이터)·135:8008(빈) 장바구니 슬라이드오버
 export function CartDrawer() {
@@ -56,7 +57,7 @@ export function CartDrawer() {
                 <span className="text-h2 font-bold text-fg-heading">{subtotal.toLocaleString()}원</span>
               </div>
               {/* TODO(CART-02): 결제 플로우 연동(추후) */}
-              <button type="button" className="mt-5 h-14 w-full rounded-2xl bg-brand text-base font-bold text-brand-on shadow-md">
+              <button type="button" disabled title={PENDING_TITLE} className={`mt-5 h-14 w-full rounded-2xl bg-brand text-base font-bold text-brand-on shadow-md ${PENDING_CLASS}`}>
                 결제하기 → {subtotal.toLocaleString()}원
               </button>
               <button type="button" onClick={close} className="mt-2 h-11 w-full rounded-2xl text-sm font-medium text-fg-disabled">

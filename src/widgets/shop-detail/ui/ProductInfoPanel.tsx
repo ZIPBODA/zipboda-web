@@ -5,6 +5,7 @@ import { Rating } from "@/shared/ui";
 import type { ProductDetail } from "@/entities/product";
 import { useCart } from "@/features/cart";
 import { PRODUCT_BENEFITS, DETAIL_TABS, type DetailTabId } from "../config/constants";
+import { PENDING_CLASS, PENDING_TITLE } from "@/shared/config/pending";
 
 // figma 135:3901 상품 정보 패널 — 색상·수량·탭은 클라이언트 상태
 export function ProductInfoPanel({ product }: { product: ProductDetail }) {
@@ -73,7 +74,7 @@ export function ProductInfoPanel({ product }: { product: ProductDetail }) {
         >
           장바구니 담기 — {(product.price * qty).toLocaleString()}원
         </button>
-        <button type="button" aria-label="찜" className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl border-2 border-line text-fg-muted hover:bg-surface-secondary">
+        <button type="button" aria-label="찜" disabled title={PENDING_TITLE} className={`flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl border-2 border-line text-fg-muted ${PENDING_CLASS}`}>
           <HeartIcon />
         </button>
       </div>

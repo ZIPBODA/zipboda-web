@@ -1,5 +1,6 @@
 import { Fragment } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import icon from "@/shared/assets/brand/icon-logo.png";
 
 // figma 250:76 Footer (ZB-U-COM-03)
@@ -8,7 +9,11 @@ const COLUMNS: { title: string; items: string[] }[] = [
   { title: "쇼핑", items: ["전체 가구", "거실", "침실", "주방", "조명"] }
 ];
 
-const POLICIES = ["개인정보처리방침", "이용약관", "쿠키 설정"];
+const POLICIES: { label: string; href: string }[] = [
+  { label: "개인정보처리방침", href: "/privacy" },
+  { label: "이용약관", href: "/terms" },
+  { label: "쿠키 설정", href: "/privacy#cookies" }
+];
 
 export function Footer() {
   return (
@@ -49,13 +54,13 @@ export function Footer() {
           {/* figma 353:2983 모바일은 항목 사이에 구분점(·), PC는 간격만 */}
           <div className="flex items-center gap-2 text-xs text-fg-body md:gap-6">
             {POLICIES.map((p, i) => (
-              <Fragment key={p}>
+              <Fragment key={p.label}>
                 {i > 0 && (
                   <span aria-hidden className="text-gray-700 md:hidden">
                     ·
                   </span>
                 )}
-                <span className="cursor-pointer transition-colors hover:text-fg-disabled">{p}</span>
+                <Link href={p.href} className="transition-colors hover:text-fg-disabled">{p.label}</Link>
               </Fragment>
             ))}
           </div>

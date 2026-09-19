@@ -6,6 +6,7 @@ import {
 } from "@/entities/subscription";
 import type { DetailHrefBuilder } from "../model/types";
 import { LocationCard } from "./LocationCard";
+import { PENDING_CLASS, PENDING_TITLE } from "@/shared/config/pending";
 
 interface Props {
   detail: SubscriptionDetail;
@@ -99,7 +100,9 @@ export function DetailInfoPanel({ detail, selectedSize, hrefFor }: Props) {
             <button
               key={label}
               type="button"
-              className="h-[52px] flex-1 rounded-xl border-2 border-line px-3 text-sm font-semibold text-gray-700 transition-colors hover:bg-surface-secondary"
+              disabled
+              title={PENDING_TITLE}
+              className={`h-[52px] flex-1 rounded-xl border-2 border-line px-3 text-sm font-semibold text-gray-700 ${PENDING_CLASS}`}
             >
               {label}
             </button>

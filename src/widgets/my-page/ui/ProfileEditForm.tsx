@@ -5,6 +5,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { INTEREST_OPTIONS } from "../config/constants";
 import type { ProfileEditData } from "../model/types";
+import { PENDING_CLASS, PENDING_TITLE } from "@/shared/config/pending";
 
 const INPUT_CLASS = "w-full rounded-xl border border-line px-4 py-3 text-sm text-fg-heading outline-none transition-colors focus:border-brand";
 
@@ -53,7 +54,7 @@ export function ProfileEditForm({ data, onDone }: { data: ProfileEditData; onDon
             📷
           </span>
         </div>
-        <button type="button" className="text-sm font-semibold text-blue-600">
+        <button type="button" disabled title={PENDING_TITLE} className={`text-sm font-semibold text-blue-600 ${PENDING_CLASS}`}>
           프로필 사진 변경
         </button>
       </div>

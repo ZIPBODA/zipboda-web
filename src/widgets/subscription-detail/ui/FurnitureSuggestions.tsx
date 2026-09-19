@@ -1,4 +1,5 @@
 import type { Product } from "@/entities/product";
+import { PENDING_CLASS, PENDING_TITLE } from "@/shared/config/pending";
 
 // figma 135:5199 '이 공간 꾸미기' — 상세 하단 추천 가구
 export function FurnitureSuggestions({ products }: { products: Product[] }) {
@@ -25,7 +26,9 @@ export function FurnitureSuggestions({ products }: { products: Product[] }) {
             </div>
             <button
               type="button"
-              className="shrink-0 rounded-md bg-brand px-3 py-2 text-xs font-bold text-brand-on transition-colors hover:bg-brand-hover"
+              disabled
+              title={PENDING_TITLE}
+              className={`shrink-0 rounded-md bg-brand px-3 py-2 text-xs font-bold text-brand-on ${PENDING_CLASS}`}
             >
               구매
             </button>

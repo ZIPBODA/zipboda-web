@@ -1,4 +1,5 @@
 import { MOCK_NOTIFICATIONS } from "../config/notifications";
+import { PENDING_CLASS, PENDING_TITLE } from "@/shared/config/pending";
 
 // figma 135:6954 알림 패널 — 헤더 알림 아이콘 드롭다운
 export function NotificationPanel() {
@@ -11,13 +12,13 @@ export function NotificationPanel() {
           <h2 className="text-base font-bold text-fg-heading">알림</h2>
           {unread > 0 && <span className="flex h-5 w-5 items-center justify-center rounded-full bg-brand text-[9px] font-bold text-brand-on">{unread}</span>}
         </div>
-        <button type="button" className="text-xs text-fg-disabled hover:text-fg-body">모두 읽음 처리</button>
+        <button type="button" disabled title={PENDING_TITLE} className={`text-xs text-fg-disabled ${PENDING_CLASS}`}>모두 읽음 처리</button>
       </header>
 
       <ul className="max-h-96 overflow-y-auto">
         {MOCK_NOTIFICATIONS.map((n) => (
           <li key={n.id}>
-            <button type="button" className={`flex w-full gap-3 border-b border-line-subtle px-5 py-4 text-left transition-colors hover:bg-surface-secondary ${n.unread ? "bg-amber-50" : "bg-surface"}`}>
+            <button type="button" disabled title={PENDING_TITLE} className={`flex w-full cursor-default gap-3 border-b border-line-subtle px-5 py-4 text-left ${n.unread ? "bg-amber-50" : "bg-surface"}`}>
               <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-surface-tertiary text-lg" aria-hidden>
                 {n.icon}
               </span>
@@ -35,7 +36,7 @@ export function NotificationPanel() {
       </ul>
 
       <footer className="py-3 text-center">
-        <button type="button" className="text-xs font-medium text-fg-disabled hover:text-fg-body">모든 알림 보기</button>
+        <button type="button" disabled title={PENDING_TITLE} className={`text-xs font-medium text-fg-disabled ${PENDING_CLASS}`}>모든 알림 보기</button>
       </footer>
     </div>
   );
