@@ -1,10 +1,22 @@
 import type { AgencyCode, SubscriptionSort, SubscriptionStatus } from "../model/types";
 
-export const REGION_OPTIONS = ["전체", "서울", "인천", "경기"] as const;
 /** 지오코딩으로 시·도를 알아내기 전까지 쓰는 값 — 현재 수집한 현황도가 모두 서울이다 */
 export const DEFAULT_REGION = "서울";
-export const SIZE_OPTIONS = ["전체", "39", "59", "84", "114"] as const;
-export const AGENCY_OPTIONS = ["전체", "LH", "SH", "GH", "IH"] as const;
+
+/** 필터 칩의 첫 자리. 어떤 축이든 '전체'는 조건을 걸지 않는다는 뜻이다 */
+export const FILTER_ALL = "전체";
+
+/**
+ * 면적은 값이 아니라 구간으로 고른다.
+ * 매입임대 주택의 전용면적은 14.6475㎡처럼 소수점이 붙어 값 일치로는 맞출 수 없다.
+ */
+export const SIZE_RANGE_OPTIONS: { value: string; label: string; min: number; max: number | null }[] = [
+  { value: "0-15", label: "~15㎡", min: 0, max: 15 },
+  { value: "15-20", label: "15~20㎡", min: 15, max: 20 },
+  { value: "20-25", label: "20~25㎡", min: 20, max: 25 },
+  { value: "25-30", label: "25~30㎡", min: 25, max: 30 },
+  { value: "30-", label: "30㎡~", min: 30, max: null }
+];
 
 export const SORT_OPTIONS: { value: SubscriptionSort; label: string }[] = [
   { value: "DEADLINE", label: "마감 임박" },

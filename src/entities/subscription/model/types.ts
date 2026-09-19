@@ -25,6 +25,13 @@ export interface Subscription {
   image: string | null;
 }
 
+/** 지금 데이터로 고를 수 있는 필터 칩. 서버에서 만들어 목록 화면에 내려준다 */
+export interface SubscriptionFilterOptions {
+  regions: string[];
+  agencies: string[];
+  sizeRanges: { value: string; label: string }[];
+}
+
 export interface SubscriptionFilter {
   region: string;
   size: string;
