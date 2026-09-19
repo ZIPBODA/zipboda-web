@@ -16,6 +16,13 @@ export const MOCK_NOTIFICATIONS: HeaderNotification[] = [
   { id: "5", icon: "🏢", title: "서울 신규 공고 3건", body: "새로운 LH 공공주택 공고가 등록되었습니다.", time: "4일 전", unread: false }
 ];
 
+// figma 170:70 내 정보 패널 사용자. TODO(AUTH): 로그인 사용자 정보 연동 시 mock 제거(A1)
+export const HEADER_PROFILE = {
+  name: "박지훈",
+  email: "jihoon@email.com",
+  avatar: "/mock/mypage/profile.webp"
+};
+
 // figma 170:77 내 정보 패널 메뉴
 export const PROFILE_MENU: { emoji: string; label: string; href: string; active?: boolean }[] = [
   { emoji: "🏠", label: "마이페이지", href: "/my" },

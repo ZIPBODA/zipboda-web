@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { INTEREST_OPTIONS } from "../config/constants";
 import type { ProfileEditData } from "../model/types";
@@ -45,7 +46,9 @@ export function ProfileEditForm({ data, onDone }: { data: ProfileEditData; onDon
 
       <div className="mt-6 flex flex-col items-center gap-3 md:mt-7">
         <div className="relative">
-          <div className="size-24 rounded-2xl bg-surface-tertiary md:size-[120px]" />
+          <div className="relative size-24 overflow-hidden rounded-2xl bg-surface-tertiary md:size-[120px]">
+            {data.avatar && <Image src={data.avatar} alt="" fill sizes="120px" className="object-cover" />}
+          </div>
           <span className="absolute bottom-1 right-1 flex size-8 items-center justify-center rounded-full bg-surface text-sm shadow-md" aria-hidden>
             📷
           </span>

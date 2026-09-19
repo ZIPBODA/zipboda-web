@@ -7,6 +7,8 @@ export interface MyProfileStat {
 
 export interface MyProfile {
   name: string;
+  /** 프로필 사진. 없으면 회색 자리로 둔다 */
+  avatar?: string;
   email: string;
   region: string;
   verified: boolean;
@@ -52,6 +54,8 @@ export interface Order {
 
 export interface ProfileEditData {
   nickname: string;
+  /** 프로필 사진. 변경 기능은 API 연동 전이라 지금은 보여 주기만 한다 */
+  avatar?: string;
   email: string;
   phone: string;
   bio: string;

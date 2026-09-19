@@ -1,15 +1,18 @@
+import Image from "next/image";
 import Link from "next/link";
-import { PROFILE_MENU } from "../config/notifications";
+import { HEADER_PROFILE, PROFILE_MENU } from "../config/notifications";
 
 // figma 170:70 내 정보 패널 — 헤더 프로필 아이콘 드롭다운
 export function ProfilePanel({ onNavigate }: { onNavigate?: () => void }) {
   return (
     <div className="w-[280px] overflow-hidden rounded-3xl border border-line-subtle bg-surface shadow-xl">
       <div className="flex items-center gap-3 p-5">
-        <span className="h-11 w-11 shrink-0 rounded-full bg-surface-tertiary" aria-hidden />
+        <span className="relative h-11 w-11 shrink-0 overflow-hidden rounded-full bg-surface-tertiary">
+          <Image src={HEADER_PROFILE.avatar} alt="" fill sizes="44px" className="object-cover" />
+        </span>
         <div className="min-w-0">
-          <p className="truncate text-base font-bold text-fg-heading">김민지</p>
-          <p className="truncate text-xs text-fg-muted">minji@email.com</p>
+          <p className="truncate text-base font-bold text-fg-heading">{HEADER_PROFILE.name}</p>
+          <p className="truncate text-xs text-fg-muted">{HEADER_PROFILE.email}</p>
         </div>
       </div>
 
