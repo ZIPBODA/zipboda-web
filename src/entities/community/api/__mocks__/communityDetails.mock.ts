@@ -19,8 +19,8 @@ const DETAIL_IMG_1 = "/mock/community/community-detail-1.png";
 const DETAIL_IMG_2 = "/mock/community/community-detail-2.png";
 
 export const MOCK_POST_DETAILS: Record<string, CommunityPostDetail> = {
-  "1": { id: "1", category: "인테리어", handle: "@minji_home", date: "2024.01.15", views: 1234, title: "84㎡ LH 아파트 입주 후 거실 꾸미기", likes: 342, commentCount: 58, body: POST1_BODY, bodyImages: [DETAIL_IMG_1, DETAIL_IMG_2], comments: COMMENTS },
-  "2": { id: "2", category: "가구", handle: "@nordic_room", date: "2024.01.14", views: 2103, title: "바움 스튜디오 소파 도착 — 개봉기 & 솔직 후기", likes: 876, commentCount: 131, body: ["기다리던 바움 스튜디오 소파가 도착했습니다. 배송부터 개봉, 조립까지 후기를 남겨요.", "쿠션감과 마감 모두 만족스러웠어요. 원목 다리도 튼튼합니다."], bodyImages: [DETAIL_IMG_1], comments: COMMENTS },
-  "3": { id: "3", category: "Q&A", handle: "@apt_diaries", date: "2024.01.13", views: 1502, title: "청약 공고의 경쟁률은 어떻게 보나요?", likes: 512, commentCount: 93, body: ["청약 공고에서 경쟁률을 확인하는 방법이 궁금합니다. 어디를 봐야 하나요?"], bodyImages: [], comments: COMMENTS },
-  h1: { id: "h1", category: "팁", handle: "@seoulstylist", date: "2024.01.16", views: 5820, title: "마포 상암 SH 청약 팁 — 첫 도전에 당첨됐어요!", likes: 1240, commentCount: 204, body: ["첫 청약 도전에 당첨된 후기와 팁을 공유합니다.", "가점 관리와 공고 분석이 핵심이었어요."], bodyImages: [DETAIL_IMG_2], comments: COMMENTS }
+  "1": { id: "1", category: "인테리어", handle: "@minji_home", date: "2026.09.19", views: 1234, title: "84㎡ LH 아파트 입주 후 거실 꾸미기", likes: 342, commentCount: 58, body: POST1_BODY, bodyImages: [DETAIL_IMG_1, DETAIL_IMG_2], comments: COMMENTS },
+  "2": { id: "2", category: "가구", handle: "@nordic_room", date: "2026.09.18", views: 2103, title: "바움 스튜디오 소파 도착 — 개봉기 & 솔직 후기", likes: 876, commentCount: 131, body: ["기다리던 바움 스튜디오 소파가 도착했습니다. 배송부터 개봉, 조립까지 후기를 남겨요.", "쿠션감과 마감 모두 만족스러웠어요. 원목 다리도 튼튼합니다."], bodyImages: [DETAIL_IMG_1], comments: COMMENTS },
+  "3": { id: "3", category: "Q&A", handle: "@apt_diaries", date: "2026.09.17", views: 1502, title: "청약 공고의 경쟁률은 어떻게 보나요?", likes: 512, commentCount: 93, body: ["청약 공고에서 경쟁률을 확인하는 방법이 궁금합니다. 어디를 봐야 하나요?"], bodyImages: [], comments: COMMENTS },
+  h1: { id: "h1", category: "팁", handle: "@seoulstylist", date: "2026.09.16", views: 5820, title: "마포 상암 SH 청약 팁 — 첫 도전에 당첨됐어요!", likes: 1240, commentCount: 204, body: ["첫 청약 도전에 당첨된 후기와 팁을 공유합니다.", "가점 관리와 공고 분석이 핵심이었어요."], bodyImages: [DETAIL_IMG_2], comments: COMMENTS }
 };

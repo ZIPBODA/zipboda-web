@@ -25,7 +25,7 @@ describe("Footer", () => {
 
     expect(screen.getByText("집보다")).toBeInTheDocument();
     expect(screen.getByText(/대한민국 대표 주거 플랫폼/)).toBeInTheDocument();
-    expect(screen.getByText(/© 2025 집보다 Inc\./)).toBeInTheDocument();
+    expect(screen.getByText(/© 2026 집보다 Inc\./)).toBeInTheDocument();
   });
 
   it("영어 항목은 PC에서만 노출한다(모바일 디자인 미포함)", () => {
