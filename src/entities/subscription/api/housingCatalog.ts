@@ -22,6 +22,12 @@ const NOTICE_BY_ID = new Map(HOUSING_NOTICES.map((entry) => [entry.propertyId, e
  */
 const TODAY = new Date();
 
+/**
+ * 평면도가 한 장도 없는 주택은 목록에 올리지 않는다.
+ * 집보다는 도면으로 집을 보여주는 서비스라, 눌러도 볼 것이 없는 공고는 빈 상세로 이어진다.
+ * 원본은 그대로 두고 여기서만 걸러 낸다 — 도면이 확보되면 자동으로 다시 올라온다.
+ */
+const LISTED_PROPERTIES = HOUSING_SOURCE_DATA.filter((property) => property.layouts.length > 0);
 
 const coordOf = (propertyId: string) => {
   const found = GEOCODE_BY_ID.get(propertyId);
@@ -31,7 +37,7 @@ const coordOf = (propertyId: string) => {
 /** 지오코딩이 돌려준 시·도를 쓰고, 아직 없으면 현재 수집 범위인 서울로 둔다 */
 const regionOf = (propertyId: string) => GEOCODE_BY_ID.get(propertyId)?.region1 ?? DEFAULT_REGION;
 
-export const SUBSCRIPTION_DETAILS: SubscriptionDetail[] = HOUSING_SOURCE_DATA.map((property) => {
+export const SUBSCRIPTION_DETAILS: SubscriptionDetail[] = LISTED_PROPERTIES.map((property) => {
   const notice = NOTICE_BY_ID.get(property.id) ?? null;
   return {
   id: property.id,
@@ -69,7 +75,7 @@ export const SUBSCRIPTION_DETAILS: SubscriptionDetail[] = HOUSING_SOURCE_DATA.ma
   };
 });
 
-export const SUBSCRIPTIONS: Subscription[] = HOUSING_SOURCE_DATA.map((property) => {
+export const SUBSCRIPTIONS: Subscription[] = LISTED_PROPERTIES.map((property) => {
   const notice = NOTICE_BY_ID.get(property.id) ?? null;
   return {
     id: property.id,

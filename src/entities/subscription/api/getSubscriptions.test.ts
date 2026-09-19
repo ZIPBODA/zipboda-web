@@ -4,9 +4,18 @@ import { getSubscriptions } from "./getSubscriptions";
 import { getSubscriptionFilterOptions } from "./getSubscriptionFilterOptions";
 
 describe("getSubscriptions 필터", () => {
-  // 건수를 숫자로 박아 두면 주택이 늘 때마다 테스트가 깨진다. 데이터에서 기대값을 끌어온다
-  it("조건이 없으면 전부 돌려준다", async () => {
-    expect((await getSubscriptions()).length).toBe(HOUSING_SOURCE_DATA.length);
+  // 건수를 숫자로 박아 두면 주택이 늘 때마다 테스트가 깨진다. 규칙에서 기대값을 끌어온다
+  const withFloorplan = HOUSING_SOURCE_DATA.filter((property) => property.layouts.length > 0);
+
+  it("조건이 없으면 평면도가 있는 주택을 전부 돌려준다", async () => {
+    expect((await getSubscriptions()).length).toBe(withFloorplan.length);
+  });
+
+  it("평면도가 한 장도 없는 주택은 목록에 올리지 않는다", async () => {
+    const listed = new Set((await getSubscriptions()).map((s) => s.id));
+    for (const property of HOUSING_SOURCE_DATA) {
+      expect(listed.has(property.id)).toBe(property.layouts.length > 0);
+    }
   });
 
   it("면적 구간이 실제로 목록을 줄인다", async () => {
@@ -25,9 +34,9 @@ describe("getSubscriptions 필터", () => {
   });
 
   it("지역과 기관으로도 거른다", async () => {
-    expect((await getSubscriptions({ region: "서울" })).length).toBe(HOUSING_SOURCE_DATA.length);
+    expect((await getSubscriptions({ region: "서울" })).length).toBe(withFloorplan.length);
     expect((await getSubscriptions({ region: "부산" })).length).toBe(0);
-    expect((await getSubscriptions({ agency: "LH" })).length).toBe(HOUSING_SOURCE_DATA.length);
+    expect((await getSubscriptions({ agency: "LH" })).length).toBe(withFloorplan.length);
   });
 
   it("조건을 겹쳐 걸 수 있다", async () => {
