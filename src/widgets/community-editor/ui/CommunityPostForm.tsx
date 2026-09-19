@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { COMMUNITY_CATEGORIES } from "@/entities/community";
+import { PENDING_CLASS, PENDING_TITLE } from "@/shared/config/pending";
 
 interface Props {
   mode: "create" | "edit";
@@ -78,7 +79,7 @@ export function CommunityPostForm({ mode, initial, onDone }: Props) {
 
         <Field label={`이미지 첨부 ${isEdit ? `(${imageCount}/10)` : "(최대 10장)"}`}>
           <div className="flex flex-wrap items-center gap-4">
-            <button type="button" className="flex h-[90px] w-[120px] flex-col items-center justify-center gap-2 rounded-xl border-[1.5px] border-dashed border-line-strong bg-surface-secondary text-[11px] font-semibold text-fg-muted">
+            <button type="button" disabled title={PENDING_TITLE} className={`flex h-[90px] w-[120px] flex-col items-center justify-center gap-2 rounded-xl border-[1.5px] border-dashed border-line-strong bg-surface-secondary text-[11px] font-semibold text-fg-muted ${PENDING_CLASS}`}>
               <span aria-hidden className="text-lg">＋</span>
               이미지 추가
             </button>
