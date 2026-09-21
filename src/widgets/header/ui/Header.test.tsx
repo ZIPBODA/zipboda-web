@@ -3,7 +3,7 @@ import { render, screen, fireEvent } from "@testing-library/react";
 import { CartProvider } from "@/features/cart";
 import { Header } from "./Header";
 
-vi.mock("next/navigation", () => ({ usePathname: () => "/" }));
+vi.mock("next/navigation", () => ({ usePathname: () => "/", useRouter: () => ({ push: vi.fn() }), useSearchParams: () => new URLSearchParams() }));
 
 function renderHeader(authenticated = false) {
   return render(
@@ -54,7 +54,7 @@ describe("Header", () => {
   it("검색 아이콘은 모바일에서 감추고 PC에서만 입력 안쪽에 둔다", () => {
     renderHeader(true);
 
-    const input = screen.getByRole("searchbox", { name: "주택·가구 검색" });
+    const input = screen.getByRole("combobox", { name: "주택·가구 검색" });
     const icon = input.previousElementSibling as SVGElement;
     const iconClass = icon.getAttribute("class") ?? "";
 
