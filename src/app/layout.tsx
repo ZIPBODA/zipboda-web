@@ -5,6 +5,7 @@ import { Footer } from "@/widgets/footer";
 import { MobileBottomNav } from "@/widgets/mobile-bottom-nav";
 import { CartProvider, CartDrawer } from "@/features/cart";
 import { AppChrome } from "./AppChrome";
+import { getSearchData } from "./searchData";
 
 export const metadata: Metadata = {
   title: "집보다",
@@ -26,7 +27,8 @@ export const viewport: Viewport = {
   themeColor: "#FFBA17"
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const { index } = await getSearchData();
   return (
     <html lang="ko">
       <head>
@@ -40,7 +42,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <CartProvider>
           {/* 인증 미구현 프로토타입 — 로그인 후 헤더(찜·알림·프로필)를 기본 노출. 로그인 화면은 /login 직접 접근 */}
           {/* AppChrome이 풀스크린 라우트(평면도 뷰어)에서 헤더/푸터/하단탭을 숨긴다 */}
-          <AppChrome header={<Header authenticated />} footer={<Footer />} bottomNav={<MobileBottomNav />}>
+          <AppChrome header={<Header authenticated searchIndex={index} />} footer={<Footer />} bottomNav={<MobileBottomNav />}>
             {children}
           </AppChrome>
           <CartDrawer />
