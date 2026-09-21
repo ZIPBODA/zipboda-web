@@ -29,10 +29,6 @@ export const FIXTURE_HEIGHT_M: Record<FixtureType, number> = {
   washer: 0.85
 };
 
-/** 마감재 타일(scripts/build-textures.mjs 산출, 1024² seamless). 로드 전·실패 시 단색 재질로 폴백 */
-export const FINISH_TEXTURE_URL = { wallpaper: "/textures/wallpaper.jpg", flooring: "/textures/flooring.jpg" } as const;
-/** 타일 한 장이 덮는 실척(m). 벽지 줄무늬 피치·장판 판 폭 기준 — 제품 규격 확정 시 조정 */
-export const FINISH_TILE_M = { wallpaper: 1.0, flooring: 1.2 } as const;
 export const TEXTURE_ANISOTROPY = 4;
 /**
  * three r155+ 물리 광량: 램버트 출력 = 광량 × 알베도 / π. 흰 마감재(알베도≈0.97)가 흰색(≈0.95)으로 보이도록

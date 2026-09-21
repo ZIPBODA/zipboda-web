@@ -7,13 +7,14 @@ import * as THREE from "three";
 import { CAMERA_FOV, CEILING_HEIGHT_M, EYE_HEIGHT_M, WALK_SPEED_MPS, resolveCollision, type SceneSegment } from "@/entities/floorplan";
 import type { AxisRef, RigRef } from "../lib/types";
 import { clampWallsToHeight, type BuiltScene, type SceneFixtureBox, type SceneFloorSlab, type SceneWallBox } from "../lib/buildScene";
-import { floorTextureRepeat, wallTextureRepeat } from "../lib/textureRepeat";
+import { finishRepeat } from "../lib/finishRepeat";
+import { ROOM_FINISH } from "../config/finishAtlas";
 import { useFinishTextures } from "../lib/useFinishTextures";
+import type { FinishTextures } from "../model/finish";
 import {
   CAMERA_FAR_M,
   CAMERA_NEAR_M,
   DEVICE_PIXEL_RATIO_RANGE,
-  FINISH_TILE_M,
   FIXTURE_COLOR,
   FLOOR_LIFT_M,
   FLOOR_THICKNESS_M,
@@ -40,7 +41,8 @@ function repeatedClone(texture: THREE.Texture, repeat: { x: number; y: number })
 
 // BoxGeometry 면 순서: +x, -x, +y, -y, +z, -z — 벽지는 넓은 면(±z)에만, 끝면·윗면(컷어웨이 단면)은 단색
 function TexturedWall({ wall, wallpaper }: { wall: SceneWallBox; wallpaper: THREE.Texture }) {
-  const map = useMemo(() => repeatedClone(wallpaper, wallTextureRepeat(wall.length, wall.height, FINISH_TILE_M.wallpaper)), [wallpaper, wall.length, wall.height]);
+  const map = useMemo(() => repeatedClone(wallpaper, finishRepeat("wallpaper", wall.length, wall.height)), [wallpaper, wall.length, wall.height]);
+  useEffect(() => () => map.dispose(), [map]);
   return (
     <mesh position={[wall.cx, wall.yCenter, wall.cz]} rotation={[0, -wall.angleY, 0]}>
       <boxGeometry args={[wall.length, wall.height, wall.thickness]} />
@@ -79,18 +81,25 @@ function floorShape(slab: SceneFloorSlab): THREE.Shape {
   return shape;
 }
 
-// 장판은 전체가 한 장의 마감재이므로 텍스처가 있으면 방별 색을 곱하지 않는다(방 구분은 미니맵이 담당)
-function Floors({ floors, flooring }: { floors: SceneFloorSlab[]; flooring: THREE.Texture | null }) {
-  const shapes = useMemo(() => floors.map(floorShape), [floors]);
-  const map = useMemo(() => (flooring ? repeatedClone(flooring, floorTextureRepeat(FINISH_TILE_M.flooring)) : null), [flooring]);
+function Floor({ slab, finish }: { slab: SceneFloorSlab; finish: FinishTextures }) {
+  const shape = useMemo(() => floorShape(slab), [slab]);
+  const kind = ROOM_FINISH[slab.label];
+  const texture = finish[kind];
+  const map = useMemo(() => texture ? repeatedClone(texture, finishRepeat(kind)) : null, [texture, kind]);
+  useEffect(() => () => map?.dispose(), [map]);
+  return (
+    <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, FLOOR_LIFT_M, 0]} receiveShadow>
+      <extrudeGeometry args={[shape, { depth: FLOOR_THICKNESS_M, bevelEnabled: false }]} />
+      {/* 비동기 로드 후 map 없는 셰이더를 재사용하지 않도록 재질을 다시 만든다. */}
+      <meshStandardMaterial key={map ? "textured" : "solid"} color={map ? FINISH_TINT : slab.color} map={map} />
+    </mesh>
+  );
+}
+
+function Floors({ floors, finish }: { floors: SceneFloorSlab[]; finish: FinishTextures }) {
   return (
     <group>
-      {floors.map((slab, i) => (
-        <mesh key={slab.roomId} rotation={[-Math.PI / 2, 0, 0]} position={[0, FLOOR_LIFT_M, 0]} receiveShadow>
-          <extrudeGeometry args={[shapes[i], { depth: FLOOR_THICKNESS_M, bevelEnabled: false }]} />
-          <meshStandardMaterial color={map ? FINISH_TINT : slab.color} map={map} />
-        </mesh>
-      ))}
+      {floors.map((slab) => <Floor key={slab.roomId} slab={slab} finish={finish} />)}
     </group>
   );
 }
@@ -215,7 +224,7 @@ export function Scene3D({ scene, mode, rigRef, moveRef, lookRef }: Props) {
       <ambientLight intensity={SCENE_LIGHT.ambient} />
       <hemisphereLight args={["#ffffff", "#9ca3af", SCENE_LIGHT.hemisphere]} />
       <directionalLight position={[3, CEILING_HEIGHT_M * 3, 5]} intensity={SCENE_LIGHT.directional} />
-      <Floors floors={scene.floors} flooring={finish.flooring} />
+      <Floors floors={scene.floors} finish={finish} />
       <Walls walls={walls} wallpaper={finish.wallpaper} />
       <Fixtures fixtures={scene.fixtures} />
       {mode === "orbit" ? <OrbitRig radius={radius} /> : <WalkRig rigRef={rigRef} moveRef={moveRef} lookRef={lookRef} collision={scene.collision} />}
