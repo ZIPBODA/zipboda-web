@@ -2,14 +2,11 @@
 
 import { useEffect, useState } from "react";
 import * as THREE from "three";
-import { FINISH_TEXTURE_URL, TEXTURE_ANISOTROPY } from "../config/constants";
+import { TEXTURE_ANISOTROPY } from "../config/constants";
+import { FINISH_ATLAS_URL, FINISH_ATLAS_SIZE, FINISH_ATLAS_REGIONS } from "../config/finishAtlas";
+import type { FinishKind, FinishTextures } from "../model/finish";
 
-export interface FinishTextures {
-  wallpaper: THREE.Texture | null;
-  flooring: THREE.Texture | null;
-}
-
-const EMPTY: FinishTextures = { wallpaper: null, flooring: null };
+const EMPTY: FinishTextures = { wallpaper: null, flooring: null, tile: null, bathroomTile: null, concrete: null };
 
 function configureTile(texture: THREE.Texture): THREE.Texture {
   texture.wrapS = THREE.RepeatWrapping;
@@ -27,27 +24,27 @@ export function useFinishTextures(): FinishTextures {
   const [textures, setTextures] = useState<FinishTextures>(EMPTY);
 
   useEffect(() => {
-    const loader = new THREE.TextureLoader();
+    const loader = new THREE.ImageLoader();
     const loaded: THREE.Texture[] = [];
     let cancelled = false;
 
-    const load = (key: keyof FinishTextures) =>
-      loader.load(
-        FINISH_TEXTURE_URL[key],
-        (texture) => {
-          if (cancelled) {
-            texture.dispose();
-            return;
-          }
-          loaded.push(texture);
-          setTextures((prev) => ({ ...prev, [key]: configureTile(texture) }));
-        },
-        undefined,
-        () => setTextures((prev) => ({ ...prev, [key]: null }))
-      );
-
-    load("wallpaper");
-    load("flooring");
+    loader.load(FINISH_ATLAS_URL, (image: HTMLImageElement) => {
+      if (cancelled || image.width !== FINISH_ATLAS_SIZE || image.height !== FINISH_ATLAS_SIZE) return;
+      const next: FinishTextures = { ...EMPTY };
+      for (const key of Object.keys(FINISH_ATLAS_REGIONS) as FinishKind[]) {
+        const region = FINISH_ATLAS_REGIONS[key];
+        const canvas = document.createElement("canvas");
+        canvas.width = region.width;
+        canvas.height = region.height;
+        const context = canvas.getContext("2d");
+        if (!context) continue;
+        context.drawImage(image, region.x, region.y, region.width, region.height, 0, 0, region.width, region.height);
+        const texture = configureTile(new THREE.CanvasTexture(canvas));
+        loaded.push(texture);
+        next[key] = texture;
+      }
+      setTextures(next);
+    }, undefined, () => { if (!cancelled) setTextures(EMPTY); });
 
     return () => {
       cancelled = true;
