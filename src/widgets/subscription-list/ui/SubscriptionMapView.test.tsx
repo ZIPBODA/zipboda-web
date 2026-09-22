@@ -22,11 +22,18 @@ const base: Subscription = {
 
 // 테스트 환경에는 앱키가 없어 지도는 항상 대체 표시를 그린다 — 키 없는 로컬·CI와 같은 경로다
 describe("SubscriptionMapView", () => {
-  it("좌표가 있는 공고를 지도와 카드로 보여준다", () => {
+  it("좌표가 있으면 지도를 그리고 대상 건수를 알린다", () => {
     render(<SubscriptionMapView items={[base]} />);
 
-    expect(screen.getAllByText("강남 개포동").length).toBeGreaterThan(0);
+    expect(screen.getByRole("status")).toHaveTextContent("1건");
     expect(screen.queryByText("지도에 표시할 공고가 없습니다")).not.toBeInTheDocument();
+  });
+
+  it("아무 핀도 누르지 않았으면 공고 카드를 먼저 펼치지 않는다", () => {
+    render(<SubscriptionMapView items={[base]} />);
+
+    expect(screen.queryByText("강남 개포동")).not.toBeInTheDocument();
+    expect(screen.getByText("지도를 확대해 핀을 누르면 공고를 볼 수 있습니다.")).toBeInTheDocument();
   });
 
   it("좌표가 없으면 지도 대신 빈 상태를 알린다", () => {

@@ -1,6 +1,14 @@
-import { MAP_CLUSTER_OPTIONS, MAP_ZOOM_RANGE } from "../../config/map";
+import { MAP_AGGREGATE_MIN_LEVEL, MAP_CLUSTER_OPTIONS, MAP_DETAIL_PIN_LEVEL, MAP_ZOOM_RANGE } from "../../config/map";
 import { MAP_CLUSTER_STYLE } from "../../config/mapClusterStyle";
 import type { MapMarker } from "./types";
+
+/**
+ * 숫자 배지를 누르는 것은 지도 탐색이고, 개별 핀을 누르는 것은 집을 고르는 일이다.
+ * 묶는 단계에서는 SDK가 핀을 배지 안에 감추므로 핀 클릭 자체가 일어나지 않지만,
+ * 그 규칙이 SDK 사정에 맡겨지지 않도록 여기서 한 번 더 막는다.
+ */
+const isDetailLevel = (map: kakao.maps.Map, clustering: boolean) =>
+  !clustering || map.getLevel() <= MAP_DETAIL_PIN_LEVEL;
 
 export function createMarkerLayer(maps: typeof kakao.maps, map: kakao.maps.Map, clustering: boolean, onSelect: (id: string) => void) {
   const placed = new Map<string, { marker: kakao.maps.Marker; click: () => void; label: string }>();
@@ -17,7 +25,7 @@ export function createMarkerLayer(maps: typeof kakao.maps, map: kakao.maps.Map, 
     cleanKeyboard.forEach((clean) => clean());
     cleanKeyboard = [];
     for (const cluster of clusters) {
-      if (cluster.getSize() < MAP_CLUSTER_OPTIONS.minClusterSize || map.getLevel() < MAP_CLUSTER_OPTIONS.minLevel) continue;
+      if (cluster.getSize() < MAP_CLUSTER_OPTIONS.minClusterSize || map.getLevel() < MAP_AGGREGATE_MIN_LEVEL) continue;
       const node = cluster.getClusterMarker().getContent();
       if (!(node instanceof HTMLElement)) continue;
       node.setAttribute("role", "button");
@@ -61,7 +69,7 @@ export function createMarkerLayer(maps: typeof kakao.maps, map: kakao.maps.Map, 
           existing.marker.setPosition(position);
         } else {
           const marker = new maps.Marker({ position, title: item.label, clickable: true });
-          const click = () => onSelect(item.id);
+          const click = () => { if (isDetailLevel(map, clustering)) onSelect(item.id); };
           maps.event.addListener(marker, "click", click);
           placed.set(item.id, { marker, click, label: item.label ?? "" });
           if (clusterer) added.push(marker);

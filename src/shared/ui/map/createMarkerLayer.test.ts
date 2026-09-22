@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import { MAP_CLUSTER_OPTIONS } from "../../config/map";
+import { MAP_AGGREGATE_MIN_LEVEL, MAP_CLUSTER_OPTIONS, MAP_DETAIL_PIN_LEVEL } from "../../config/map";
 import { createMarkerLayer } from "./createMarkerLayer";
 import type { MapMarker } from "./types";
 
@@ -58,8 +58,6 @@ describe("지도 마커 묶음", () => {
     expect(created[0].setPosition).toHaveBeenCalledWith(expect.objectContaining({ lat: 37.6, lng: 127.1 }));
     emit(removed, "click");
     expect(onSelect).not.toHaveBeenCalled();
-    emit(created[0], "click");
-    expect(onSelect).toHaveBeenCalledWith("one");
   });
 
   it("선택 변경은 확대 단계나 묶음을 재설정하지 않는다", () => {
@@ -105,9 +103,9 @@ describe("지도 마커 묶음", () => {
     expect(map.setLevel).toHaveBeenCalledTimes(4);
   });
 
-  it("확대된 개별 핀에는 묶음 버튼을 붙이지 않는다", () => {
+  it("최대 확대의 개별 핀에는 묶음 버튼을 붙이지 않는다", () => {
     const { clusterer, map, emit } = setup();
-    map.getLevel.mockReturnValue(4);
+    map.getLevel.mockReturnValue(MAP_DETAIL_PIN_LEVEL);
     const getClusterMarker = vi.fn();
     emit(clusterer, "clustered", [{ getSize: () => 2, getClusterMarker }]);
     expect(getClusterMarker).not.toHaveBeenCalled();
@@ -130,5 +128,47 @@ describe("지도 마커 묶음", () => {
     layer.sync(items.slice(0, 1), null);
     expect(Clusterer).not.toHaveBeenCalled();
     expect(created[0].setMap).toHaveBeenCalledWith(map);
+  });
+
+  it("한 건짜리도 숫자 배지로 만든다 — 일반 핀과 배지가 한 화면에 섞이지 않는다", () => {
+    const { layer, Clusterer, created, clusterer } = setup();
+    layer.sync(items.slice(0, 1), null);
+    const options = Clusterer.mock.calls[0] as unknown as [{ minClusterSize: number; texts: (size: number) => string }];
+    expect(options[0].minClusterSize).toBe(1);
+    expect(options[0].texts(1)).toBe("1건");
+    expect(options[0].texts(3)).toBe("3건");
+    // 핀을 지도에 직접 올리지 않으므로 묶음 밖에 남는 핀이 없다
+    expect(created[0].setMap).not.toHaveBeenCalled();
+    expect(clusterer.addMarkers).toHaveBeenCalledWith(created, true);
+  });
+
+  it("한 건짜리 배지도 키보드로 확대할 수 있다", () => {
+    const { clusterer, map, emit } = setup();
+    const node = document.createElement("div");
+    const center = { lat: 37.5, lng: 127 };
+    emit(clusterer, "clustered", [{ getSize: () => 1, getCenter: () => center, getClusterMarker: () => ({ getContent: () => node }) }]);
+    expect(node).toHaveAttribute("aria-label", "주택 1건 모아보기, 지도 확대");
+    expect(node.tabIndex).toBe(0);
+    node.dispatchEvent(new KeyboardEvent("keydown", { key: "Enter" }));
+    expect(map.setLevel).toHaveBeenLastCalledWith(7, { anchor: center });
+  });
+
+  it("묶는 단계에서는 핀 클릭이 공고를 고르지 않고, 최대 확대에서만 고른다", () => {
+    const { layer, map, created, emit, onSelect } = setup();
+    layer.sync(items, null);
+    map.getLevel.mockReturnValue(MAP_AGGREGATE_MIN_LEVEL);
+    emit(created[0], "click");
+    expect(onSelect).not.toHaveBeenCalled();
+    map.getLevel.mockReturnValue(MAP_DETAIL_PIN_LEVEL);
+    emit(created[0], "click");
+    expect(onSelect).toHaveBeenCalledWith("one");
+  });
+
+  it("상세 지도는 확대 단계와 무관하게 핀을 고를 수 있다", () => {
+    const { layer, map, created, emit, onSelect } = setup(false);
+    layer.sync(items.slice(0, 1), null);
+    map.getLevel.mockReturnValue(8);
+    emit(created[0], "click");
+    expect(onSelect).toHaveBeenCalledWith("one");
   });
 });

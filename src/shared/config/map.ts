@@ -23,4 +23,22 @@ export const MAP_LEVEL = { card: 4, detail: 4, list: 8 } as const;
 export const MAP_SINGLE_MARKER_LEVEL = MAP_LEVEL.detail;
 
 export const MAP_ZOOM_RANGE = { min: 1, max: 14 } as const;
-export const MAP_CLUSTER_OPTIONS = { gridSize: 80, minLevel: 5, minClusterSize: 2 } as const;
+
+/**
+ * 지도는 두 얼굴을 가진다. 멀리서는 어느 동네에 몇 건이 몰렸는지, 가까이서는 어느 집인지 본다.
+ * 이 단계에서만 개별 핀을 찍는다.
+ */
+export const MAP_DETAIL_PIN_LEVEL = MAP_ZOOM_RANGE.min;
+
+/** 이 단계부터는 한 건짜리도 숫자 배지로 묶는다 — 핀과 배지가 한 화면에 섞이면 읽기 어렵다 */
+export const MAP_AGGREGATE_MIN_LEVEL = MAP_DETAIL_PIN_LEVEL + 1;
+
+/**
+ * minClusterSize 1은 한 건도 배지로 만든다. 카카오 SDK에서 실제로 1건짜리 묶음이 생기는 것을
+ * 확인하고 정했다(그 아래 단계에서는 SDK가 스스로 개별 마커로 되돌린다).
+ */
+export const MAP_CLUSTER_OPTIONS = {
+  gridSize: 80,
+  minLevel: MAP_AGGREGATE_MIN_LEVEL,
+  minClusterSize: 1
+} as const;

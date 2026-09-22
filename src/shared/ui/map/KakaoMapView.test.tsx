@@ -80,10 +80,14 @@ describe("지도 상태 갱신", () => {
     const sdk = setupSdk();
     const { rerender, unmount } = render(<KakaoMapView markers={markers} clustering />);
     await screen.findByRole("button", { name: "지도 확대" });
+    sdk.map.setBounds.mockClear();
     rerender(<KakaoMapView markers={[markers[1]]} clustering />);
     expect(sdk.constructor).toHaveBeenCalledTimes(1);
     expect(sdk.layer.sync).toHaveBeenLastCalledWith([markers[1]], null);
-    expect(sdk.map.setLevel).toHaveBeenLastCalledWith(4);
+    // 필터를 눌렀다고 보던 동네를 떠나지 않는다 — 마커만 갈아 끼운다
+    expect(sdk.map.setBounds).not.toHaveBeenCalled();
+    expect(sdk.map.setLevel).not.toHaveBeenCalled();
+    expect(sdk.map.setCenter).not.toHaveBeenCalled();
     unmount();
     expect(sdk.layer.dispose).toHaveBeenCalledTimes(1);
     expect(sdk.maps.event.removeListener).toHaveBeenCalledWith(sdk.map, "idle", expect.any(Function));
