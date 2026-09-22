@@ -1,150 +1,144 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { MAP_LEVEL, MAP_SINGLE_MARKER_LEVEL } from "../../config/map";
+import { MAP_LEVEL, MAP_SINGLE_MARKER_LEVEL, MAP_ZOOM_RANGE } from "../../config/map";
 import { boundsOf } from "../../lib/geo";
 import { loadKakaoMaps, type MapSdkStatus } from "../../lib/kakaoMapLoader";
 import { cn } from "../cn";
+import { createMarkerLayer } from "./createMarkerLayer";
 import type { MapViewProps } from "./types";
 
-/**
- * window.kakao를 만지는 유일한 컴포넌트.
- * 지도 인스턴스와 마커는 React 트리 밖에서 ref로 관리한다 — 마커가 수백 개가 되어도 재생성 비용이 들지 않게.
- */
 export function KakaoMapView({
-  markers,
-  center = null,
-  level = MAP_LEVEL.detail,
-  interactive = true,
-  selectedId = null,
-  onSelect,
-  fallback = null,
-  className,
-  ariaLabel = "지도"
+  markers, center = null, level = MAP_LEVEL.detail, interactive = true, clustering = false,
+  selectedId = null, onSelect, onVisibleMarkersChange, fallback = null, className, ariaLabel = "지도"
 }: MapViewProps) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const mapRef = useRef<kakao.maps.Map | null>(null);
-  const markerRef = useRef(new Map<string, kakao.maps.Marker>());
+  const layerRef = useRef<ReturnType<typeof createMarkerLayer> | null>(null);
+  const viewportCenter = useRef<kakao.maps.LatLng | null>(null);
+  const viewportSize = useRef<{ width: number; height: number } | null>(null);
+  const callbacks = useRef({ onSelect, onVisibleMarkersChange });
+  callbacks.current = { onSelect, onVisibleMarkersChange };
+  const [map, setMap] = useState<kakao.maps.Map | null>(null);
+  const [zoom, setZoom] = useState(level);
   const [status, setStatus] = useState<MapSdkStatus | "loading">("loading");
-
   const hasPlace = markers.length > 0 || center !== null;
 
   useEffect(() => {
     if (!hasPlace) return;
     let cancelled = false;
-    const placed = markerRef.current;
-
+    setStatus("loading");
+    setMap(null);
+    viewportCenter.current = null;
+    viewportSize.current = null;
     void loadKakaoMaps().then((result) => {
       if (cancelled) return;
-      setStatus(result.status);
-      if (result.status !== "ready" || !result.maps || !containerRef.current) return;
-
-      const maps = result.maps;
-      const origin = center ?? markers[0]?.point ?? null;
-      if (!origin) return;
-
-      mapRef.current = new maps.Map(containerRef.current, {
-        center: new maps.LatLng(origin.lat, origin.lng),
-        level,
-        draggable: interactive,
-        scrollwheel: interactive,
-        disableDoubleClickZoom: !interactive
-      });
-    });
-
-    return () => {
-      cancelled = true;
-      placed.forEach((marker) => marker.setMap(null));
-      placed.clear();
-      mapRef.current = null;
-    };
-    // 지도 인스턴스는 한 번만 만든다. 이후 변화는 아래 effect들이 반영한다
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [hasPlace]);
-
-  // 마커는 지우고 다시 만들지 않고 id 기준으로 맞춰 나간다
-  useEffect(() => {
-    const map = mapRef.current;
-    const maps = window.kakao?.maps;
-    if (!map || !maps) return;
-
-    const next = new Set(markers.map((marker) => marker.id));
-    markerRef.current.forEach((marker, id) => {
-      if (next.has(id)) return;
-      marker.setMap(null);
-      markerRef.current.delete(id);
-    });
-
-    for (const item of markers) {
-      const existing = markerRef.current.get(item.id);
-      if (existing) {
-        existing.setPosition(new maps.LatLng(item.point.lat, item.point.lng));
-        continue;
+      if (result.status !== "ready" || !result.maps || !containerRef.current) {
+        setStatus(result.status);
+        return;
       }
-      const marker = new maps.Marker({
-        position: new maps.LatLng(item.point.lat, item.point.lng),
-        title: item.label,
-        clickable: onSelect !== undefined
+      const maps = result.maps;
+      if (clustering && typeof maps.MarkerClusterer !== "function") {
+        setStatus("failed");
+        return;
+      }
+      const origin = center ?? markers[0]?.point;
+      if (!origin) return;
+      const instance = new maps.Map(containerRef.current, {
+        center: new maps.LatLng(origin.lat, origin.lng), level,
+        draggable: interactive, scrollwheel: interactive, disableDoubleClickZoom: !interactive
       });
-      marker.setMap(map);
-      if (onSelect) maps.event.addListener(marker, "click", () => onSelect(item.id));
-      markerRef.current.set(item.id, marker);
-    }
-  }, [markers, onSelect, status]);
+      setMap(instance);
+      setStatus("ready");
+    });
+    return () => { cancelled = true; };
+    // 좌표·선택 변화는 아래 effect에서 갱신해 사용자의 확대·이동 상태를 유지한다.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [hasPlace, interactive, clustering]);
 
-  /**
-   * 화면을 마커에 맞춘다. center를 직접 받은 경우는 그 위치를 지킨다.
-   * 크기가 바뀔 때도 같은 규칙을 다시 쓴다 — 첫 마커로만 중심을 잡으면 나머지 마커가 화면 밖으로 밀린다.
-   */
-  const frame = useCallback((map: kakao.maps.Map) => {
+  useEffect(() => {
+    const maps = window.kakao?.maps;
+    if (!map || !maps || !hasPlace) return;
+    const layer = createMarkerLayer(maps, map, clustering, (id) => callbacks.current.onSelect?.(id));
+    layerRef.current = layer;
+    return () => { layer.dispose(); layerRef.current = null; };
+  }, [map, clustering, hasPlace]);
+
+  useEffect(() => {
+    layerRef.current?.sync(markers, selectedId);
+    // 선택만 바뀌면 마커를 재배치하지 않는다.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [map, markers, clustering, hasPlace]);
+
+  useEffect(() => { layerRef.current?.select(selectedId); }, [selectedId]);
+
+  const frame = useCallback((instance: kakao.maps.Map) => {
     const maps = window.kakao?.maps;
     if (!maps) return;
-
     if (center) {
-      map.setCenter(new maps.LatLng(center.lat, center.lng));
+      instance.setCenter(new maps.LatLng(center.lat, center.lng));
       return;
     }
     const bounds = boundsOf(markers.map((marker) => marker.point));
     if (!bounds) return;
     if (markers.length === 1) {
-      map.setCenter(new maps.LatLng(bounds.south, bounds.west));
-      map.setLevel(MAP_SINGLE_MARKER_LEVEL);
+      instance.setCenter(new maps.LatLng(bounds.south, bounds.west));
+      instance.setLevel(MAP_SINGLE_MARKER_LEVEL);
       return;
     }
-    map.setBounds(new maps.LatLngBounds(new maps.LatLng(bounds.south, bounds.west), new maps.LatLng(bounds.north, bounds.east)));
+    instance.setBounds(new maps.LatLngBounds(new maps.LatLng(bounds.south, bounds.west), new maps.LatLng(bounds.north, bounds.east)));
   }, [center, markers]);
 
-  useEffect(() => {
-    const map = mapRef.current;
-    if (map) frame(map);
-  }, [frame, status]);
+  useEffect(() => { if (map) frame(map); }, [frame, map]);
 
-  // 선택된 마커를 앞으로 올린다
   useEffect(() => {
-    markerRef.current.forEach((marker, id) => marker.setZIndex(id === selectedId ? 1 : 0));
-  }, [selectedId, status]);
+    const maps = window.kakao?.maps;
+    if (!map || !maps) return;
+    const updateViewport = () => {
+      setZoom(map.getLevel());
+      const size = { width: containerRef.current?.clientWidth ?? 0, height: containerRef.current?.clientHeight ?? 0 };
+      const previousSize = viewportSize.current;
+      if (!previousSize || (previousSize.width === size.width && previousSize.height === size.height)) {
+        viewportCenter.current = map.getCenter();
+      }
+      if (!previousSize) viewportSize.current = size;
+      const bounds = map.getBounds();
+      callbacks.current.onVisibleMarkersChange?.(markers.filter((item) => bounds.contain(new maps.LatLng(item.point.lat, item.point.lng))).map((item) => item.id));
+    };
+    maps.event.addListener(map, "idle", updateViewport);
+    updateViewport();
+    return () => maps.event.removeListener(map, "idle", updateViewport);
+  }, [map, markers]);
 
-  /**
-   * 상세 화면은 PC 트리와 모바일 트리를 함께 그리고 한쪽을 CSS로 감춘다.
-   * 감춰진 쪽은 크기가 0이라 지도가 0으로 자리를 잡고, 화면 폭이 바뀌어 보이게 돼도 회색으로 남는다.
-   */
   useEffect(() => {
     const container = containerRef.current;
-    if (!container || status !== "ready") return;
-
+    if (!container || !map) return;
+    let hadSize = container.clientWidth > 0 && container.clientHeight > 0;
     const observer = new ResizeObserver(() => {
-      const map = mapRef.current;
-      if (!map || container.clientWidth === 0) return;
+      if (container.clientWidth === 0 || container.clientHeight === 0) { hadSize = false; return; }
+      // SDK의 getCenter는 새 컨테이너 크기의 영향을 받으므로 마지막 이동 완료 시점을 보존한다.
+      const previousCenter = viewportCenter.current ?? map.getCenter();
+      viewportSize.current = { width: container.clientWidth, height: container.clientHeight };
       map.relayout();
-      frame(map);
+      if (hadSize) map.setCenter(previousCenter);
+      else frame(map);
+      hadSize = true;
+      layerRef.current?.redraw();
     });
     observer.observe(container);
     return () => observer.disconnect();
-  }, [status, frame]);
+  }, [map, frame]);
 
-  if (!hasPlace || status === "disabled" || status === "failed") {
-    return <div className={className}>{fallback}</div>;
-  }
+  if (!hasPlace || status === "disabled" || status === "failed") return <div className={className}>{fallback}</div>;
 
-  return <div ref={containerRef} aria-label={ariaLabel} role="img" className={cn("bg-surface-tertiary", className)} />;
+  return (
+    <div role={interactive ? "group" : "img"} aria-label={ariaLabel} className={cn("relative bg-surface-tertiary", className)}>
+      <div ref={containerRef} className="absolute inset-0" />
+      {interactive && status === "ready" && map && (
+        <div className="absolute right-3 top-3 z-10 flex flex-col overflow-hidden rounded-lg border border-line bg-surface shadow-sm" aria-label="지도 배율">
+          <button type="button" aria-label="지도 확대" disabled={zoom <= MAP_ZOOM_RANGE.min} onClick={() => map.setLevel(Math.max(MAP_ZOOM_RANGE.min, map.getLevel() - 1))} className="size-11 text-xl font-semibold text-fg-heading hover:bg-surface-secondary focus-visible:bg-surface-tertiary disabled:text-fg-disabled">+</button>
+          <button type="button" aria-label="지도 축소" disabled={zoom >= MAP_ZOOM_RANGE.max} onClick={() => map.setLevel(Math.min(MAP_ZOOM_RANGE.max, map.getLevel() + 1))} className="size-11 border-t border-line text-xl font-semibold text-fg-heading hover:bg-surface-secondary focus-visible:bg-surface-tertiary disabled:text-fg-disabled">−</button>
+        </div>
+      )}
+    </div>
+  );
 }

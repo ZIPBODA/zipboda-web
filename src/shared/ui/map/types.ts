@@ -15,8 +15,11 @@ export interface MapViewProps {
   level?: number;
   /** false면 드래그·휠 확대를 잠근다. 작은 카드에서 스크롤을 뺏기지 않게 */
   interactive?: boolean;
+  /** 목록에서 가까운 공고를 묶어 개수로 표시한다. 상세의 단일 위치 지도는 사용하지 않는다. */
+  clustering?: boolean;
   selectedId?: string | null;
   onSelect?: (id: string) => void;
+  onVisibleMarkersChange?: (ids: string[]) => void;
   /** 키가 없거나 좌표가 없거나 로드에 실패했을 때 대신 보일 것 */
   fallback?: ReactNode;
   /** 크기는 언제나 부모가 정한다 */
