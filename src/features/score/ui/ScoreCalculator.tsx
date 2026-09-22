@@ -61,7 +61,9 @@ function MobileResultCard({ total, points, grade }: { total: number; points: num
       <div className="mx-auto shrink-0">
         <ScoreGauge total={total} />
       </div>
-      <div className="min-w-0 flex-1">
+      {/* 좁은 화면에서 이 칸이 0까지 눌리면 "부양가족"이 한 글자씩 세로로 쪼개진다.
+          최소 너비를 줘서 자리가 부족하면 게이지 아래로 내려가 한 줄을 온전히 쓰게 한다 */}
+      <div className="flex-1 basis-48">
         <div className="text-center">
           <p className={`text-lg font-bold ${grade.tone}`}>{grade.label}</p>
           <p className="mt-0.5 whitespace-pre-line text-xs text-fg-disabled">{grade.desc}</p>
