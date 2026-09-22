@@ -30,15 +30,26 @@ export const MAP_ZOOM_RANGE = { min: 1, max: 14 } as const;
  */
 export const MAP_DETAIL_PIN_LEVEL = MAP_ZOOM_RANGE.min;
 
-/** 이 단계부터는 한 건짜리도 숫자 배지로 묶는다 — 핀과 배지가 한 화면에 섞이면 읽기 어렵다 */
+/** 이 단계부터는 여러 건을 숫자 배지로 묶는다 */
 export const MAP_AGGREGATE_MIN_LEVEL = MAP_DETAIL_PIN_LEVEL + 1;
+
+/**
+ * 한 건짜리는 여기까지만 배지로 두고, 이 단계부터는 바로 핀으로 보여준다.
+ * 겹칠 이웃이 없는 집을 최대 배율까지 파고들어야 볼 수 있는 것은 번거롭다.
+ * 여러 건은 이 단계에서도 배지로 남아 확대할수록 갈라진다.
+ */
+export const MAP_SINGLE_PIN_LEVEL = 6;
 
 /**
  * minClusterSize 1은 한 건도 배지로 만든다. 카카오 SDK에서 실제로 1건짜리 묶음이 생기는 것을
  * 확인하고 정했다(그 아래 단계에서는 SDK가 스스로 개별 마커로 되돌린다).
+ * 확대 단계에 따라 이 값을 2로 바꾸면 한 건짜리만 핀으로 풀린다 — minClusterSizeFor 참고.
  */
 export const MAP_CLUSTER_OPTIONS = {
   gridSize: 80,
   minLevel: MAP_AGGREGATE_MIN_LEVEL,
   minClusterSize: 1
 } as const;
+
+/** 한 건짜리를 배지로 둘지(1) 핀으로 풀지(2) — 확대 단계가 정한다 */
+export const minClusterSizeFor = (level: number): number => (level <= MAP_SINGLE_PIN_LEVEL ? 2 : 1);

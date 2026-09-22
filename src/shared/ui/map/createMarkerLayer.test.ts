@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import { MAP_AGGREGATE_MIN_LEVEL, MAP_CLUSTER_OPTIONS, MAP_DETAIL_PIN_LEVEL } from "../../config/map";
+import { MAP_CLUSTER_OPTIONS, MAP_DETAIL_PIN_LEVEL, MAP_SINGLE_PIN_LEVEL } from "../../config/map";
 import { createMarkerLayer } from "./createMarkerLayer";
 import type { MapMarker } from "./types";
 
@@ -15,9 +15,14 @@ function setup(clustering = true) {
     setMap = vi.fn(); setPosition = vi.fn(); setZIndex = vi.fn(); setTitle = vi.fn();
     constructor() { created.push(this); }
   }
-  const clusterer = { addMarkers: vi.fn(), removeMarkers: vi.fn(), clear: vi.fn(), redraw: vi.fn() };
+  let minClusterSize: number = MAP_CLUSTER_OPTIONS.minClusterSize;
+  const clusterer = {
+    addMarkers: vi.fn(), removeMarkers: vi.fn(), clear: vi.fn(), redraw: vi.fn(),
+    getMinClusterSize: vi.fn(() => minClusterSize),
+    setMinClusterSize: vi.fn((size: number) => { minClusterSize = size; })
+  };
   const Clusterer = vi.fn(function () { return clusterer; });
-  const map = { getLevel: vi.fn(() => 8), setLevel: vi.fn() };
+  const map = { getLevel: vi.fn(() => MAP_SINGLE_PIN_LEVEL + 2), setLevel: vi.fn() };
   const maps = {
     LatLng: class { constructor(public lat: number, public lng: number) {} },
     Marker, MarkerClusterer: Clusterer, event: { addListener, removeListener }
@@ -130,7 +135,7 @@ describe("지도 마커 묶음", () => {
     expect(created[0].setMap).toHaveBeenCalledWith(map);
   });
 
-  it("한 건짜리도 숫자 배지로 만든다 — 일반 핀과 배지가 한 화면에 섞이지 않는다", () => {
+  it("멀리서는 한 건짜리도 숫자 배지로 만든다", () => {
     const { layer, Clusterer, created, clusterer } = setup();
     layer.sync(items.slice(0, 1), null);
     const options = Clusterer.mock.calls[0] as unknown as [{ minClusterSize: number; texts: (size: number) => string }];
@@ -153,15 +158,35 @@ describe("지도 마커 묶음", () => {
     expect(map.setLevel).toHaveBeenLastCalledWith(7, { anchor: center });
   });
 
-  it("묶는 단계에서는 핀 클릭이 공고를 고르지 않고, 최대 확대에서만 고른다", () => {
+  it("배지만 있는 단계에서는 핀 클릭이 공고를 고르지 않는다", () => {
     const { layer, map, created, emit, onSelect } = setup();
     layer.sync(items, null);
-    map.getLevel.mockReturnValue(MAP_AGGREGATE_MIN_LEVEL);
+    map.getLevel.mockReturnValue(MAP_SINGLE_PIN_LEVEL + 1);
     emit(created[0], "click");
     expect(onSelect).not.toHaveBeenCalled();
-    map.getLevel.mockReturnValue(MAP_DETAIL_PIN_LEVEL);
+    // 한 건짜리가 핀으로 풀리는 단계부터는 고를 수 있어야 한다
+    map.getLevel.mockReturnValue(MAP_SINGLE_PIN_LEVEL);
     emit(created[0], "click");
     expect(onSelect).toHaveBeenCalledWith("one");
+  });
+
+  it("확대하면 한 건짜리는 최대 배율까지 가지 않아도 핀으로 풀린다", () => {
+    const { layer, map, clusterer, emit } = setup();
+    layer.sync(items, null);
+    expect(clusterer.getMinClusterSize()).toBe(1);
+
+    map.getLevel.mockReturnValue(MAP_SINGLE_PIN_LEVEL);
+    emit(map, "zoom_changed");
+    // 2가 되면 SDK가 한 건짜리를 묶지 않고 핀으로 남긴다. 두 건 이상은 그대로 배지다
+    expect(clusterer.setMinClusterSize).toHaveBeenLastCalledWith(2);
+
+    clusterer.setMinClusterSize.mockClear();
+    emit(map, "zoom_changed");
+    expect(clusterer.setMinClusterSize).not.toHaveBeenCalled();
+
+    map.getLevel.mockReturnValue(MAP_SINGLE_PIN_LEVEL + 1);
+    emit(map, "zoom_changed");
+    expect(clusterer.setMinClusterSize).toHaveBeenLastCalledWith(1);
   });
 
   it("상세 지도는 확대 단계와 무관하게 핀을 고를 수 있다", () => {

@@ -71,6 +71,8 @@ declare namespace kakao.maps {
 
   class MarkerClusterer {
     constructor(options: MarkerClustererOptions);
+    getMinClusterSize(): number;
+    setMinClusterSize(size: number): void;
     addMarkers(markers: Marker[], nodraw?: boolean): void;
     removeMarkers(markers: Marker[], nodraw?: boolean): void;
     clear(): void;
