@@ -15,6 +15,7 @@ export function KakaoMapView({
   const containerRef = useRef<HTMLDivElement>(null);
   const layerRef = useRef<ReturnType<typeof createMarkerLayer> | null>(null);
   const viewportCenter = useRef<kakao.maps.LatLng | null>(null);
+  const framed = useRef(false);
   const viewportSize = useRef<{ width: number; height: number } | null>(null);
   const callbacks = useRef({ onSelect, onVisibleMarkersChange });
   callbacks.current = { onSelect, onVisibleMarkersChange };
@@ -30,6 +31,7 @@ export function KakaoMapView({
     setMap(null);
     viewportCenter.current = null;
     viewportSize.current = null;
+    framed.current = false;
     void loadKakaoMaps().then((result) => {
       if (cancelled) return;
       if (result.status !== "ready" || !result.maps || !containerRef.current) {
@@ -88,7 +90,18 @@ export function KakaoMapView({
     instance.setBounds(new maps.LatLngBounds(new maps.LatLng(bounds.south, bounds.west), new maps.LatLng(bounds.north, bounds.east)));
   }, [center, markers]);
 
-  useEffect(() => { if (map) frame(map); }, [frame, map]);
+  /**
+   * 전체 맞춤은 지도를 처음 열 때 한 번만 한다.
+   * 필터를 누를 때마다 서울 전체로 되돌아가면 보고 있던 동네를 잃는다 — 마커만 갈아 끼운다.
+   * 중심을 직접 받는 지도(상세의 단일 위치)는 그 좌표를 계속 따른다.
+   */
+  useEffect(() => {
+    if (!map) return;
+    if (center) { frame(map); return; }
+    if (framed.current) return;
+    framed.current = true;
+    frame(map);
+  }, [frame, map, center]);
 
   useEffect(() => {
     const maps = window.kakao?.maps;
@@ -120,7 +133,7 @@ export function KakaoMapView({
       viewportSize.current = { width: container.clientWidth, height: container.clientHeight };
       map.relayout();
       if (hadSize) map.setCenter(previousCenter);
-      else frame(map);
+      else { framed.current = true; frame(map); }
       hadSize = true;
       layerRef.current?.redraw();
     });

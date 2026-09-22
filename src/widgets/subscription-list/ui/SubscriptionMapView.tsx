@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { SubscriptionCard, SubscriptionCardMobile, toMapMarkers, type Subscription } from "@/entities/subscription";
 import { MAP_LEVEL } from "@/shared/config/map";
 import { MapFallback, MapViewLoader } from "@/shared/ui/map";
@@ -19,8 +19,14 @@ export function SubscriptionMapView({ items }: { items: Subscription[] }) {
     setVisibleIds((previous) => previous?.join("|") === ids.join("|") ? previous : ids);
   }, []);
 
-  const selected = mapped.find((item) => item.id === selectedId) ?? mapped[0] ?? null;
+  // 고르지 않았으면 카드도 없다. 아무것도 누르지 않았는데 첫 공고가 골라져 있으면 무엇을 보고 있는지 흐려진다
+  const selected = mapped.find((item) => item.id === selectedId) ?? null;
   const missing = items.length - mapped.length;
+
+  // 필터가 바뀌어 고른 공고가 결과에서 빠지면 선택도 함께 놓는다
+  useEffect(() => {
+    if (selectedId !== null && !mapped.some((item) => item.id === selectedId)) setSelectedId(null);
+  }, [mapped, selectedId]);
 
   if (mapped.length === 0) {
     return (
@@ -39,7 +45,7 @@ export function SubscriptionMapView({ items }: { items: Subscription[] }) {
         <p role="status" className="text-sm font-semibold text-fg-heading">
           {visibleIds === null ? `지도 대상 ${mapped.length}건` : `현재 지도 ${mapped.filter((item) => visibleIds.includes(item.id)).length}건 · 전체 ${mapped.length}건`}
         </p>
-        <p className="text-xs text-fg-muted">숫자를 누르면 확대하고, 개별 핀을 누르면 공고를 볼 수 있어요.</p>
+        <p className="text-xs text-fg-muted">숫자를 누르면 확대하고, 끝까지 확대하면 핀 하나가 공고 하나예요.</p>
       </div>
       <MapViewLoader
         markers={markers}
@@ -53,7 +59,7 @@ export function SubscriptionMapView({ items }: { items: Subscription[] }) {
         className={`overflow-hidden rounded-xl border border-line-subtle ${MAP_VIEW_HEIGHT.mobile} ${MAP_VIEW_HEIGHT.desktop}`}
       />
 
-      {selected && (
+      {selected ? (
         <>
           <div className="hidden md:block">
             <SubscriptionCard item={selected} />
@@ -62,6 +68,10 @@ export function SubscriptionMapView({ items }: { items: Subscription[] }) {
             <SubscriptionCardMobile item={selected} />
           </div>
         </>
+      ) : (
+        <p className="rounded-xl border border-line-subtle bg-surface-secondary px-4 py-5 text-center text-sm text-fg-muted">
+          지도를 확대해 핀을 누르면 공고를 볼 수 있습니다.
+        </p>
       )}
 
       {missing > 0 && <p className="text-2xsmall text-fg-muted">좌표가 없어 지도에 올리지 못한 공고 {missing}건은 목록 보기에서 확인할 수 있습니다.</p>}
