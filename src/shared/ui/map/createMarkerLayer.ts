@@ -26,7 +26,8 @@ export function createMarkerLayer(maps: typeof kakao.maps, map: kakao.maps.Map, 
     cleanKeyboard.forEach((clean) => clean());
     cleanKeyboard = [];
     for (const cluster of clusters) {
-      if (cluster.getSize() < MAP_CLUSTER_OPTIONS.minClusterSize || map.getLevel() < MAP_AGGREGATE_MIN_LEVEL) continue;
+      // SDK는 현재 최소 크기를 만족하는 묶음만 넘겨주므로 크기는 다시 보지 않는다
+      if (map.getLevel() < MAP_AGGREGATE_MIN_LEVEL) continue;
       const node = cluster.getClusterMarker().getContent();
       if (!(node instanceof HTMLElement)) continue;
       node.setAttribute("role", "button");
