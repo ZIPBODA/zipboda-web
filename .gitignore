@@ -14,6 +14,8 @@ dist/
 build/
 coverage/
 .next/
+# BUILD_DIST_DIR로 이름을 바꿔 만드는 빌드 검증용 출력(.next-map-check 등)도 함께 무시한다
+.next-*/
 .expo/
 *.log
 *.tsbuildinfo
