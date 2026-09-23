@@ -1,6 +1,15 @@
-import { MAP_CLUSTER_OPTIONS } from "../../config/map";
+import { MAP_AGGREGATE_MIN_LEVEL, MAP_CLUSTER_OPTIONS, MAP_SINGLE_PIN_LEVEL, minClusterSizeFor } from "../../config/map";
 import { MAP_CLUSTER_STYLE } from "../../config/mapClusterStyle";
 import type { MapMarker } from "./types";
+
+/**
+ * 숫자 배지를 누르는 것은 그 자리의 공고를 모아 보는 일이고, 개별 핀을 누르는 것은 집 하나를 고르는 일이다.
+ * 핀이 나올 수 있는 단계에서만 단일 선택을 받는다 — 한 건짜리는 이 단계부터 이미 핀이다.
+ * 묶는 단계에서는 SDK가 핀을 배지 안에 감추므로 클릭 자체가 일어나지 않지만,
+ * 그 규칙이 SDK 사정에 맡겨지지 않도록 여기서 한 번 더 막는다.
+ */
+const canSelectPin = (map: kakao.maps.Map, clustering: boolean) =>
+  !clustering || map.getLevel() <= MAP_SINGLE_PIN_LEVEL;
 
 export function createMarkerLayer(maps: typeof kakao.maps, map: kakao.maps.Map, clustering: boolean, onSelect: (id: string) => void, onGroupSelect?: (ids: string[]) => void) {
   const placed = new Map<string, { marker: kakao.maps.Marker; click: () => void; label: string }>();
@@ -34,7 +43,8 @@ export function createMarkerLayer(maps: typeof kakao.maps, map: kakao.maps.Map, 
     cleanKeyboard = [];
     decorated = [];
     for (const cluster of clusters) {
-      if (cluster.getSize() < MAP_CLUSTER_OPTIONS.minClusterSize || map.getLevel() < MAP_CLUSTER_OPTIONS.minLevel) continue;
+      // SDK는 현재 최소 크기를 만족하는 묶음만 넘겨주므로 크기는 다시 보지 않는다
+      if (map.getLevel() < MAP_AGGREGATE_MIN_LEVEL) continue;
       const node = cluster.getClusterMarker().getContent();
       if (!(node instanceof HTMLElement)) continue;
       node.setAttribute("role", "button");
@@ -53,9 +63,20 @@ export function createMarkerLayer(maps: typeof kakao.maps, map: kakao.maps.Map, 
     }
     paintSelection();
   };
+  /** 확대할수록 한 건짜리는 배지에서 핀으로 넘어간다. 값이 바뀔 때만 다시 그린다 */
+  const applyZoomRule = () => {
+    if (!clusterer) return;
+    const next = minClusterSizeFor(map.getLevel());
+    if (clusterer.getMinClusterSize() === next) return;
+    clusterer.setMinClusterSize(next);
+    clusterer.redraw();
+  };
+
   if (clusterer) {
     maps.event.addListener(clusterer, "clusterclick", selectCluster);
     maps.event.addListener(clusterer, "clustered", decorateClusters);
+    maps.event.addListener(map, "zoom_changed", applyZoomRule);
+    applyZoomRule();
   }
 
   return {
@@ -81,7 +102,7 @@ export function createMarkerLayer(maps: typeof kakao.maps, map: kakao.maps.Map, 
           existing.marker.setPosition(position);
         } else {
           const marker = new maps.Marker({ position, title: item.label, clickable: true });
-          const click = () => onSelect(item.id);
+          const click = () => { if (canSelectPin(map, clustering)) onSelect(item.id); };
           maps.event.addListener(marker, "click", click);
           placed.set(item.id, { marker, click, label: item.label ?? "" });
           markerIds.set(marker, item.id);
@@ -91,6 +112,7 @@ export function createMarkerLayer(maps: typeof kakao.maps, map: kakao.maps.Map, 
       }
       if (added.length) clusterer?.addMarkers(added, true);
       placed.forEach(({ marker }, id) => marker.setZIndex(id === selectedId ? 1 : 0));
+      applyZoomRule();
       clusterer?.redraw();
     },
     select(id: string | null) {
@@ -106,6 +128,7 @@ export function createMarkerLayer(maps: typeof kakao.maps, map: kakao.maps.Map, 
       if (clusterer) {
         maps.event.removeListener(clusterer, "clusterclick", selectCluster);
         maps.event.removeListener(clusterer, "clustered", decorateClusters);
+        maps.event.removeListener(map, "zoom_changed", applyZoomRule);
         clusterer.clear();
       }
       placed.forEach(({ marker, click }) => {

@@ -66,7 +66,6 @@ describe("숫자 선택과 청약 패널", () => {
     fireEvent.click(screen.getByRole("button", { name: "청약 목록 닫기" }));
     expect(panel()).not.toBeInTheDocument();
     expect(mapProps.selectedIds).toEqual([]);
-    expect(mapProps.preserveViewport).toBe(true);
     expect(screen.getByRole("navigation", { name: "청약 탐색 메뉴" })).toBeInTheDocument();
   });
 
@@ -119,6 +118,5 @@ describe("숫자 선택과 청약 패널", () => {
     fireEvent.submit(screen.getByRole("search"));
     expect(decodeURIComponent(navigation.push.mock.calls.at(-1)![0])).toContain("q=개포");
     rerender(draw([base]));
-    expect(mapProps.preserveViewport).toBe(true);
   });
 });

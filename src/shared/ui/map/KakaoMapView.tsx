@@ -11,7 +11,7 @@ import type { MapViewProps } from "./types";
 export function KakaoMapView({
   markers, center = null, level = MAP_LEVEL.detail, interactive = true, clustering = false,
   selectedId = null, onSelect, onVisibleMarkersChange, fallback = null, className, ariaLabel = "지도",
-  initialCenter, preserveViewport = false, fitPadding, controlsClassName, onGroupSelect, selectedIds
+  initialCenter, fitPadding, controlsClassName, onGroupSelect, selectedIds
 }: MapViewProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const layerRef = useRef<ReturnType<typeof createMarkerLayer> | null>(null);
@@ -106,11 +106,18 @@ export function KakaoMapView({
     if (clustering && instance.getLevel() <= MAP_SINGLE_PIN_LEVEL) instance.setLevel(MAP_SINGLE_PIN_LEVEL + 1);
   }, [center, markers, fitPadding, clustering, level]);
 
+  /**
+   * 전체 맞춤은 지도를 처음 열 때 한 번만 한다.
+   * 필터를 누를 때마다 서울 전체로 되돌아가면 보고 있던 동네를 잃는다 — 마커만 갈아 낀다.
+   * 중심을 직접 받는 지도(상세의 단일 위치)는 그 좌표를 계속 따른다.
+   */
   useEffect(() => {
     if (!map) return;
-    if (!preserveViewport || framedMap.current !== map) frame(map);
+    if (center) { frame(map); return; }
+    if (framedMap.current === map) return;
     framedMap.current = map;
-  }, [frame, map, preserveViewport]);
+    frame(map);
+  }, [frame, map, center]);
 
   useEffect(() => {
     const maps = window.kakao?.maps;
@@ -146,7 +153,7 @@ export function KakaoMapView({
         // relayout 직후 idle의 픽셀 반올림이 다음 패널 개폐마다 누적되지 않도록 기준 좌표를 유지한다.
         viewportCenter.current = previousCenter;
       }
-      else frame(map);
+      else { framedMap.current = map; frame(map); }
       hadSize = true;
       layerRef.current?.redraw();
     });

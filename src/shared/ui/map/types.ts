@@ -13,7 +13,6 @@ export interface MapViewProps {
   /** 없으면 마커를 모두 담도록 맞춘다 */
   center?: GeoPoint | null;
   initialCenter?: GeoPoint;
-  preserveViewport?: boolean;
   fitPadding?: readonly [top: number, right: number, bottom: number, left: number];
   controlsClassName?: string;
   level?: number;

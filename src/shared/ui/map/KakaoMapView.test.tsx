@@ -53,12 +53,12 @@ describe("지도 상태 갱신", () => {
   it("작업 영역의 필터·검색·빈 결과는 최초 fit 후 위치를 보존한다", async () => {
     const sdk = setupSdk();
     const initialCenter = { lat: 37.5, lng: 127 };
-    const { rerender } = render(<KakaoMapView markers={markers} clustering preserveViewport initialCenter={initialCenter} />);
+    const { rerender } = render(<KakaoMapView markers={markers} clustering initialCenter={initialCenter} />);
     await screen.findByRole("button", { name: "지도 확대" });
     await waitFor(() => expect(sdk.map.setBounds).toHaveBeenCalledTimes(1));
     sdk.map.setBounds.mockClear(); sdk.map.setCenter.mockClear(); sdk.map.setLevel.mockClear();
-    rerender(<KakaoMapView markers={[]} clustering preserveViewport initialCenter={initialCenter} />);
-    rerender(<KakaoMapView markers={[markers[0]]} clustering preserveViewport initialCenter={initialCenter} />);
+    rerender(<KakaoMapView markers={[]} clustering initialCenter={initialCenter} />);
+    rerender(<KakaoMapView markers={[markers[0]]} clustering initialCenter={initialCenter} />);
     expect(sdk.constructor).toHaveBeenCalledTimes(1);
     expect(sdk.map.setCenter).not.toHaveBeenCalled();
     expect(sdk.map.setBounds).not.toHaveBeenCalled();
@@ -67,7 +67,7 @@ describe("지도 상태 갱신", () => {
 
   it("단일 결과도 초기에는 배지 단계이며 수동 확대만 핀 단계로 진입한다", async () => {
     const sdk = setupSdk();
-    render(<KakaoMapView markers={[markers[0]]} clustering preserveViewport level={8} />);
+    render(<KakaoMapView markers={[markers[0]]} clustering level={8} />);
     await screen.findByRole("button", { name: "지도 확대" });
     await waitFor(() => expect(sdk.map.setLevel).toHaveBeenCalledWith(8));
     for (let step = 0; step < 4; step++) fireEvent.click(screen.getByRole("button", { name: "지도 확대" }));
@@ -105,10 +105,14 @@ describe("지도 상태 갱신", () => {
     const sdk = setupSdk();
     const { rerender, unmount } = render(<KakaoMapView markers={markers} clustering />);
     await screen.findByRole("button", { name: "지도 확대" });
+    sdk.map.setBounds.mockClear();
     rerender(<KakaoMapView markers={[markers[1]]} clustering />);
     expect(sdk.constructor).toHaveBeenCalledTimes(1);
     expect(sdk.layer.sync).toHaveBeenLastCalledWith([markers[1]], null);
-    expect(sdk.map.setLevel).toHaveBeenLastCalledWith(5);
+    // 필터를 눌렀다고 보던 동네를 떠나지 않는다 — 마커만 갈아 낀다
+    expect(sdk.map.setBounds).not.toHaveBeenCalled();
+    expect(sdk.map.setLevel).not.toHaveBeenCalled();
+    expect(sdk.map.setCenter).not.toHaveBeenCalled();
     unmount();
     expect(sdk.layer.dispose).toHaveBeenCalledTimes(1);
     expect(sdk.maps.event.removeListener).toHaveBeenCalledWith(sdk.map, "idle", expect.any(Function));

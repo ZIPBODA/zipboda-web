@@ -34,7 +34,7 @@ export function SubscriptionMapWorkspace({ items, options }: { items: Subscripti
       <SubscriptionMapRail />
       {selectedItems.length > 0 && <SubscriptionMapSidebar items={selectedItems} onClose={() => setSelectedMapItemIds([])} />}
       <div className="relative min-w-0 flex-1">
-        <MapViewLoader markers={markers} clustering preserveViewport initialCenter={MAP_INITIAL_CENTER} level={MAP_LEVEL.list}
+        <MapViewLoader markers={markers} clustering initialCenter={MAP_INITIAL_CENTER} level={MAP_LEVEL.list}
           fitPadding={MAP_FIT_PADDING} selectedIds={selectedMapItemIds} selectedId={selectedMapItemIds.length === 1 ? selectedMapItemIds[0] : null}
           onSelect={selectPin} onGroupSelect={selectGroup} onVisibleMarkersChange={updateVisible}
           ariaLabel="공공주택 지도" controlsClassName="top-36 xl:top-20" className="absolute inset-0 overflow-hidden"
