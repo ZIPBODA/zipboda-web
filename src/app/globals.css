@@ -5,3 +5,12 @@
 /* @zipboda/tokens preset이 raw 값을 담고 있어 tokens/css import는 선택.
    커스텀 CSS에서 --zb-* 변수를 쓰려면 아래 주석 해제:
    @import "@zipboda/tokens/css"; */
+/* 지도 탐색만 남은 viewport를 사용하고 일반 목록·평면도의 chrome은 유지한다. */
+.app-chrome:has([data-map-workspace]) {
+  height: 100dvh;
+  min-height: 0;
+  overflow: hidden;
+}
+.app-chrome:has([data-map-workspace]) > header { flex-shrink: 0; }
+.app-chrome:has([data-map-workspace]) > .app-content { min-height: 0; display: flex; flex-direction: column; }
+.app-chrome:has([data-map-workspace]) > .app-footer { display: none; }

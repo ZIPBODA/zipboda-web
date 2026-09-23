@@ -26,6 +26,7 @@ function setupSdk() {
   };
   const constructor = vi.fn(function () { return map; });
   const maps = {
+    CustomOverlay: class { setMap = vi.fn(); },
     Map: constructor, MarkerClusterer: vi.fn(),
     LatLng: class { constructor(public lat: number, public lng: number) {} },
     LatLngBounds: class {},
@@ -34,7 +35,7 @@ function setupSdk() {
       removeListener: vi.fn()
     }
   };
-  const layer = { sync: vi.fn(), select: vi.fn(), dispose: vi.fn(), redraw: vi.fn() };
+  const layer = { sync: vi.fn(), select: vi.fn(), selectGroup: vi.fn(), dispose: vi.fn(), redraw: vi.fn() };
   vi.mocked(createMarkerLayer).mockReturnValue(layer);
   vi.stubGlobal("kakao", { maps });
   vi.stubGlobal("ResizeObserver", class {
@@ -49,6 +50,30 @@ beforeEach(() => vi.clearAllMocks());
 afterEach(() => vi.unstubAllGlobals());
 
 describe("지도 상태 갱신", () => {
+  it("작업 영역의 필터·검색·빈 결과는 최초 fit 후 위치를 보존한다", async () => {
+    const sdk = setupSdk();
+    const initialCenter = { lat: 37.5, lng: 127 };
+    const { rerender } = render(<KakaoMapView markers={markers} clustering preserveViewport initialCenter={initialCenter} />);
+    await screen.findByRole("button", { name: "지도 확대" });
+    await waitFor(() => expect(sdk.map.setBounds).toHaveBeenCalledTimes(1));
+    sdk.map.setBounds.mockClear(); sdk.map.setCenter.mockClear(); sdk.map.setLevel.mockClear();
+    rerender(<KakaoMapView markers={[]} clustering preserveViewport initialCenter={initialCenter} />);
+    rerender(<KakaoMapView markers={[markers[0]]} clustering preserveViewport initialCenter={initialCenter} />);
+    expect(sdk.constructor).toHaveBeenCalledTimes(1);
+    expect(sdk.map.setCenter).not.toHaveBeenCalled();
+    expect(sdk.map.setBounds).not.toHaveBeenCalled();
+    expect(sdk.map.setLevel).not.toHaveBeenCalled();
+  });
+
+  it("단일 결과도 초기에는 배지 단계이며 수동 확대만 핀 단계로 진입한다", async () => {
+    const sdk = setupSdk();
+    render(<KakaoMapView markers={[markers[0]]} clustering preserveViewport level={8} />);
+    await screen.findByRole("button", { name: "지도 확대" });
+    await waitFor(() => expect(sdk.map.setLevel).toHaveBeenCalledWith(8));
+    for (let step = 0; step < 4; step++) fireEvent.click(screen.getByRole("button", { name: "지도 확대" }));
+    expect(sdk.map.getLevel()).toBe(4);
+    expect(sdk.map.setBounds).not.toHaveBeenCalled();
+  });
   it("확대·축소 버튼으로 지도 배율을 바꾸고 보이는 주택 수를 갱신한다", async () => {
     const sdk = setupSdk();
     const visible = vi.fn();
@@ -83,7 +108,7 @@ describe("지도 상태 갱신", () => {
     rerender(<KakaoMapView markers={[markers[1]]} clustering />);
     expect(sdk.constructor).toHaveBeenCalledTimes(1);
     expect(sdk.layer.sync).toHaveBeenLastCalledWith([markers[1]], null);
-    expect(sdk.map.setLevel).toHaveBeenLastCalledWith(4);
+    expect(sdk.map.setLevel).toHaveBeenLastCalledWith(5);
     unmount();
     expect(sdk.layer.dispose).toHaveBeenCalledTimes(1);
     expect(sdk.maps.event.removeListener).toHaveBeenCalledWith(sdk.map, "idle", expect.any(Function));
@@ -99,9 +124,13 @@ describe("지도 상태 갱신", () => {
     sdk.resize();
     sdk.map.setBounds.mockClear(); sdk.map.setLevel.mockClear();
     const previousCenter = sdk.map.getCenter();
+    sdk.map.setCenter.mockImplementation(() => sdk.idle());
     Object.defineProperty(container, "clientHeight", { value: 560, configurable: true });
     sdk.map.getCenter.mockReturnValue({ lat: 37.4, lng: 127.1 });
     sdk.idle();
+    sdk.resize();
+    expect(sdk.map.setCenter).toHaveBeenLastCalledWith(previousCenter);
+    Object.defineProperty(container, "clientWidth", { value: 480, configurable: true });
     sdk.resize();
     expect(sdk.map.setCenter).toHaveBeenLastCalledWith(previousCenter);
     expect(sdk.map.setBounds).not.toHaveBeenCalled();
@@ -112,7 +141,7 @@ describe("지도 상태 갱신", () => {
     const sdk = setupSdk();
     render(<KakaoMapView markers={markers} interactive={false} />);
     await waitFor(() => expect(createMarkerLayer).toHaveBeenCalled());
-    expect(createMarkerLayer).toHaveBeenLastCalledWith(sdk.maps, sdk.map, false, expect.any(Function));
+    expect(createMarkerLayer).toHaveBeenLastCalledWith(sdk.maps, sdk.map, false, expect.any(Function), expect.any(Function));
     expect(screen.queryByRole("button", { name: "지도 확대" })).toBeNull();
   });
 

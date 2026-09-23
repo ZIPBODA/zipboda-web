@@ -55,6 +55,8 @@ declare namespace kakao.maps {
   }
 
   class CustomOverlay {
+    constructor(options: { map?: Map; position: LatLng; content: HTMLElement | string; xAnchor?: number; yAnchor?: number; zIndex?: number });
+    setMap(map: Map | null): void;
     getContent(): HTMLElement | string;
   }
 
@@ -78,6 +80,7 @@ declare namespace kakao.maps {
   }
 
   interface Cluster {
+    getMarkers(): Marker[];
     getCenter(): LatLng;
     getSize(): number;
     getClusterMarker(): CustomOverlay;

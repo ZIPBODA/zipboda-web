@@ -23,4 +23,5 @@ export const MAP_LEVEL = { card: 4, detail: 4, list: 8 } as const;
 export const MAP_SINGLE_MARKER_LEVEL = MAP_LEVEL.detail;
 
 export const MAP_ZOOM_RANGE = { min: 1, max: 14 } as const;
-export const MAP_CLUSTER_OPTIONS = { gridSize: 80, minLevel: 5, minClusterSize: 2 } as const;
+export const MAP_SINGLE_PIN_LEVEL = 4;
+export const MAP_CLUSTER_OPTIONS = { gridSize: 80, minLevel: MAP_SINGLE_PIN_LEVEL + 1, minClusterSize: 1 } as const;

@@ -17,6 +17,7 @@ export async function getSubscriptionFilterOptions(): Promise<SubscriptionFilter
   );
 
   return {
+    statuses: [...new Set(SUBSCRIPTIONS.flatMap((item) => item.status ? [item.status] : []))],
     regions: withAll(regions),
     agencies: withAll(agencies),
     sizeRanges: [{ value: FILTER_ALL, label: FILTER_ALL }, ...sizeRanges.map(({ value, label }) => ({ value, label }))]

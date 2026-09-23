@@ -1,20 +1,11 @@
 "use client";
 
-import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { FILTER_ALL, type SubscriptionFilterOptions } from "@/entities/subscription";
+import { useSubscriptionFilters } from "../model/useSubscriptionFilters";
 
 // figma 419:10100 모바일 필터 — 무라벨 칩레일(지역 + 공급기관). 면적·정렬은 모바일 미노출. URL 쿼리 파라미터
 export function MobileSubscriptionFilters({ options }: { options: SubscriptionFilterOptions }) {
-  const router = useRouter();
-  const pathname = usePathname();
-  const params = useSearchParams();
-
-  const update = (key: string, value: string, isDefault: boolean) => {
-    const next = new URLSearchParams(params.toString());
-    if (isDefault) next.delete(key);
-    else next.set(key, value);
-    router.push(next.toString() ? `${pathname}?${next.toString()}` : pathname, { scroll: false });
-  };
+  const { params, update } = useSubscriptionFilters();
 
   const pill = (active: boolean) =>
     `shrink-0 rounded-full px-3 py-1 text-caption font-semibold transition-colors ${

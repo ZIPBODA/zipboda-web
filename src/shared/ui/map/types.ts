@@ -12,6 +12,10 @@ export interface MapViewProps {
   markers: MapMarker[];
   /** 없으면 마커를 모두 담도록 맞춘다 */
   center?: GeoPoint | null;
+  initialCenter?: GeoPoint;
+  preserveViewport?: boolean;
+  fitPadding?: readonly [top: number, right: number, bottom: number, left: number];
+  controlsClassName?: string;
   level?: number;
   /** false면 드래그·휠 확대를 잠근다. 작은 카드에서 스크롤을 뺏기지 않게 */
   interactive?: boolean;
@@ -19,6 +23,8 @@ export interface MapViewProps {
   clustering?: boolean;
   selectedId?: string | null;
   onSelect?: (id: string) => void;
+  onGroupSelect?: (ids: string[]) => void;
+  selectedIds?: readonly string[];
   onVisibleMarkersChange?: (ids: string[]) => void;
   /** 키가 없거나 좌표가 없거나 로드에 실패했을 때 대신 보일 것 */
   fallback?: ReactNode;

@@ -78,6 +78,8 @@ export const SUBSCRIPTION_DETAILS: SubscriptionDetail[] = LISTED_PROPERTIES.map(
 export const SUBSCRIPTIONS: Subscription[] = LISTED_PROPERTIES.map((property) => {
   const notice = NOTICE_BY_ID.get(property.id) ?? null;
   return {
+    status: notice && noticeStatus(notice, TODAY),
+    supplyType: property.housingType,
     id: property.id,
     title: property.title,
     agency: agencyCode(property.agency ?? notice?.agency ?? null),

@@ -5,7 +5,7 @@ import {
   SubscriptionFilters,
   MobileSubscriptionFilters,
   SubscriptionListView,
-  SubscriptionMapView,
+  SubscriptionMapWorkspace,
   ListViewToggle,
   DEFAULT_SUBSCRIPTION_LIST_VIEW,
   SUBSCRIPTION_LIST_VIEW_KEYS,
@@ -18,7 +18,7 @@ export const metadata: Metadata = {
 };
 
 type PageProps = {
-  searchParams: { region?: string; size?: string; agency?: string; sort?: string; view?: string };
+  searchParams: { region?: string; size?: string; agency?: string; sort?: string; view?: string; q?: string; status?: string };
 };
 
 // figma 135:5601 청약 공고 목록(SUBS-01)
@@ -28,6 +28,8 @@ export default async function SubscriptionsPage({ searchParams }: PageProps) {
       region: searchParams.region,
       size: searchParams.size,
       agency: searchParams.agency,
+      q: searchParams.q,
+      status: searchParams.status,
       sort: searchParams.sort as SubscriptionSort | undefined
     }),
     getSubscriptionFilterOptions()
@@ -37,6 +39,8 @@ export default async function SubscriptionsPage({ searchParams }: PageProps) {
   const view: SubscriptionListViewKey = SUBSCRIPTION_LIST_VIEW_KEYS.includes(searchParams.view ?? "")
     ? (searchParams.view as SubscriptionListViewKey)
     : DEFAULT_SUBSCRIPTION_LIST_VIEW;
+
+  if (view === "map") return <SubscriptionMapWorkspace items={items} options={filterOptions} />;
 
   return (
     <PageContainer>
@@ -57,7 +61,7 @@ export default async function SubscriptionsPage({ searchParams }: PageProps) {
         </div>
       </div>
       <div className="mt-4 md:mt-6">
-        {view === "map" ? <SubscriptionMapView items={items} /> : <SubscriptionListView items={items} />}
+        <SubscriptionListView items={items} />
       </div>
     </PageContainer>
   );
