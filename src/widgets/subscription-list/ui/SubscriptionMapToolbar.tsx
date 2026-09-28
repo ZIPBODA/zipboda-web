@@ -20,7 +20,7 @@ export function SubscriptionMapToolbar({ options }: { options: SubscriptionFilte
   ];
 
   return (
-    <div className="absolute inset-x-3 top-3 z-20 flex flex-col gap-2 rounded-xl border border-line bg-surface p-2 shadow-sm xl:flex-row xl:items-center">
+    <div className="map-workspace-toolbar absolute inset-x-3 top-3 z-20 flex flex-col gap-2 rounded-xl border border-line bg-surface p-2 shadow-sm">
       <form role="search" aria-label="공공주택 지도 검색" className="flex min-w-0 flex-1 items-center gap-1" onSubmit={(event) => {
         event.preventDefault();
         const next = cleanQuery(draft);
@@ -31,7 +31,7 @@ export function SubscriptionMapToolbar({ options }: { options: SubscriptionFilte
         <Button type="submit" size="sm" variant="secondary" className="min-h-11 shrink-0">검색</Button>
         <Button type="button" size="sm" variant="ghost" className="min-h-11 shrink-0" onClick={() => { setDraft(""); reset(); }}>초기화</Button>
       </form>
-      <div className="flex min-w-0 items-center gap-1 overflow-x-auto xl:shrink-0" aria-label="지도 필터">
+      <div className="flex min-w-0 items-center gap-1 overflow-x-auto" aria-label="지도 필터">
         {groups.map((group) => (
           <select key={group.key} aria-label={group.label} value={params.get(group.key) ?? FILTER_ALL} onChange={(event) => update(group.key, event.target.value)}
             className={cn("h-11 min-w-0 shrink-0 rounded-lg border px-2 text-xs font-semibold focus-visible:outline-brand", params.has(group.key) ? "border-brand bg-brand text-brand-on" : "border-line bg-surface text-fg-body")}>

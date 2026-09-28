@@ -24,6 +24,10 @@ export interface MapViewProps {
   onSelect?: (id: string) => void;
   onGroupSelect?: (ids: string[]) => void;
   selectedIds?: readonly string[];
+  fitRequest?: number;
+  locationRequest?: GeoPoint;
+  focusRequest?: { point: GeoPoint; padding: readonly [number, number, number, number] };
+  mapType?: "roadmap" | "hybrid";
   onVisibleMarkersChange?: (ids: string[]) => void;
   /** 키가 없거나 좌표가 없거나 로드에 실패했을 때 대신 보일 것 */
   fallback?: ReactNode;

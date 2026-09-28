@@ -14,7 +14,8 @@ vi.mock("@/shared/ui/map", () => ({
 const base: Subscription = { id: "a", title: "강남 개포동", agency: "LH", status: "접수중", region: "서울", location: "강남구", coord: { lat: 37.5, lng: 127 }, sizes: [24], applicants: null, households: 12, competition: null, moveIn: null, deadline: null, dday: null, image: null };
 const items = [base, { ...base, id: "b", title: "도봉 방학동" }, { ...base, id: "c", title: "관악 신림동" }];
 const options = { regions: ["전체", "서울"], agencies: ["전체", "LH"], sizeRanges: [{ value: "전체", label: "전체" }, { value: "20-25", label: "20~25㎡" }], statuses: ["접수중" as const] };
-const draw = (next = items) => <SubscriptionMapWorkspace items={next} options={options} />;
+const loadDetail = vi.fn(async () => null);
+const draw = (next = items) => <SubscriptionMapWorkspace items={next} options={options} loadDetail={loadDetail} />;
 const panel = () => screen.queryByRole("complementary", { name: "선택한 청약 목록" });
 const resultTitles = () => within(screen.getByLabelText("선택한 청약 결과")).getAllByRole("heading").map((node) => node.textContent);
 beforeEach(() => { navigation.params = new URLSearchParams("view=map"); navigation.push.mockClear(); });
@@ -46,7 +47,7 @@ describe("숫자 선택과 청약 패널", () => {
     act(() => kind === "badge" ? mapProps.onGroupSelect?.(["b"]) : mapProps.onSelect?.("b"));
     expect(resultTitles()).toEqual(["도봉 방학동"]);
     expect(mapProps.selectedIds).toEqual(["b"]);
-    expect(screen.getByRole("link", { name: "상세 보기 →" })).toHaveAttribute("href", "/subscriptions/b");
+    expect(screen.getByRole("button", { name: "도봉 방학동 상세 보기" })).toBeInTheDocument();
     expect(navigation.push).not.toHaveBeenCalled();
   });
 
@@ -60,13 +61,38 @@ describe("숫자 선택과 청약 패널", () => {
     expect(resultTitles()).toHaveLength(2);
   });
 
-  it("닫기는 선택만 비우고 지도·탐색 메뉴를 유지한다", () => {
+  it("닫기는 목록을 보관하고 다시 열면 선택을 복원한다", () => {
     render(draw());
     act(() => mapProps.onGroupSelect?.(["a"]));
     fireEvent.click(screen.getByRole("button", { name: "청약 목록 닫기" }));
     expect(panel()).not.toBeInTheDocument();
     expect(mapProps.selectedIds).toEqual([]);
     expect(screen.getByRole("navigation", { name: "청약 탐색 메뉴" })).toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: "선택 목록" }));
+    expect(mapProps.selectedIds).toEqual(["a"]);
+    expect(panel()).toBeInTheDocument();
+  });
+
+  it("전체 위치와 지도 유형은 선택 목록을 유지한다", () => {
+    render(draw());
+    act(() => mapProps.onGroupSelect?.(["a", "b"]));
+    fireEvent.click(screen.getByRole("button", { name: "전체 위치" }));
+    expect(mapProps.fitRequest).toBe(1);
+    fireEvent.click(screen.getByRole("button", { name: "위성지도" }));
+    expect(mapProps.mapType).toBe("hybrid");
+    expect(mapProps.selectedIds).toEqual(["a", "b"]);
+  });
+
+  it("위치 권한 거부는 지도와 선택을 바꾸지 않고 안내한다", () => {
+    const getCurrentPosition = vi.fn((_success, failure) => failure({ code: 1 }));
+    Object.defineProperty(navigator, "geolocation", { configurable: true, value: { getCurrentPosition } });
+    render(draw());
+    act(() => mapProps.onGroupSelect?.(["a"]));
+    fireEvent.click(screen.getByRole("button", { name: "내 위치" }));
+    expect(screen.getByText(/위치 권한이 거부/)).toBeInTheDocument();
+    expect(mapProps.locationRequest).toBeUndefined();
+    expect(mapProps.selectedIds).toEqual(["a"]);
+    Reflect.deleteProperty(navigator, "geolocation");
   });
 
   it("필터에서 사라진 선택을 제거하고 모두 사라지면 닫으며 초기화해도 되살리지 않는다", () => {

@@ -32,10 +32,8 @@ export function createMarkerLayer(maps: typeof kakao.maps, map: kakao.maps.Map, 
   };
   const paintSelection = () => {
     decorated.forEach(({ node, ids }) => {
-      const selected = ids.length > 0 && ids.every((id) => selectedIds.has(id));
+      const selected = ids.length > 0 && ids.length === selectedIds.size && ids.every((id) => selectedIds.has(id));
       node.setAttribute("aria-pressed", String(selected));
-      node.classList.toggle("ring-4", selected);
-      node.classList.toggle("ring-fg-heading", selected);
     });
   };
   const decorateClusters = (clusters: kakao.maps.Cluster[]) => {
@@ -50,7 +48,7 @@ export function createMarkerLayer(maps: typeof kakao.maps, map: kakao.maps.Map, 
       node.setAttribute("role", "button");
       node.setAttribute("aria-label", `청약 ${cluster.getSize()}건 목록 보기`);
       node.tabIndex = 0;
-      node.classList.add("focus-visible:outline", "focus-visible:outline-2", "focus-visible:outline-brand-dark");
+      node.classList.add("map-cluster-badge", "focus-visible:outline", "focus-visible:outline-2", "focus-visible:outline-brand");
       const keydown = (event: KeyboardEvent) => {
         if (event.key !== "Enter" && event.key !== " ") return;
         event.preventDefault();

@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { MAP_LEVEL, MAP_SINGLE_MARKER_LEVEL, MAP_SINGLE_PIN_LEVEL, MAP_ZOOM_RANGE } from "../../config/map";
+import { MAP_LEVEL, MAP_FOCUS_ANIMATION_MS, MAP_FOCUS_LEVEL, MAP_SINGLE_MARKER_LEVEL, MAP_SINGLE_PIN_LEVEL, MAP_ZOOM_RANGE } from "../../config/map";
 import { boundsOf } from "../../lib/geo";
 import { loadKakaoMaps, type MapSdkStatus } from "../../lib/kakaoMapLoader";
 import { cn } from "../cn";
@@ -11,7 +11,7 @@ import type { MapViewProps } from "./types";
 export function KakaoMapView({
   markers, center = null, level = MAP_LEVEL.detail, interactive = true, clustering = false,
   selectedId = null, onSelect, onVisibleMarkersChange, fallback = null, className, ariaLabel = "지도",
-  initialCenter, fitPadding, controlsClassName, onGroupSelect, selectedIds
+  initialCenter, fitPadding, controlsClassName, onGroupSelect, selectedIds, fitRequest = 0, locationRequest, mapType, focusRequest
 }: MapViewProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const layerRef = useRef<ReturnType<typeof createMarkerLayer> | null>(null);
@@ -24,6 +24,7 @@ export function KakaoMapView({
   const [status, setStatus] = useState<MapSdkStatus | "loading">("loading");
   const hasPlace = markers.length > 0 || center !== null || initialCenter !== undefined;
   const framedMap = useRef<kakao.maps.Map | null>(null);
+  const handledFit = useRef(0);
 
   useEffect(() => {
     if (!hasPlace) return;
@@ -77,14 +78,16 @@ export function KakaoMapView({
   useEffect(() => {
     const maps = window.kakao?.maps;
     const selected = markers.find((marker) => marker.id === selectedId);
-    if (!map || !maps || !selected || (clustering && zoom > MAP_SINGLE_PIN_LEVEL)) return;
+    if (!map || !maps || !selected || (clustering && zoom > MAP_SINGLE_PIN_LEVEL && !focusRequest)) return;
     const label = document.createElement("div");
     label.className = "mb-11 rounded-lg border border-brand bg-brand px-3 py-2 text-xs font-bold text-brand-on shadow-sm";
     label.textContent = selected.label ?? "선택한 위치";
     label.setAttribute("aria-label", `선택한 위치: ${label.textContent}`);
     const overlay = new maps.CustomOverlay({ map, position: new maps.LatLng(selected.point.lat, selected.point.lng), content: label, yAnchor: 1, zIndex: 2 });
-    return () => overlay.setMap(null);
-  }, [map, markers, selectedId, clustering, zoom]);
+    const focusPin = focusRequest ? new maps.Marker({ position: new maps.LatLng(selected.point.lat, selected.point.lng), title: selected.label, zIndex: 2 }) : null;
+    focusPin?.setMap(map);
+    return () => { overlay.setMap(null); focusPin?.setMap(null); };
+  }, [map, markers, selectedId, clustering, zoom, focusRequest]);
 
   const frame = useCallback((instance: kakao.maps.Map) => {
     const maps = window.kakao?.maps;
@@ -105,6 +108,22 @@ export function KakaoMapView({
     else instance.setBounds(area);
     if (clustering && instance.getLevel() <= MAP_SINGLE_PIN_LEVEL) instance.setLevel(MAP_SINGLE_PIN_LEVEL + 1);
   }, [center, markers, fitPadding, clustering, level]);
+
+  useEffect(() => {
+    if (!map || handledFit.current === fitRequest) return;
+    handledFit.current = fitRequest;
+    frame(map);
+  }, [map, fitRequest, frame]);
+
+  useEffect(() => {
+    const maps = window.kakao?.maps;
+    if (map && maps && locationRequest) map.setCenter(new maps.LatLng(locationRequest.lat, locationRequest.lng));
+  }, [map, locationRequest]);
+
+  useEffect(() => {
+    const maps = window.kakao?.maps;
+    if (map && maps && mapType) map.setMapTypeId(mapType === "hybrid" ? maps.MapTypeId.HYBRID : maps.MapTypeId.ROADMAP);
+  }, [map, mapType]);
 
   /**
    * 전체 맞춤은 지도를 처음 열 때 한 번만 한다.
@@ -160,6 +179,25 @@ export function KakaoMapView({
     observer.observe(container);
     return () => observer.disconnect();
   }, [map, frame]);
+
+  /**
+   * 목록에서 고른 집으로는 이동과 확대를 SDK의 jump 한 번으로 끝낸다.
+   * 프레임마다 중심을 옮기고 두 단계씩 끊어 확대하면 카카오가 단계마다 마커를 감춰 핀이 여러 번 깜빡인다.
+   */
+  useEffect(() => {
+    const maps = window.kakao?.maps;
+    if (!map || !maps || !focusRequest) return;
+    const [top, right, bottom, left] = focusRequest.padding;
+    const targetLevel = Math.min(map.getLevel(), MAP_FOCUS_LEVEL);
+    // 패딩은 화면 픽셀이고 투영은 지금 배율 기준이다. 도착 배율에서 그만큼 비껴 보이려면
+    // 배율 차이의 거듭제곱분의 1만 옮겨야 한다 — 한 단계마다 1픽셀이 담는 거리가 절반으로 준다.
+    const shrink = 2 ** (map.getLevel() - targetLevel);
+    const projection = map.getProjection();
+    const pin = projection.containerPointFromCoords(new maps.LatLng(focusRequest.point.lat, focusRequest.point.lng));
+    const center = projection.coordsFromContainerPoint(new maps.Point(pin.x + (right - left) / 2 / shrink, pin.y + (bottom - top) / 2 / shrink));
+    const reducedMotion = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches ?? false;
+    map.jump(center, targetLevel, { animate: reducedMotion ? false : { duration: MAP_FOCUS_ANIMATION_MS } });
+  }, [map, focusRequest]);
 
   if (!hasPlace || status === "disabled" || status === "failed") return <div className={className}>{fallback}</div>;
 

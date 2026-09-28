@@ -1,10 +1,9 @@
-import Link from "next/link";
 import Image from "next/image";
 import type { Subscription } from "@/entities/subscription";
 
-export function SubscriptionMapResultCard({ item }: { item: Subscription }) {
+export function SubscriptionMapResultCard({ item, active, onSelect }: { item: Subscription; active?: boolean; onSelect: () => void }) {
   return (
-    <article data-housing-id={item.id} className="px-5 py-5 md:py-6">
+    <article data-housing-id={item.id} className={`relative rounded-xl px-4 py-5 md:py-6 ${active ? "bg-surface-secondary ring-2 ring-inset ring-brand" : "hover:bg-surface-secondary"}`}>
       <p className="text-xs font-medium text-fg-muted">{[item.agency, item.status].filter(Boolean).join(" · ")}</p>
       <div className="mt-2 flex items-start gap-4">
         <div className="min-w-0 flex-1">
@@ -21,7 +20,7 @@ export function SubscriptionMapResultCard({ item }: { item: Subscription }) {
         {item.deadline && <span>접수 마감 {item.deadline}</span>}
         {item.dday !== null && <span className="font-semibold text-fg-heading">{item.dday < 0 ? "마감" : item.dday === 0 ? "오늘 마감" : `D-${item.dday}`}</span>}
       </div>
-      <Link href={`/subscriptions/${encodeURIComponent(item.id)}`} className="mt-2 flex min-h-11 items-center justify-end text-sm font-semibold text-fg-heading">상세 보기 →</Link>
+      <button type="button" aria-label={`${item.title} 상세 보기`} aria-pressed={active ?? false} onClick={onSelect} className="absolute inset-0 rounded-xl focus-visible:outline focus-visible:outline-2 focus-visible:outline-brand" />
     </article>
   );
 }

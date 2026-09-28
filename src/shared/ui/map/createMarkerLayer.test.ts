@@ -139,6 +139,30 @@ describe("지도 마커 묶음", () => {
     expect(map.setLevel).not.toHaveBeenCalled();
   });
 
+  it("선택한 묶음이 분리되면 목록 선택을 바꾸지 않고 하위 배지의 선택 표시를 해제한다", () => {
+    const { layer, clusterer, created, emit, onGroupSelect } = setup();
+    layer.sync(items, null);
+    const groupNode = document.createElement("div");
+    const group = { getMarkers: () => created, getSize: () => 2, getClusterMarker: () => ({ getContent: () => groupNode }) };
+    emit(clusterer, "clustered", [group]);
+    layer.selectGroup(["two", "one"]);
+    expect(groupNode).toHaveAttribute("aria-pressed", "true");
+
+    const nodes = created.map(() => document.createElement("div"));
+    const split = created.map((marker, index) => ({
+      getMarkers: () => [marker], getSize: () => 1, getClusterMarker: () => ({ getContent: () => nodes[index] })
+    }));
+    emit(clusterer, "clustered", split);
+    nodes.forEach((node) => expect(node).toHaveAttribute("aria-pressed", "false"));
+    expect(onGroupSelect).not.toHaveBeenCalled();
+
+    emit(clusterer, "clusterclick", split[0]);
+    expect(onGroupSelect).toHaveBeenLastCalledWith(["one"]);
+    layer.selectGroup(["one"]);
+    expect(nodes[0]).toHaveAttribute("aria-pressed", "true");
+    expect(nodes[1]).toHaveAttribute("aria-pressed", "false");
+  });
+
   it("최대 확대의 개별 핀에는 묶음 버튼을 붙이지 않는다", () => {
     const { clusterer, map, emit } = setup();
     map.getLevel.mockReturnValue(MAP_DETAIL_PIN_LEVEL);

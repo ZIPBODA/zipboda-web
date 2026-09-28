@@ -15,3 +15,4 @@ export const DEFAULT_SUBSCRIPTION_LIST_VIEW: SubscriptionListView = "list";
 export const MAP_INITIAL_CENTER = { lat: 37.5665, lng: 126.978 };
 export const MAP_FIT_PADDING = [parseInt(ZbSpace14) * 3, parseInt(ZbSpace16), parseInt(ZbSpace16) + parseInt(ZbSpace8), parseInt(ZbSpace14)] as const;
 export const MAP_FILTER_KEYS = ["region", "size", "agency", "status", "q"] as const;
+export const MAP_GEOLOCATION_OPTIONS = { timeout: 10000, maximumAge: 60000 } as const;

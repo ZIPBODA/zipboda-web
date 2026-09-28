@@ -25,6 +25,15 @@ export const MAP_SINGLE_MARKER_LEVEL = MAP_LEVEL.detail;
 export const MAP_ZOOM_RANGE = { min: 1, max: 14 } as const;
 
 /**
+ * 목록에서 고른 집으로 날아갈 때 멈추는 배율. 상세 화면의 위치 카드와 같아서 같은 집이 같은 크기로 보인다.
+ * 이미 더 가까이 보고 있으면 물러나지 않고 자리만 옮긴다.
+ */
+export const MAP_FOCUS_LEVEL = MAP_LEVEL.detail;
+
+/** 이동과 확대를 한 번의 jump 애니메이션으로 끝내는 시간. 카카오는 이 동안 마커를 감추므로 길수록 핀이 오래 사라진다 */
+export const MAP_FOCUS_ANIMATION_MS = 700;
+
+/**
  * 지도는 두 얼굴을 가진다. 멀리서는 어느 동네에 몇 건이 몰렸는지, 가까이서는 어느 집인지 본다.
  * 이 단계에서만 개별 핀을 찍는다.
  */

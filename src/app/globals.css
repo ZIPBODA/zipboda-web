@@ -12,5 +12,21 @@
   overflow: hidden;
 }
 .app-chrome:has([data-map-workspace]) > header { flex-shrink: 0; }
+.app-chrome:has([data-map-workspace]) .app-header-inner {
+  @apply mx-0 max-w-none;
+}
+.map-cluster-badge:hover,
+.map-cluster-badge:focus-visible,
+.map-cluster-badge[aria-pressed="true"] {
+  @apply !bg-surface ring-4 ring-brand;
+}
 .app-chrome:has([data-map-workspace]) > .app-content { min-height: 0; display: flex; flex-direction: column; }
 .app-chrome:has([data-map-workspace]) > .app-footer { display: none; }
+.map-workspace-tools { container-type: inline-size; }
+.map-workspace-panels > nav,
+.map-workspace-panels > aside,
+.map-workspace-tools > * { pointer-events: auto; }
+@container (min-width: 48rem) {
+  .map-workspace-toolbar { @apply flex-row items-center; }
+  .map-workspace-toolbar > [aria-label="지도 필터"] { @apply shrink-0; }
+}

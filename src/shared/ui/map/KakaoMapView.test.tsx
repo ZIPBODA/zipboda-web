@@ -2,6 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { loadKakaoMaps } from "../../lib/kakaoMapLoader";
 import { createMarkerLayer } from "./createMarkerLayer";
+import { MAP_FOCUS_ANIMATION_MS, MAP_FOCUS_LEVEL } from "../../config/map";
 import { KakaoMapView } from "./KakaoMapView";
 import type { MapMarker } from "./types";
 
@@ -18,14 +19,19 @@ function setupSdk() {
   let idle: (() => void) | undefined;
   let resize: ResizeObserverCallback | undefined;
   const contain = vi.fn(() => true);
+  const origin = { lat: 37.5, lng: 127, getLat: (): number => 37.5, getLng: (): number => 127 };
   const map = {
-    setCenter: vi.fn(), getCenter: vi.fn(() => ({ lat: 37.5, lng: 127 })),
+    jump: vi.fn(),
+    setCenter: vi.fn(), panBy: vi.fn(), getCenter: vi.fn(() => origin),
+    getProjection: () => ({ containerPointFromCoords: () => ({ x: 0, y: 0 }), coordsFromContainerPoint: (p: { x: number; y: number }) => ({ getLat: () => 37.5 - p.y / 10000, getLng: () => 127 + p.x / 10000 }) }),
     setBounds: vi.fn(), getBounds: () => ({ contain }), relayout: vi.fn(),
     getLevel: () => level,
     setLevel: vi.fn((next: number) => { level = next; idle?.(); })
   };
   const constructor = vi.fn(function () { return map; });
   const maps = {
+    Marker: class { setMap = vi.fn(); },
+    Point: class { constructor(public x: number, public y: number) {} },
     CustomOverlay: class { setMap = vi.fn(); },
     Map: constructor, MarkerClusterer: vi.fn(),
     LatLng: class { constructor(public lat: number, public lng: number) {} },
@@ -50,6 +56,44 @@ beforeEach(() => vi.clearAllMocks());
 afterEach(() => vi.unstubAllGlobals());
 
 describe("지도 상태 갱신", () => {
+  it("상세 선택은 가려진 영역을 비켜 핀이 보이는 자리로 한 번에 날아가고, 같은 요청은 반복하지 않는다", async () => {
+    const sdk = setupSdk();
+    const focusRequest = { point: markers[0].point, padding: [100, 0, 400, 0] as const };
+    const { rerender } = render(<KakaoMapView markers={markers} clustering focusRequest={focusRequest} />);
+    await waitFor(() => expect(sdk.map.jump).toHaveBeenCalledTimes(1));
+    const [center, level, options] = sdk.map.jump.mock.calls[0] as [{ getLat: () => number; getLng: () => number }, number, unknown];
+    expect(level).toBe(MAP_FOCUS_LEVEL);
+    // 아래 400px이 가려지면 핀은 남은 위쪽 공간 가운데, 즉 중심에서 150px 위에 놓여야 한다.
+    // 그 150px은 도착 배율(4) 기준이라 지금 배율(8)에서는 2^(8-4)=16분의 1만 옮긴다.
+    expect(center.getLat()).toBeCloseTo(37.5 - 150 / 16 / 10000, 8);
+    expect(center.getLng()).toBeCloseTo(127, 8);
+    expect(options).toEqual({ animate: { duration: MAP_FOCUS_ANIMATION_MS } });
+    // 프레임마다 중심을 옮기거나 단계별로 확대하지 않는다
+    expect(sdk.map.setCenter).not.toHaveBeenCalled();
+    expect(sdk.map.setLevel).not.toHaveBeenCalled();
+    rerender(<KakaoMapView markers={[...markers]} clustering focusRequest={focusRequest} />);
+    expect(sdk.map.jump).toHaveBeenCalledTimes(1);
+  });
+
+  it("이미 더 가까이 보고 있으면 물러나지 않고 자리만 옮긴다", async () => {
+    const sdk = setupSdk();
+    const { rerender } = render(<KakaoMapView markers={markers} clustering />);
+    await screen.findByRole("button", { name: "지도 확대" });
+    // 처음 전체 맞춤이 끝난 뒤 사용자가 직접 깊이 들어간 상태
+    sdk.map.setLevel(2);
+    rerender(<KakaoMapView markers={markers} clustering focusRequest={{ point: markers[0].point, padding: [0, 0, 0, 0] }} />);
+    await waitFor(() => expect(sdk.map.jump).toHaveBeenCalledTimes(1));
+    expect(sdk.map.jump.mock.calls[0][1]).toBe(2);
+  });
+
+  it("움직임을 줄이도록 설정한 사용자에게는 애니메이션 없이 바로 옮긴다", async () => {
+    const sdk = setupSdk();
+    vi.stubGlobal("matchMedia", vi.fn(() => ({ matches: true })));
+    render(<KakaoMapView markers={markers} clustering focusRequest={{ point: markers[0].point, padding: [0, 0, 0, 0] }} />);
+    await waitFor(() => expect(sdk.map.jump).toHaveBeenCalledTimes(1));
+    expect(sdk.map.jump.mock.calls[0][2]).toEqual({ animate: false });
+  });
+
   it("작업 영역의 필터·검색·빈 결과는 최초 fit 후 위치를 보존한다", async () => {
     const sdk = setupSdk();
     const initialCenter = { lat: 37.5, lng: 127 };
@@ -130,7 +174,7 @@ describe("지도 상태 갱신", () => {
     const previousCenter = sdk.map.getCenter();
     sdk.map.setCenter.mockImplementation(() => sdk.idle());
     Object.defineProperty(container, "clientHeight", { value: 560, configurable: true });
-    sdk.map.getCenter.mockReturnValue({ lat: 37.4, lng: 127.1 });
+    sdk.map.getCenter.mockReturnValue({ lat: 37.4, lng: 127.1, getLat: () => 37.4, getLng: () => 127.1 });
     sdk.idle();
     sdk.resize();
     expect(sdk.map.setCenter).toHaveBeenLastCalledWith(previousCenter);

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { loadMapDetail } from "./mapDetailAction";
 import { getSubscriptionFilterOptions, getSubscriptions, type SubscriptionSort } from "@/entities/subscription";
 import { PageContainer, PageHeader } from "@/shared/ui";
 import {
@@ -40,7 +41,7 @@ export default async function SubscriptionsPage({ searchParams }: PageProps) {
     ? (searchParams.view as SubscriptionListViewKey)
     : DEFAULT_SUBSCRIPTION_LIST_VIEW;
 
-  if (view === "map") return <SubscriptionMapWorkspace items={items} options={filterOptions} />;
+  if (view === "map") return <SubscriptionMapWorkspace items={items} options={filterOptions} loadDetail={loadMapDetail} />;
 
   return (
     <PageContainer>
