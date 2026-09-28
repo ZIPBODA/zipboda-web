@@ -5,6 +5,7 @@
  */
 declare namespace kakao.maps {
   function load(callback: () => void): void;
+  const MapTypeId: { ROADMAP: number; HYBRID: number };
 
   class LatLng {
     constructor(lat: number, lng: number);
@@ -27,16 +28,25 @@ declare namespace kakao.maps {
     disableDoubleClickZoom?: boolean;
   }
 
+  class Point {
+    constructor(x: number, y: number);
+    x: number;
+    y: number;
+  }
+
   class Map {
+    getProjection(): { containerPointFromCoords(point: LatLng): Point; coordsFromContainerPoint(point: Point): LatLng };
     constructor(container: HTMLElement, options: MapOptions);
     setCenter(position: LatLng): void;
-    setLevel(level: number, options?: { anchor?: LatLng }): void;
+    setLevel(level: number, options?: { anchor?: LatLng; animate?: boolean | { duration: number } }): void;
+    jump(position: LatLng, level: number, options?: { animate?: boolean | { duration: number } }): void;
     getLevel(): number;
     getCenter(): LatLng;
     getBounds(): LatLngBounds;
     setBounds(bounds: LatLngBounds, paddingTop?: number, paddingRight?: number, paddingBottom?: number, paddingLeft?: number): void;
     relayout(): void;
     setDraggable(draggable: boolean): void;
+    setMapTypeId(type: number): void;
     setZoomable(zoomable: boolean): void;
   }
 
@@ -55,6 +65,8 @@ declare namespace kakao.maps {
   }
 
   class CustomOverlay {
+    constructor(options: { map?: Map; position: LatLng; content: HTMLElement | string; xAnchor?: number; yAnchor?: number; zIndex?: number });
+    setMap(map: Map | null): void;
     getContent(): HTMLElement | string;
   }
 
@@ -80,6 +92,7 @@ declare namespace kakao.maps {
   }
 
   interface Cluster {
+    getMarkers(): Marker[];
     getCenter(): LatLng;
     getSize(): number;
     getClusterMarker(): CustomOverlay;

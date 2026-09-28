@@ -1,20 +1,11 @@
 "use client";
 
-import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { SORT_OPTIONS, DEFAULT_SORT, FILTER_ALL, type SubscriptionFilterOptions } from "@/entities/subscription";
+import { useSubscriptionFilters } from "../model/useSubscriptionFilters";
 
 // figma 135:5618 필터 바 — 가로 1줄(지역·면적·공급기관 | 정렬 우측). 상태는 URL 쿼리 파라미터(frontend-rule P6)
 export function SubscriptionFilters({ options }: { options: SubscriptionFilterOptions }) {
-  const router = useRouter();
-  const pathname = usePathname();
-  const params = useSearchParams();
-
-  const update = (key: string, value: string, isDefault: boolean) => {
-    const next = new URLSearchParams(params.toString());
-    if (isDefault) next.delete(key);
-    else next.set(key, value);
-    router.push(next.toString() ? `${pathname}?${next.toString()}` : pathname, { scroll: false });
-  };
+  const { params, update } = useSubscriptionFilters();
 
   // figma 135:5623 활성 chip: 지역/면적/공급기관=brand, 정렬=dark(#1A1A1A)
   const chipClass = (active: boolean, tone: "brand" | "dark") =>

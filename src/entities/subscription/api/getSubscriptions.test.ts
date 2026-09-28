@@ -4,6 +4,23 @@ import { getSubscriptions } from "./getSubscriptions";
 import { getSubscriptionFilterOptions } from "./getSubscriptionFilterOptions";
 
 describe("getSubscriptions 필터", () => {
+  it("주택명·주소·기관 검색을 기존 필터와 함께 적용한다", async () => {
+    expect((await getSubscriptions({ q: "  개포  " })).map((item) => item.id)).toEqual(["gangnam-gaepo"]);
+    expect((await getSubscriptions({ q: "lh" })).length).toBeGreaterThan(0);
+    expect(await getSubscriptions({ q: "개포", size: "0-15" })).toEqual([]);
+    expect(await getSubscriptions({ q: "없는주택" })).toEqual([]);
+  });
+
+  it("실제 모집 상태만 옵션으로 제공하고 상태 필터를 적용한다", async () => {
+    const { statuses } = await getSubscriptionFilterOptions();
+    expect(statuses?.length).toBeGreaterThan(0);
+    for (const status of statuses ?? []) {
+      const result = await getSubscriptions({ status });
+      expect(result.length).toBeGreaterThan(0);
+      expect(result.every((item) => item.status === status)).toBe(true);
+    }
+    expect(await getSubscriptions({ status: "없는상태" })).toEqual([]);
+  });
   // 건수를 숫자로 박아 두면 주택이 늘 때마다 테스트가 깨진다. 규칙에서 기대값을 끌어온다
   const withFloorplan = HOUSING_SOURCE_DATA.filter((property) => property.layouts.length > 0);
 

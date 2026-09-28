@@ -8,6 +8,8 @@ export type SubscriptionSort = "DEADLINE" | "COMPETITION" | "HOUSEHOLDS";
 export type SubscriptionStatus = "접수예정" | "접수중" | "마감" | "취소";
 
 export interface Subscription {
+  status?: SubscriptionStatus | null;
+  supplyType?: string | null;
   id: string;
   agency: AgencyCode | null;
   title: string;
@@ -27,12 +29,15 @@ export interface Subscription {
 
 /** 지금 데이터로 고를 수 있는 필터 칩. 서버에서 만들어 목록 화면에 내려준다 */
 export interface SubscriptionFilterOptions {
+  statuses?: SubscriptionStatus[];
   regions: string[];
   agencies: string[];
   sizeRanges: { value: string; label: string }[];
 }
 
 export interface SubscriptionFilter {
+  q: string;
+  status: string;
   region: string;
   size: string;
   agency: string;

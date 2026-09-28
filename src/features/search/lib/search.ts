@@ -1,13 +1,8 @@
 import { SUGGESTION_LIMIT } from "../config/constants";
 import type { SearchEntry } from "../model/types";
+import { cleanQuery, normalizeQuery } from "@/shared/lib/searchQuery";
 
-export function cleanQuery(value: string | null | undefined): string {
-  return (value ?? "").trim().replace(/\s+/g, " ");
-}
-
-export function normalizeQuery(value: string | null | undefined): string {
-  return cleanQuery(value).toLowerCase();
-}
+export { cleanQuery, normalizeQuery } from "@/shared/lib/searchQuery";
 
 export function searchHref(query: string): string {
   return `/search?${new URLSearchParams({ q: cleanQuery(query) })}`;

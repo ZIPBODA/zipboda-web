@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { MAP_LEVEL, MAP_SINGLE_MARKER_LEVEL, MAP_ZOOM_RANGE } from "../../config/map";
+import { MAP_LEVEL, MAP_FOCUS_ANIMATION_MS, MAP_FOCUS_LEVEL, MAP_SINGLE_MARKER_LEVEL, MAP_SINGLE_PIN_LEVEL, MAP_ZOOM_RANGE } from "../../config/map";
 import { boundsOf } from "../../lib/geo";
 import { loadKakaoMaps, type MapSdkStatus } from "../../lib/kakaoMapLoader";
 import { cn } from "../cn";
@@ -10,19 +10,21 @@ import type { MapViewProps } from "./types";
 
 export function KakaoMapView({
   markers, center = null, level = MAP_LEVEL.detail, interactive = true, clustering = false,
-  selectedId = null, onSelect, onVisibleMarkersChange, fallback = null, className, ariaLabel = "지도"
+  selectedId = null, onSelect, onVisibleMarkersChange, fallback = null, className, ariaLabel = "지도",
+  initialCenter, fitPadding, controlsClassName, onGroupSelect, selectedIds, fitRequest = 0, locationRequest, mapType, focusRequest
 }: MapViewProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const layerRef = useRef<ReturnType<typeof createMarkerLayer> | null>(null);
   const viewportCenter = useRef<kakao.maps.LatLng | null>(null);
-  const framed = useRef(false);
   const viewportSize = useRef<{ width: number; height: number } | null>(null);
-  const callbacks = useRef({ onSelect, onVisibleMarkersChange });
-  callbacks.current = { onSelect, onVisibleMarkersChange };
+  const callbacks = useRef({ onSelect, onGroupSelect, onVisibleMarkersChange });
+  callbacks.current = { onSelect, onGroupSelect, onVisibleMarkersChange };
   const [map, setMap] = useState<kakao.maps.Map | null>(null);
   const [zoom, setZoom] = useState(level);
   const [status, setStatus] = useState<MapSdkStatus | "loading">("loading");
-  const hasPlace = markers.length > 0 || center !== null;
+  const hasPlace = markers.length > 0 || center !== null || initialCenter !== undefined;
+  const framedMap = useRef<kakao.maps.Map | null>(null);
+  const handledFit = useRef(0);
 
   useEffect(() => {
     if (!hasPlace) return;
@@ -31,7 +33,6 @@ export function KakaoMapView({
     setMap(null);
     viewportCenter.current = null;
     viewportSize.current = null;
-    framed.current = false;
     void loadKakaoMaps().then((result) => {
       if (cancelled) return;
       if (result.status !== "ready" || !result.maps || !containerRef.current) {
@@ -43,7 +44,7 @@ export function KakaoMapView({
         setStatus("failed");
         return;
       }
-      const origin = center ?? markers[0]?.point;
+      const origin = center ?? markers[0]?.point ?? initialCenter;
       if (!origin) return;
       const instance = new maps.Map(containerRef.current, {
         center: new maps.LatLng(origin.lat, origin.lng), level,
@@ -60,7 +61,7 @@ export function KakaoMapView({
   useEffect(() => {
     const maps = window.kakao?.maps;
     if (!map || !maps || !hasPlace) return;
-    const layer = createMarkerLayer(maps, map, clustering, (id) => callbacks.current.onSelect?.(id));
+    const layer = createMarkerLayer(maps, map, clustering, (id) => callbacks.current.onSelect?.(id), (ids) => callbacks.current.onGroupSelect?.(ids));
     layerRef.current = layer;
     return () => { layer.dispose(); layerRef.current = null; };
   }, [map, clustering, hasPlace]);
@@ -72,6 +73,21 @@ export function KakaoMapView({
   }, [map, markers, clustering, hasPlace]);
 
   useEffect(() => { layerRef.current?.select(selectedId); }, [selectedId]);
+  useEffect(() => { layerRef.current?.selectGroup(selectedIds ?? []); }, [map, selectedIds]);
+
+  useEffect(() => {
+    const maps = window.kakao?.maps;
+    const selected = markers.find((marker) => marker.id === selectedId);
+    if (!map || !maps || !selected || (clustering && zoom > MAP_SINGLE_PIN_LEVEL && !focusRequest)) return;
+    const label = document.createElement("div");
+    label.className = "mb-11 rounded-lg border border-brand bg-brand px-3 py-2 text-xs font-bold text-brand-on shadow-sm";
+    label.textContent = selected.label ?? "선택한 위치";
+    label.setAttribute("aria-label", `선택한 위치: ${label.textContent}`);
+    const overlay = new maps.CustomOverlay({ map, position: new maps.LatLng(selected.point.lat, selected.point.lng), content: label, yAnchor: 1, zIndex: 2 });
+    const focusPin = focusRequest ? new maps.Marker({ position: new maps.LatLng(selected.point.lat, selected.point.lng), title: selected.label, zIndex: 2 }) : null;
+    focusPin?.setMap(map);
+    return () => { overlay.setMap(null); focusPin?.setMap(null); };
+  }, [map, markers, selectedId, clustering, zoom, focusRequest]);
 
   const frame = useCallback((instance: kakao.maps.Map) => {
     const maps = window.kakao?.maps;
@@ -84,22 +100,41 @@ export function KakaoMapView({
     if (!bounds) return;
     if (markers.length === 1) {
       instance.setCenter(new maps.LatLng(bounds.south, bounds.west));
-      instance.setLevel(MAP_SINGLE_MARKER_LEVEL);
+      instance.setLevel(clustering ? Math.max(level, MAP_SINGLE_PIN_LEVEL + 1) : MAP_SINGLE_MARKER_LEVEL);
       return;
     }
-    instance.setBounds(new maps.LatLngBounds(new maps.LatLng(bounds.south, bounds.west), new maps.LatLng(bounds.north, bounds.east)));
-  }, [center, markers]);
+    const area = new maps.LatLngBounds(new maps.LatLng(bounds.south, bounds.west), new maps.LatLng(bounds.north, bounds.east));
+    if (fitPadding) instance.setBounds(area, ...fitPadding);
+    else instance.setBounds(area);
+    if (clustering && instance.getLevel() <= MAP_SINGLE_PIN_LEVEL) instance.setLevel(MAP_SINGLE_PIN_LEVEL + 1);
+  }, [center, markers, fitPadding, clustering, level]);
+
+  useEffect(() => {
+    if (!map || handledFit.current === fitRequest) return;
+    handledFit.current = fitRequest;
+    frame(map);
+  }, [map, fitRequest, frame]);
+
+  useEffect(() => {
+    const maps = window.kakao?.maps;
+    if (map && maps && locationRequest) map.setCenter(new maps.LatLng(locationRequest.lat, locationRequest.lng));
+  }, [map, locationRequest]);
+
+  useEffect(() => {
+    const maps = window.kakao?.maps;
+    if (map && maps && mapType) map.setMapTypeId(mapType === "hybrid" ? maps.MapTypeId.HYBRID : maps.MapTypeId.ROADMAP);
+  }, [map, mapType]);
 
   /**
    * 전체 맞춤은 지도를 처음 열 때 한 번만 한다.
-   * 필터를 누를 때마다 서울 전체로 되돌아가면 보고 있던 동네를 잃는다 — 마커만 갈아 끼운다.
+   * 필터를 누를 때마다 서울 전체로 되돌아가면 보고 있던 동네를 잃는다 — 마커만 갈아 낀다.
    * 중심을 직접 받는 지도(상세의 단일 위치)는 그 좌표를 계속 따른다.
    */
   useEffect(() => {
     if (!map) return;
     if (center) { frame(map); return; }
-    if (framed.current) return;
-    framed.current = true;
+    if (framedMap.current === map) return;
+    framedMap.current = map;
     frame(map);
   }, [frame, map, center]);
 
@@ -132,8 +167,12 @@ export function KakaoMapView({
       const previousCenter = viewportCenter.current ?? map.getCenter();
       viewportSize.current = { width: container.clientWidth, height: container.clientHeight };
       map.relayout();
-      if (hadSize) map.setCenter(previousCenter);
-      else { framed.current = true; frame(map); }
+      if (hadSize) {
+        map.setCenter(previousCenter);
+        // relayout 직후 idle의 픽셀 반올림이 다음 패널 개폐마다 누적되지 않도록 기준 좌표를 유지한다.
+        viewportCenter.current = previousCenter;
+      }
+      else { framedMap.current = map; frame(map); }
       hadSize = true;
       layerRef.current?.redraw();
     });
@@ -141,13 +180,32 @@ export function KakaoMapView({
     return () => observer.disconnect();
   }, [map, frame]);
 
+  /**
+   * 목록에서 고른 집으로는 이동과 확대를 SDK의 jump 한 번으로 끝낸다.
+   * 프레임마다 중심을 옮기고 두 단계씩 끊어 확대하면 카카오가 단계마다 마커를 감춰 핀이 여러 번 깜빡인다.
+   */
+  useEffect(() => {
+    const maps = window.kakao?.maps;
+    if (!map || !maps || !focusRequest) return;
+    const [top, right, bottom, left] = focusRequest.padding;
+    const targetLevel = Math.min(map.getLevel(), MAP_FOCUS_LEVEL);
+    // 패딩은 화면 픽셀이고 투영은 지금 배율 기준이다. 도착 배율에서 그만큼 비껴 보이려면
+    // 배율 차이의 거듭제곱분의 1만 옮겨야 한다 — 한 단계마다 1픽셀이 담는 거리가 절반으로 준다.
+    const shrink = 2 ** (map.getLevel() - targetLevel);
+    const projection = map.getProjection();
+    const pin = projection.containerPointFromCoords(new maps.LatLng(focusRequest.point.lat, focusRequest.point.lng));
+    const center = projection.coordsFromContainerPoint(new maps.Point(pin.x + (right - left) / 2 / shrink, pin.y + (bottom - top) / 2 / shrink));
+    const reducedMotion = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches ?? false;
+    map.jump(center, targetLevel, { animate: reducedMotion ? false : { duration: MAP_FOCUS_ANIMATION_MS } });
+  }, [map, focusRequest]);
+
   if (!hasPlace || status === "disabled" || status === "failed") return <div className={className}>{fallback}</div>;
 
   return (
     <div role={interactive ? "group" : "img"} aria-label={ariaLabel} className={cn("relative bg-surface-tertiary", className)}>
       <div ref={containerRef} className="absolute inset-0" />
       {interactive && status === "ready" && map && (
-        <div className="absolute right-3 top-3 z-10 flex flex-col overflow-hidden rounded-lg border border-line bg-surface shadow-sm" aria-label="지도 배율">
+        <div className={cn("absolute right-3 z-10 flex flex-col overflow-hidden rounded-lg border border-line bg-surface shadow-sm", controlsClassName ?? "top-3")} aria-label="지도 배율">
           <button type="button" aria-label="지도 확대" disabled={zoom <= MAP_ZOOM_RANGE.min} onClick={() => map.setLevel(Math.max(MAP_ZOOM_RANGE.min, map.getLevel() - 1))} className="size-11 text-xl font-semibold text-fg-heading hover:bg-surface-secondary focus-visible:bg-surface-tertiary disabled:text-fg-disabled">+</button>
           <button type="button" aria-label="지도 축소" disabled={zoom >= MAP_ZOOM_RANGE.max} onClick={() => map.setLevel(Math.min(MAP_ZOOM_RANGE.max, map.getLevel() + 1))} className="size-11 border-t border-line text-xl font-semibold text-fg-heading hover:bg-surface-secondary focus-visible:bg-surface-tertiary disabled:text-fg-disabled">−</button>
         </div>

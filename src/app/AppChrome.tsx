@@ -21,13 +21,13 @@ export function AppChrome({
   if (isFullscreenRoute(pathname)) return <>{children}</>;
 
   return (
-    <>
+    <div className="app-chrome flex min-h-screen flex-col">
       {header}
-      <div className="flex-1">{children}</div>
-      {footer}
+      <div className="app-content flex-1">{children}</div>
+      <div className="app-footer">{footer}</div>
       {/* 고정된 모바일 하단 탭이 푸터를 가리지 않도록 탭 높이(h-16)만큼 여백을 둔다 */}
-      <div aria-hidden className="h-16 md:hidden" />
+      <div aria-hidden className="h-16 shrink-0 md:hidden" />
       {bottomNav}
-    </>
+    </div>
   );
 }

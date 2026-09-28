@@ -28,12 +28,13 @@ function setup(clustering = true) {
     Marker, MarkerClusterer: Clusterer, event: { addListener, removeListener }
   };
   const onSelect = vi.fn();
-  const layer = createMarkerLayer(maps as unknown as typeof kakao.maps, map as unknown as kakao.maps.Map, clustering, onSelect);
+  const onGroupSelect = vi.fn();
+  const layer = createMarkerLayer(maps as unknown as typeof kakao.maps, map as unknown as kakao.maps.Map, clustering, onSelect, onGroupSelect);
   const emit = (target: object, type: string, ...args: unknown[]) => {
     const callback = listeners.get(target)?.get(type);
     if (callback) (callback as (...values: unknown[]) => void)(...args);
   };
-  return { layer, map, created, clusterer, Clusterer, emit, onSelect, removeListener };
+  return { layer, map, created, clusterer, Clusterer, emit, onSelect, onGroupSelect, removeListener };
 }
 
 const items: MapMarker[] = [
@@ -42,6 +43,31 @@ const items: MapMarker[] = [
 ];
 
 describe("지도 마커 묶음", () => {
+  it.each([1, 3])("%i건도 동일한 목록 선택으로 처리하고 제거된 마커 ID는 전달하지 않는다", (count) => {
+    const { layer, created, clusterer, emit, onGroupSelect, map } = setup();
+    const entries = Array.from({ length: count }, (_, index) => ({ ...items[0], id: `id-${index}` }));
+    layer.sync(entries, null);
+    const node = document.createElement("div");
+    const cluster = { getSize: () => count, getMarkers: () => created, getClusterMarker: () => ({ getContent: () => node }) };
+    emit(clusterer, "clustered", [cluster]);
+    expect(node).toHaveAttribute("aria-label", `청약 ${count}건 목록 보기`);
+    emit(clusterer, "clusterclick", cluster);
+    expect(onGroupSelect).toHaveBeenLastCalledWith(entries.map((item) => item.id));
+    expect(map.setLevel).not.toHaveBeenCalled();
+    layer.sync([], null);
+    onGroupSelect.mockClear();
+    emit(clusterer, "clusterclick", cluster);
+    expect(onGroupSelect).not.toHaveBeenCalled();
+  });
+
+  it("가까운 핀 클릭은 위치를 바꾸지 않고 단일 ID만 전달한다", () => {
+    const { layer, created, emit, onSelect, map } = setup();
+    map.getLevel.mockReturnValue(4);
+    layer.sync(items, null);
+    emit(created[0], "click");
+    expect(onSelect).toHaveBeenCalledWith("one");
+    expect(map.setLevel).not.toHaveBeenCalled();
+  });
   it("화면 거리·확대 단계에 따라 SDK가 개수를 계산하도록 설정한다", () => {
     const { layer, Clusterer, clusterer, created } = setup();
     layer.sync(items, "one");
@@ -87,25 +113,54 @@ describe("지도 마커 묶음", () => {
     expect(created[0].setTitle).not.toHaveBeenCalled();
   });
 
-  it("묶음 클릭과 키보드 Enter·Space는 해당 중심에서 한 단계 확대한다", () => {
-    const { layer, clusterer, map, emit } = setup();
+  it("묶음 클릭과 키보드 Enter·Space는 확대 없이 내부 ID를 선택한다", () => {
+    const { layer, clusterer, map, emit, created, onGroupSelect } = setup();
+    layer.sync(items, null);
     const node = document.createElement("div");
     const center = { lat: 37.5, lng: 127 };
-    const cluster = { getSize: () => 2, getCenter: () => center, getClusterMarker: () => ({ getContent: () => node }) };
+    const cluster = { getMarkers: () => created, getSize: () => 2, getCenter: () => center, getClusterMarker: () => ({ getContent: () => node }) };
     emit(clusterer, "clusterclick", cluster);
-    expect(map.setLevel).toHaveBeenLastCalledWith(7, { anchor: center });
+    expect(onGroupSelect).toHaveBeenLastCalledWith(["one", "two"]);
+    expect(map.setLevel).not.toHaveBeenCalled();
     emit(clusterer, "clustered", [cluster]);
     expect(node).toHaveAttribute("role", "button");
-    expect(node).toHaveAttribute("aria-label", "주택 2건 모아보기, 지도 확대");
+    expect(node).toHaveAttribute("aria-label", "청약 2건 목록 보기");
     node.dispatchEvent(new KeyboardEvent("keydown", { key: "Enter" }));
     node.dispatchEvent(new KeyboardEvent("keydown", { key: " " }));
-    expect(map.setLevel).toHaveBeenCalledTimes(3);
+    expect(onGroupSelect).toHaveBeenCalledTimes(3);
     emit(clusterer, "clustered", [cluster]);
     node.dispatchEvent(new KeyboardEvent("keydown", { key: "Enter" }));
-    expect(map.setLevel).toHaveBeenCalledTimes(4);
+    expect(onGroupSelect).toHaveBeenCalledTimes(4);
+    layer.selectGroup(["one", "two"]);
+    expect(node).toHaveAttribute("aria-pressed", "true");
     layer.dispose();
     node.dispatchEvent(new KeyboardEvent("keydown", { key: "Enter" }));
-    expect(map.setLevel).toHaveBeenCalledTimes(4);
+    expect(onGroupSelect).toHaveBeenCalledTimes(4);
+    expect(map.setLevel).not.toHaveBeenCalled();
+  });
+
+  it("선택한 묶음이 분리되면 목록 선택을 바꾸지 않고 하위 배지의 선택 표시를 해제한다", () => {
+    const { layer, clusterer, created, emit, onGroupSelect } = setup();
+    layer.sync(items, null);
+    const groupNode = document.createElement("div");
+    const group = { getMarkers: () => created, getSize: () => 2, getClusterMarker: () => ({ getContent: () => groupNode }) };
+    emit(clusterer, "clustered", [group]);
+    layer.selectGroup(["two", "one"]);
+    expect(groupNode).toHaveAttribute("aria-pressed", "true");
+
+    const nodes = created.map(() => document.createElement("div"));
+    const split = created.map((marker, index) => ({
+      getMarkers: () => [marker], getSize: () => 1, getClusterMarker: () => ({ getContent: () => nodes[index] })
+    }));
+    emit(clusterer, "clustered", split);
+    nodes.forEach((node) => expect(node).toHaveAttribute("aria-pressed", "false"));
+    expect(onGroupSelect).not.toHaveBeenCalled();
+
+    emit(clusterer, "clusterclick", split[0]);
+    expect(onGroupSelect).toHaveBeenLastCalledWith(["one"]);
+    layer.selectGroup(["one"]);
+    expect(nodes[0]).toHaveAttribute("aria-pressed", "true");
+    expect(nodes[1]).toHaveAttribute("aria-pressed", "false");
   });
 
   it("최대 확대의 개별 핀에는 묶음 버튼을 붙이지 않는다", () => {
@@ -147,15 +202,15 @@ describe("지도 마커 묶음", () => {
     expect(clusterer.addMarkers).toHaveBeenCalledWith(created, true);
   });
 
-  it("한 건짜리 배지도 키보드로 확대할 수 있다", () => {
-    const { clusterer, map, emit } = setup();
+  it("한 건짜리 배지도 키보드로 열 수 있다", () => {
+    const { layer, clusterer, created, emit, onGroupSelect } = setup();
+    layer.sync(items.slice(0, 1), null);
     const node = document.createElement("div");
-    const center = { lat: 37.5, lng: 127 };
-    emit(clusterer, "clustered", [{ getSize: () => 1, getCenter: () => center, getClusterMarker: () => ({ getContent: () => node }) }]);
-    expect(node).toHaveAttribute("aria-label", "주택 1건 모아보기, 지도 확대");
+    emit(clusterer, "clustered", [{ getSize: () => 1, getMarkers: () => [created[0]], getClusterMarker: () => ({ getContent: () => node }) }]);
+    expect(node).toHaveAttribute("aria-label", "청약 1건 목록 보기");
     expect(node.tabIndex).toBe(0);
     node.dispatchEvent(new KeyboardEvent("keydown", { key: "Enter" }));
-    expect(map.setLevel).toHaveBeenLastCalledWith(7, { anchor: center });
+    expect(onGroupSelect).toHaveBeenLastCalledWith(["one"]);
   });
 
   it("배지만 있는 단계에서는 핀 클릭이 공고를 고르지 않는다", () => {

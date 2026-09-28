@@ -25,7 +25,7 @@ export function Header({ authenticated = false, searchIndex = [] }: { authentica
 
   return (
     <header className={`sticky top-0 z-40 border-b border-line-subtle bg-surface ${hideOnMobile ? "hidden md:block" : ""}`}>
-      <div className="mx-auto max-w-7xl px-4 md:px-6">
+      <div className="app-header-inner mx-auto max-w-7xl px-4 md:px-6">
         {/* figma 353:3077(모바일 56) / 135:7849(PC 64) 상단: 로고 · 검색 · 액션 */}
         <div className="flex h-14 items-center gap-2.5 md:h-16 md:gap-6">
           {/* figma 353:3078 로고 — 모바일 28(r8) · PC 32(r12) */}
