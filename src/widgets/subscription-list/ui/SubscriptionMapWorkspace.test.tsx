@@ -51,25 +51,41 @@ describe("숫자 선택과 청약 패널", () => {
     expect(navigation.push).not.toHaveBeenCalled();
   });
 
-  it("지도 drag·zoom의 visibleIds 변경은 선택 목록을 바꾸지 않는다", () => {
+  it("지도 drag·zoom의 visibleIds 변경은 선택 목록을 바꾸지 않고 버튼 숫자만 바꾼다", () => {
     render(draw());
+    expect(screen.getByRole("button", { name: "청약 3" })).toBeInTheDocument();
     act(() => mapProps.onGroupSelect?.(["a", "b"]));
     act(() => mapProps.onVisibleMarkersChange?.(["c"]));
     expect(resultTitles()).toEqual(["강남 개포동", "도봉 방학동"]);
     expect(screen.getByText("현재 지도 1건 · 전체 3건")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "청약 1" })).toBeInTheDocument();
     act(() => mapProps.onVisibleMarkersChange?.([]));
     expect(resultTitles()).toHaveLength(2);
+    expect(screen.getByRole("button", { name: "청약 0" })).toBeDisabled();
   });
 
-  it("닫기는 목록을 보관하고 다시 열면 선택을 복원한다", () => {
+  it("청약 버튼은 지금 화면에 보이는 공고로 목록을 열고, 이미 그 목록이면 닫는다", () => {
+    render(draw());
+    act(() => mapProps.onVisibleMarkersChange?.(["b", "c"]));
+    fireEvent.click(screen.getByRole("button", { name: "청약 2" }));
+    expect(resultTitles()).toEqual(["도봉 방학동", "관악 신림동"]);
+    expect(mapProps.selectedIds).toEqual(["b", "c"]);
+    // 지도를 옮겨 보이는 공고가 달라지면 같은 버튼이 새 범위로 목록을 바꾼다
+    act(() => mapProps.onVisibleMarkersChange?.(["a"]));
+    fireEvent.click(screen.getByRole("button", { name: "청약 1" }));
+    expect(resultTitles()).toEqual(["강남 개포동"]);
+    fireEvent.click(screen.getByRole("button", { name: "청약 1" }));
+    expect(panel()).not.toBeInTheDocument();
+  });
+
+  it("숫자로 고른 목록을 닫은 뒤 청약 버튼은 선택이 아니라 현재 화면 공고를 연다", () => {
     render(draw());
     act(() => mapProps.onGroupSelect?.(["a"]));
     fireEvent.click(screen.getByRole("button", { name: "청약 목록 닫기" }));
     expect(panel()).not.toBeInTheDocument();
     expect(mapProps.selectedIds).toEqual([]);
-    expect(screen.getByRole("navigation", { name: "청약 탐색 메뉴" })).toBeInTheDocument();
-    fireEvent.click(screen.getByRole("button", { name: "선택 목록" }));
-    expect(mapProps.selectedIds).toEqual(["a"]);
+    fireEvent.click(screen.getByRole("button", { name: "청약 3" }));
+    expect(mapProps.selectedIds).toEqual(["a", "b", "c"]);
     expect(panel()).toBeInTheDocument();
   });
 

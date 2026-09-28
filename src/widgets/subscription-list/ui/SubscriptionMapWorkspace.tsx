@@ -91,8 +91,18 @@ export function SubscriptionMapWorkspace({ items, options, loadDetail }: { items
       setLocationMessage(error.code === 1 ? "위치 권한이 거부되었습니다. 브라우저 설정에서 권한을 확인해 주세요." : "현재 위치를 확인하지 못했습니다. 다시 시도해 주세요.");
     }, MAP_GEOLOCATION_OPTIONS);
   };
-  const visibleCount = visibleIds === null ? mapped.length : mapped.filter((item) => visibleIds.includes(item.id)).length;
+  // 첫 idle 전에는 화면 범위를 모르므로 좌표가 있는 전부를 "보이는 것"으로 친다
+  const visibleItemIds = (visibleIds === null ? mapped : mapped.filter((item) => visibleIds.includes(item.id))).map((item) => item.id);
+  const visibleCount = visibleItemIds.length;
   const missing = items.length - mapped.length;
+  const showsVisibleList = listOpen && selectedMapItemIds.length === visibleItemIds.length && visibleItemIds.every((id) => selectedMapItemIds.includes(id));
+  // 지금 화면에 보이는 공고를 목록에 담는다. 이미 그 목록이면 닫는다
+  const toggleVisibleList = () => {
+    if (showsVisibleList) { closeList(); return; }
+    setSelectedMapItemIds(visibleItemIds);
+    setDetailId(null);
+    setListOpen(true);
+  };
 
   return (
     <main ref={workspaceRef} data-map-workspace className="relative isolate flex min-h-0 flex-1 overflow-hidden" aria-label="공공주택 지도 탐색">
@@ -107,7 +117,7 @@ export function SubscriptionMapWorkspace({ items, options, loadDetail }: { items
       </div>
       <div className="map-workspace-panels pointer-events-none absolute inset-0 z-20 flex md:gap-3 md:p-3">
       <h1 className="sr-only">공공주택 지도</h1>
-      <SubscriptionMapRail hasSelection={selectedItems.length > 0} open={listOpen} onToggle={() => { if (listOpen) closeList(); else setListOpen(true); }} onFit={() => setFitRequest((value) => value + 1)} onLocate={locate} locating={locating} satellite={satellite} onMapType={() => setSatellite((value) => !value)} hasMarkers={mapped.length > 0} />
+      <SubscriptionMapRail visibleCount={visibleCount} open={listOpen} onToggle={toggleVisibleList} onFit={() => setFitRequest((value) => value + 1)} onLocate={locate} locating={locating} satellite={satellite} onMapType={() => setSatellite((value) => !value)} hasMarkers={mapped.length > 0} />
       {selectedItems.length > 0 && <SubscriptionMapSidebar items={selectedItems} onClose={closeList} activeId={detailId} onDetail={(id) => { setDetailId(id); setFocusVersion((value) => value + 1); }} hidden={!listOpen} detailOpen={!!detailId} />}
       {listOpen && detailId && loadDetail && <SubscriptionMapDetail key={detailId} id={detailId} loadDetail={loadDetail} onClose={closeDetail} />}
       <div className="map-workspace-tools relative min-w-0 flex-1">
