@@ -7,12 +7,22 @@ export interface MapMarker {
   label?: string;
 }
 
+/** 지도가 지금 보고 있는 자리 */
+export interface MapViewport {
+  center: GeoPoint;
+  level: number;
+}
+
 /** 제공자에 기대지 않는 계약 — 카카오를 다른 지도로 바꿔도 이 모양은 그대로다 */
 export interface MapViewProps {
   markers: MapMarker[];
   /** 없으면 마커를 모두 담도록 맞춘다 */
   center?: GeoPoint | null;
   initialCenter?: GeoPoint;
+  /** 지난번에 보던 자리. 있으면 마커 전체에 맞추지 않고 이 중심·배율로 연다 */
+  initialViewport?: MapViewport;
+  /** 이동·확대가 끝날 때마다 지금 자리를 알린다 */
+  onViewportChange?: (viewport: MapViewport) => void;
   fitPadding?: readonly [top: number, right: number, bottom: number, left: number];
   controlsClassName?: string;
   level?: number;
@@ -28,6 +38,8 @@ export interface MapViewProps {
   locationRequest?: GeoPoint;
   focusRequest?: { point: GeoPoint; padding: readonly [number, number, number, number] };
   mapType?: "roadmap" | "hybrid";
+  /** 지도 제공자 로고·축척을 둘 모서리. 왼쪽 아래를 패널이 덮는 화면은 오른쪽으로 옮겨 가리지 않는다 */
+  attributionCorner?: "bottom-left" | "bottom-right";
   onVisibleMarkersChange?: (ids: string[]) => void;
   /** 키가 없거나 좌표가 없거나 로드에 실패했을 때 대신 보일 것 */
   fallback?: ReactNode;

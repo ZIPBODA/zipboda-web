@@ -4,6 +4,7 @@ export { SubscriptionListView } from "./ui/SubscriptionListView";
 export { SubscriptionMapWorkspace } from "./ui/SubscriptionMapWorkspace";
 export type { MapDetailData, LoadMapDetail } from "./model/mapDetail";
 export { ListViewToggle } from "./ui/ListViewToggle";
+export { SubscriptionsReturnTracker } from "./ui/SubscriptionsReturnTracker";
 export {
   SUBSCRIPTION_LIST_VIEWS,
   SUBSCRIPTION_LIST_VIEW_KEYS,

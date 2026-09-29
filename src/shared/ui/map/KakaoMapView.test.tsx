@@ -21,7 +21,7 @@ function setupSdk() {
   const contain = vi.fn(() => true);
   const origin = { lat: 37.5, lng: 127, getLat: (): number => 37.5, getLng: (): number => 127 };
   const map = {
-    jump: vi.fn(),
+    jump: vi.fn(), setCopyrightPosition: vi.fn(),
     setCenter: vi.fn(), panBy: vi.fn(), getCenter: vi.fn(() => origin),
     getProjection: () => ({ containerPointFromCoords: () => ({ x: 0, y: 0 }), coordsFromContainerPoint: (p: { x: number; y: number }) => ({ getLat: () => 37.5 - p.y / 10000, getLng: () => 127 + p.x / 10000 }) }),
     setBounds: vi.fn(), getBounds: () => ({ contain }), relayout: vi.fn(),
@@ -34,6 +34,7 @@ function setupSdk() {
     Point: class { constructor(public x: number, public y: number) {} },
     CustomOverlay: class { setMap = vi.fn(); },
     Map: constructor, MarkerClusterer: vi.fn(),
+    CopyrightPosition: { BOTTOMLEFT: 0, BOTTOMRIGHT: 1 },
     LatLng: class { constructor(public lat: number, public lng: number) {} },
     LatLngBounds: class {},
     event: {
@@ -41,7 +42,7 @@ function setupSdk() {
       removeListener: vi.fn()
     }
   };
-  const layer = { sync: vi.fn(), select: vi.fn(), selectGroup: vi.fn(), dispose: vi.fn(), redraw: vi.fn() };
+  const layer = { sync: vi.fn(), select: vi.fn(), selectGroup: vi.fn(), spotlight: vi.fn(), dispose: vi.fn(), redraw: vi.fn() };
   vi.mocked(createMarkerLayer).mockReturnValue(layer);
   vi.stubGlobal("kakao", { maps });
   vi.stubGlobal("ResizeObserver", class {
@@ -56,6 +57,49 @@ beforeEach(() => vi.clearAllMocks());
 afterEach(() => vi.unstubAllGlobals());
 
 describe("지도 상태 갱신", () => {
+  it("지난번 자리를 받으면 마커 전체에 맞추지 않고 그 자리로 열고, 멈출 때마다 자리를 알린다", async () => {
+    const sdk = setupSdk();
+    const onViewportChange = vi.fn();
+    render(<KakaoMapView markers={markers} clustering initialViewport={{ center: { lat: 37.6, lng: 127.1 }, level: 5 }} onViewportChange={onViewportChange} />);
+    await waitFor(() => expect(onViewportChange).toHaveBeenCalled());
+    const [, options] = sdk.constructor.mock.calls[0] as unknown as [unknown, { center: { lat: number; lng: number }; level: number }];
+    expect(options.center).toMatchObject({ lat: 37.6, lng: 127.1 });
+    expect(options.level).toBe(5);
+    expect(sdk.map.setBounds).not.toHaveBeenCalled();
+    expect(onViewportChange).toHaveBeenLastCalledWith({ center: { lat: 37.5, lng: 127 }, level: 5 });
+    const reported = onViewportChange.mock.calls.length;
+    sdk.idle();
+    expect(onViewportChange).toHaveBeenCalledTimes(reported + 1);
+  });
+
+  it("지난번 자리가 있어도 전체 위치 요청은 마커 전체에 맞춘다", async () => {
+    const sdk = setupSdk();
+    const { rerender } = render(<KakaoMapView markers={markers} clustering initialViewport={{ center: { lat: 37.6, lng: 127.1 }, level: 5 }} />);
+    await waitFor(() => expect(sdk.constructor).toHaveBeenCalled());
+    rerender(<KakaoMapView markers={markers} clustering initialViewport={{ center: { lat: 37.6, lng: 127.1 }, level: 5 }} fitRequest={1} />);
+    await waitFor(() => expect(sdk.map.setBounds).toHaveBeenCalledTimes(1));
+  });
+
+  it("목록에서 펼친 집만 배지 밖으로 비추고, 펼침이 끝나면 되돌린다", async () => {
+    const sdk = setupSdk();
+    const focusRequest = { point: markers[0].point, padding: [0, 0, 0, 0] as const };
+    const { rerender } = render(<KakaoMapView markers={markers} clustering selectedId={markers[0].id} focusRequest={focusRequest} />);
+    await waitFor(() => expect(sdk.layer.spotlight).toHaveBeenLastCalledWith(markers[0].id));
+    rerender(<KakaoMapView markers={markers} clustering selectedId={markers[0].id} />);
+    expect(sdk.layer.spotlight).toHaveBeenLastCalledWith(null);
+  });
+
+  it("로고·축척 모서리를 받으면 그 모서리로 옮기고, 받지 않으면 SDK 기본 위치를 둔다", async () => {
+    const sdk = setupSdk();
+    const { unmount } = render(<KakaoMapView markers={markers} attributionCorner="bottom-right" />);
+    await waitFor(() => expect(sdk.map.setCopyrightPosition).toHaveBeenCalledWith(1));
+    unmount();
+    sdk.map.setCopyrightPosition.mockClear();
+    render(<KakaoMapView markers={markers} />);
+    await waitFor(() => expect(sdk.constructor).toHaveBeenCalledTimes(2));
+    expect(sdk.map.setCopyrightPosition).not.toHaveBeenCalled();
+  });
+
   it("상세 선택은 가려진 영역을 비켜 핀이 보이는 자리로 한 번에 날아가고, 같은 요청은 반복하지 않는다", async () => {
     const sdk = setupSdk();
     const focusRequest = { point: markers[0].point, padding: [100, 0, 400, 0] as const };

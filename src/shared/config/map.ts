@@ -47,7 +47,10 @@ export const MAP_AGGREGATE_MIN_LEVEL = MAP_DETAIL_PIN_LEVEL + 1;
  * 겹칠 이웃이 없는 집을 최대 배율까지 파고들어야 볼 수 있는 것은 번거롭다.
  * 여러 건은 이 단계에서도 배지로 남아 확대할수록 갈라진다.
  */
-export const MAP_SINGLE_PIN_LEVEL = 6;
+export const MAP_SINGLE_PIN_LEVEL = 5;
+
+/** 핀 이름표는 핀(0·1)보다 위, 고른 집의 이름표는 다른 이름표보다 위에 놓는다 */
+export const MAP_PIN_LABEL_Z_INDEX = { idle: 2, selected: 3 } as const;
 
 /**
  * minClusterSize 1은 한 건도 배지로 만든다. 카카오 SDK에서 실제로 1건짜리 묶음이 생기는 것을

@@ -4,6 +4,7 @@ import {
   AGENCY_TAG_TONE,
   STATUS_BADGE_TONE,
   SubscriptionCardMobile,
+  SubscriptionsBackLink,
   type Subscription,
   type SubscriptionDetail,
   type SubscriptionUnit
@@ -47,9 +48,9 @@ export function MobileSubscriptionDetail({ detail, floorplan, selectedUnit, acti
       {/* figma 419:10354 컨텍스트 헤더 — 뒤로가기 · 단지명 · 공유 */}
       <div className="sticky top-0 z-30 flex items-center justify-between border-b border-line-subtle bg-surface px-4 py-3">
         <div className="flex min-w-0 items-center gap-3">
-          <Link href="/subscriptions" aria-label="목록으로 돌아가기" className="shrink-0 text-fg-heading">
+          <SubscriptionsBackLink ariaLabel="목록으로 돌아가기" className="shrink-0 text-fg-heading">
             <ArrowLeftIcon />
-          </Link>
+          </SubscriptionsBackLink>
           <span className="truncate text-base font-bold text-fg-heading">{detail.title}</span>
         </div>
         <ShareButton title={detail.title} className="shrink-0 text-fg-heading">

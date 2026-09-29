@@ -16,8 +16,11 @@ export {
   DDAY_URGENT_THRESHOLD,
   AGENCY_BADGE_BG,
   AGENCY_TAG_TONE,
-  STATUS_BADGE_TONE
+  STATUS_BADGE_TONE,
+  SUBSCRIPTIONS_PATH
 } from "./config/constants";
+export { rememberSubscriptionsReturn } from "./lib/returnHref";
+export { SubscriptionsBackLink } from "./ui/SubscriptionsBackLink";
 export { getSubscriptions } from "./api/getSubscriptions";
 export { getSubscriptionFilterOptions } from "./api/getSubscriptionFilterOptions";
 export { getSubscriptionDetail } from "./api/getSubscriptionDetail";
