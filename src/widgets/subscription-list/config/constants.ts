@@ -19,8 +19,7 @@ export const MAP_FILTER_KEYS = ["region", "size", "agency", "status", "q"] as co
 export const MAP_GEOLOCATION_OPTIONS = { timeout: 10000, maximumAge: 60000 } as const;
 /** 지도 위 요소가 이 높이를 CSS 변수로 받아 아래에 쌓인다(globals.css의 map-workspace-* 규칙과 짝) */
 export const MAP_OVERLAY_HEIGHT_VARS = [
-  { selector: ".map-workspace-toolbar", name: "--map-toolbar-height" },
-  { selector: ".map-workspace-rail", name: "--map-rail-height" }
+  { selector: ".map-workspace-toolbar", name: "--map-toolbar-height" }
 ] as const;
 
 /** 지도 중심·확대 단계를 담는 쿼리. 뒤로가기·새로고침·공유 링크에서 보던 지도를 그대로 연다 */
@@ -38,7 +37,8 @@ export const MAP_SHEET_LONG_DRAG_RATIO = 1 / 3;
 /** 지도 위를 덮는 요소들. 흐름 안에 선 것(PC 왼쪽 열)은 왼쪽을, 떠 있는 것은 위·아래를 가린다 */
 export const MAP_OVERLAY_SELECTORS = {
   canvas: ".map-workspace-canvas",
-  controls: ".map-workspace-toolbar, .map-workspace-rail",
+  toolbar: ".map-workspace-toolbar",
+  rail: ".map-workspace-rail",
   zoom: '[aria-label="지도 배율"]',
   panels: 'aside[aria-label="청약 목록"], aside[aria-label="선택한 청약 상세"]',
   bottomBar: ".map-workspace-status, .map-workspace-count"

@@ -16,6 +16,7 @@ import { useSubscriptionFilters } from "../model/useSubscriptionFilters";
 import { useMapOverlayHeights } from "../model/useMapOverlayHeights";
 import { useMapPanel } from "../model/useMapPanel";
 import { useMapViewportQuery } from "../model/useMapViewportQuery";
+import { useCloseOnBack } from "../model/useCloseOnBack";
 import { SubscriptionMapToolbar } from "./SubscriptionMapToolbar";
 import { SubscriptionMapSidebar } from "./SubscriptionMapSidebar";
 import { SubscriptionMapRail } from "./SubscriptionMapRail";
@@ -64,6 +65,7 @@ export function SubscriptionMapWorkspace({ items, options, loadDetail }: { items
       row?.querySelector("button")?.focus({ preventScroll: true });
     });
   };
+  useCloseOnBack(panel.detailId !== null, closeDetail);
   const locate = () => {
     if (!navigator.geolocation) { setLocationMessage("현재 브라우저에서 위치 확인을 지원하지 않습니다."); return; }
     setLocating(true); setLocationMessage("");
@@ -104,10 +106,10 @@ export function SubscriptionMapWorkspace({ items, options, loadDetail }: { items
         onDetail={(id) => { panel.openDetail(id); setFocusVersion((value) => value + 1); }}
         empty={<p className="px-3 py-5 text-sm text-fg-muted">{emptyMessage}</p>}
         footer={panel.scope === "area" && missingNote && <div className="px-3 py-3">{missingNote}</div>} />
-      {panel.listOpen && panel.detailId && loadDetail && <SubscriptionMapDetail key={panel.detailId} id={panel.detailId} loadDetail={loadDetail} onClose={closeDetail} />}
+      {panel.listOpen && panel.detailId && loadDetail && <SubscriptionMapDetail key={panel.detailId} id={panel.detailId} item={mapped.find((item) => item.id === panel.detailId)} loadDetail={loadDetail} onClose={closeDetail} />}
       <div className="map-workspace-tools relative min-w-0 flex-1">
         <SubscriptionMapToolbar options={options} />
-        {locationMessage && <p role="status" className="map-workspace-message absolute left-0 z-20 w-fit rounded-lg border border-line bg-surface p-3 text-sm shadow-sm">{locationMessage}</p>}
+        {locationMessage && <p role="status" className="map-workspace-message absolute z-20 w-fit rounded-lg border border-line bg-surface p-3 text-sm shadow-sm">{locationMessage}</p>}
         {/* PC에서 목록 패널을 접고 펴는 버튼이다. 숫자는 지금 화면에 보이는 공고 수다. 모바일에서는 시트 손잡이가 이 일을 한다.
             outline 배리언트는 배경이 투명하고 글씨가 브랜드 노랑이라 지도 위에서 읽히지 않아 흰 배경을 덮는다 */}
         <Button size="sm" variant={panel.showsArea ? "primary" : "outline"} disabled={visibleCount === 0 && !panel.showsArea} aria-pressed={panel.showsArea} onClick={panel.toggleArea}
