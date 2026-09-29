@@ -7,6 +7,7 @@ import {
   MobileSubscriptionFilters,
   SubscriptionListView,
   SubscriptionMapWorkspace,
+  SubscriptionsReturnTracker,
   ListViewToggle,
   DEFAULT_SUBSCRIPTION_LIST_VIEW,
   SUBSCRIPTION_LIST_VIEW_KEYS,
@@ -15,14 +16,14 @@ import {
 
 export const metadata: Metadata = {
   title: "공공주택 청약 | 집보다",
-  description: "LH·SH·GH·IH 공공주택 청약 공고 목록"
+  description: "LH·SH·GH·IH 공공주택 청약 공고를 지도에서 찾고 목록으로 비교"
 };
 
 type PageProps = {
   searchParams: { region?: string; size?: string; agency?: string; sort?: string; view?: string; q?: string; status?: string };
 };
 
-// figma 135:5601 청약 공고 목록(SUBS-01)
+// figma 135:5601 청약 공고 목록(SUBS-01). 첫 화면은 지도이고 목록은 ?view=list로 연다
 export default async function SubscriptionsPage({ searchParams }: PageProps) {
   const [items, filterOptions] = await Promise.all([
     getSubscriptions({
@@ -36,15 +37,23 @@ export default async function SubscriptionsPage({ searchParams }: PageProps) {
     getSubscriptionFilterOptions()
   ]);
 
-  // 모르는 값은 목록으로 되돌린다 — 예전 링크나 오타가 빈 화면이 되지 않게
+  // 모르는 값은 첫 화면(지도)으로 되돌린다 — 예전 링크나 오타가 빈 화면이 되지 않게
   const view: SubscriptionListViewKey = SUBSCRIPTION_LIST_VIEW_KEYS.includes(searchParams.view ?? "")
     ? (searchParams.view as SubscriptionListViewKey)
     : DEFAULT_SUBSCRIPTION_LIST_VIEW;
 
-  if (view === "map") return <SubscriptionMapWorkspace items={items} options={filterOptions} loadDetail={loadMapDetail} />;
+  if (view === "map") {
+    return (
+      <>
+        <SubscriptionsReturnTracker />
+        <SubscriptionMapWorkspace items={items} options={filterOptions} loadDetail={loadMapDetail} />
+      </>
+    );
+  }
 
   return (
     <PageContainer>
+      <SubscriptionsReturnTracker />
       {/* figma PC 413:645 / Mobile 419:10092 헤더(타이틀 + 뷰 토글) */}
       <PageHeader
         title="공공주택"

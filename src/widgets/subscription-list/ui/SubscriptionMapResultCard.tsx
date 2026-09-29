@@ -3,12 +3,12 @@ import type { Subscription } from "@/entities/subscription";
 
 export function SubscriptionMapResultCard({ item, active, onSelect }: { item: Subscription; active?: boolean; onSelect: () => void }) {
   return (
-    <article data-housing-id={item.id} className={`relative rounded-xl px-4 py-5 md:py-6 ${active ? "bg-surface-secondary ring-2 ring-inset ring-brand" : "hover:bg-surface-secondary"}`}>
+    <article data-housing-id={item.id} className={`relative rounded-xl px-3 py-5 md:py-6 ${active ? "bg-surface-secondary ring-2 ring-inset ring-brand" : "hover:bg-surface-secondary"}`}>
       <p className="text-xs font-medium text-fg-muted">{[item.agency, item.status].filter(Boolean).join(" · ")}</p>
       <div className="mt-2 flex items-start gap-4">
         <div className="min-w-0 flex-1">
           <h3 className="break-keep text-base font-bold text-fg-heading">{item.title}</h3>
-          <p className="mt-2 text-sm leading-relaxed text-fg-muted">{item.location}</p>
+          <p className="mt-2 text-sm text-fg-muted">{item.location}</p>
         </div>
         {item.image && <div className="relative size-20 shrink-0 overflow-hidden rounded-lg bg-surface-tertiary"><Image src={item.image} alt="" fill sizes="80px" className="object-cover" /></div>}
       </div>

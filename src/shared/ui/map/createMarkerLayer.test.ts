@@ -22,10 +22,16 @@ function setup(clustering = true) {
     setMinClusterSize: vi.fn((size: number) => { minClusterSize = size; })
   };
   const Clusterer = vi.fn(function () { return clusterer; });
-  const map = { getLevel: vi.fn(() => MAP_SINGLE_PIN_LEVEL + 2), setLevel: vi.fn() };
+  const inView = vi.fn(() => true);
+  const map = { getLevel: vi.fn(() => MAP_SINGLE_PIN_LEVEL + 2), setLevel: vi.fn(), getBounds: () => ({ contain: inView }) };
+  const overlays: CustomOverlay[] = [];
+  class CustomOverlay {
+    setMap = vi.fn(); setZIndex = vi.fn(); setPosition = vi.fn();
+    constructor(public options: { content: HTMLElement }) { overlays.push(this); }
+  }
   const maps = {
     LatLng: class { constructor(public lat: number, public lng: number) {} },
-    Marker, MarkerClusterer: Clusterer, event: { addListener, removeListener }
+    Marker, CustomOverlay, MarkerClusterer: Clusterer, event: { addListener, removeListener }
   };
   const onSelect = vi.fn();
   const onGroupSelect = vi.fn();
@@ -34,7 +40,9 @@ function setup(clustering = true) {
     const callback = listeners.get(target)?.get(type);
     if (callback) (callback as (...values: unknown[]) => void)(...args);
   };
-  return { layer, map, created, clusterer, Clusterer, emit, onSelect, onGroupSelect, removeListener };
+  // 지도에서 걷히지 않은 이름표만 글자로 돌려준다
+  const liveLabels = () => overlays.filter((overlay) => overlay.setMap.mock.calls.at(-1)?.[0] !== null).map((overlay) => overlay.options.content);
+  return { layer, map, created, clusterer, Clusterer, emit, onSelect, onGroupSelect, removeListener, inView, liveLabels };
 }
 
 const items: MapMarker[] = [
@@ -242,6 +250,85 @@ describe("지도 마커 묶음", () => {
     map.getLevel.mockReturnValue(MAP_SINGLE_PIN_LEVEL + 1);
     emit(map, "zoom_changed");
     expect(clusterer.setMinClusterSize).toHaveBeenLastCalledWith(1);
+  });
+
+  it("핀 단계에서는 배지 밖의 집마다 이름표를 달고, 고른 집만 브랜드 색으로 위에 둔다", () => {
+    const { layer, map, clusterer, emit, liveLabels } = setup();
+    map.getLevel.mockReturnValue(MAP_SINGLE_PIN_LEVEL);
+    layer.sync(items, "one");
+    emit(clusterer, "clustered", []);
+    const [first, second] = liveLabels();
+    expect(liveLabels().map((node) => node.textContent)).toEqual(["주택 하나", "주택 둘"]);
+    expect(first).toHaveAttribute("aria-pressed", "true");
+    expect(first).toHaveClass("bg-brand");
+    expect(second).toHaveAttribute("aria-pressed", "false");
+    expect(second).toHaveClass("bg-surface");
+    layer.select("two");
+    expect(first).toHaveClass("bg-surface");
+    expect(second).toHaveClass("bg-brand");
+  });
+
+  it("배지에 묶인 집·화면 밖의 집·배지만 있는 단계에는 이름표를 달지 않는다", () => {
+    const { layer, map, clusterer, created, emit, inView, liveLabels } = setup();
+    map.getLevel.mockReturnValue(MAP_SINGLE_PIN_LEVEL);
+    layer.sync(items, null);
+    emit(clusterer, "clustered", [{ getSize: () => 2, getMarkers: () => created, getClusterMarker: () => ({ getContent: () => document.createElement("div") }) }]);
+    expect(liveLabels()).toEqual([]);
+
+    emit(clusterer, "clustered", []);
+    inView.mockImplementation(() => false);
+    emit(map, "idle");
+    expect(liveLabels()).toEqual([]);
+
+    inView.mockImplementation(() => true);
+    map.getLevel.mockReturnValue(MAP_SINGLE_PIN_LEVEL + 1);
+    emit(map, "idle");
+    expect(liveLabels()).toEqual([]);
+  });
+
+  it("묶지 않는 최대 배율에서는 묶음 결과가 남아 있어도 모든 핀에 이름을 단다", () => {
+    const { layer, map, clusterer, created, emit, liveLabels } = setup();
+    map.getLevel.mockReturnValue(MAP_SINGLE_PIN_LEVEL);
+    layer.sync(items, null);
+    emit(clusterer, "clustered", [{ getSize: () => 2, getMarkers: () => created, getClusterMarker: () => ({ getContent: () => document.createElement("div") }) }]);
+    map.getLevel.mockReturnValue(MAP_DETAIL_PIN_LEVEL);
+    emit(map, "idle");
+    expect(liveLabels()).toHaveLength(2);
+  });
+
+  it("이름표를 누르거나 Enter·Space를 누르면 그 핀을 고른 것과 같다", () => {
+    const { layer, map, clusterer, emit, onSelect, liveLabels } = setup();
+    map.getLevel.mockReturnValue(MAP_SINGLE_PIN_LEVEL);
+    layer.sync(items, null);
+    emit(clusterer, "clustered", []);
+    const [label] = liveLabels();
+    expect(label).toHaveAttribute("role", "button");
+    label.click();
+    label.dispatchEvent(new KeyboardEvent("keydown", { key: "Enter" }));
+    label.dispatchEvent(new KeyboardEvent("keydown", { key: " " }));
+    expect(onSelect.mock.calls).toEqual([["one"], ["one"], ["one"]]);
+    layer.dispose();
+    label.click();
+    expect(onSelect).toHaveBeenCalledTimes(3);
+    expect(liveLabels()).toEqual([]);
+  });
+
+  it("목록에서 펼친 집은 배지 안에 있어도 따로 핀과 이름을 보이고, 끝나면 걷는다", () => {
+    const { layer, map, clusterer, created, emit, liveLabels } = setup();
+    map.getLevel.mockReturnValue(MAP_SINGLE_PIN_LEVEL);
+    layer.sync(items, "one");
+    emit(clusterer, "clustered", [{ getSize: () => 2, getMarkers: () => created.slice(0, 2), getClusterMarker: () => ({ getContent: () => document.createElement("div") }) }]);
+    layer.spotlight("one");
+    expect(created).toHaveLength(3);
+    expect(created[2].setMap).toHaveBeenLastCalledWith(map);
+    expect(liveLabels().map((node) => node.textContent)).toEqual(["주택 하나"]);
+    expect(liveLabels()[0]).toHaveClass("bg-brand");
+    // 다시 칠해도 핀을 새로 꽂지 않는다 — 꽂을 때마다 깜빡인다
+    emit(map, "idle");
+    expect(created).toHaveLength(3);
+    layer.spotlight(null);
+    expect(created[2].setMap).toHaveBeenLastCalledWith(null);
+    expect(liveLabels()).toEqual([]);
   });
 
   it("상세 지도는 확대 단계와 무관하게 핀을 고를 수 있다", () => {

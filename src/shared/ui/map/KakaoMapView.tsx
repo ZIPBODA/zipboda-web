@@ -11,18 +11,18 @@ import type { MapViewProps } from "./types";
 export function KakaoMapView({
   markers, center = null, level = MAP_LEVEL.detail, interactive = true, clustering = false,
   selectedId = null, onSelect, onVisibleMarkersChange, fallback = null, className, ariaLabel = "지도",
-  initialCenter, fitPadding, controlsClassName, onGroupSelect, selectedIds, fitRequest = 0, locationRequest, mapType, focusRequest
+  initialCenter, fitPadding, controlsClassName, onGroupSelect, selectedIds, fitRequest = 0, locationRequest, mapType, focusRequest, attributionCorner, initialViewport, onViewportChange
 }: MapViewProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const layerRef = useRef<ReturnType<typeof createMarkerLayer> | null>(null);
   const viewportCenter = useRef<kakao.maps.LatLng | null>(null);
   const viewportSize = useRef<{ width: number; height: number } | null>(null);
-  const callbacks = useRef({ onSelect, onGroupSelect, onVisibleMarkersChange });
-  callbacks.current = { onSelect, onGroupSelect, onVisibleMarkersChange };
+  const callbacks = useRef({ onSelect, onGroupSelect, onVisibleMarkersChange, onViewportChange });
+  callbacks.current = { onSelect, onGroupSelect, onVisibleMarkersChange, onViewportChange };
   const [map, setMap] = useState<kakao.maps.Map | null>(null);
   const [zoom, setZoom] = useState(level);
   const [status, setStatus] = useState<MapSdkStatus | "loading">("loading");
-  const hasPlace = markers.length > 0 || center !== null || initialCenter !== undefined;
+  const hasPlace = markers.length > 0 || center !== null || initialCenter !== undefined || initialViewport !== undefined;
   const framedMap = useRef<kakao.maps.Map | null>(null);
   const handledFit = useRef(0);
 
@@ -44,10 +44,10 @@ export function KakaoMapView({
         setStatus("failed");
         return;
       }
-      const origin = center ?? markers[0]?.point ?? initialCenter;
+      const origin = initialViewport?.center ?? center ?? markers[0]?.point ?? initialCenter;
       if (!origin) return;
       const instance = new maps.Map(containerRef.current, {
-        center: new maps.LatLng(origin.lat, origin.lng), level,
+        center: new maps.LatLng(origin.lat, origin.lng), level: initialViewport?.level ?? level,
         draggable: interactive, scrollwheel: interactive, disableDoubleClickZoom: !interactive
       });
       setMap(instance);
@@ -75,19 +75,7 @@ export function KakaoMapView({
   useEffect(() => { layerRef.current?.select(selectedId); }, [selectedId]);
   useEffect(() => { layerRef.current?.selectGroup(selectedIds ?? []); }, [map, selectedIds]);
 
-  useEffect(() => {
-    const maps = window.kakao?.maps;
-    const selected = markers.find((marker) => marker.id === selectedId);
-    if (!map || !maps || !selected || (clustering && zoom > MAP_SINGLE_PIN_LEVEL && !focusRequest)) return;
-    const label = document.createElement("div");
-    label.className = "mb-11 rounded-lg border border-brand bg-brand px-3 py-2 text-xs font-bold text-brand-on shadow-sm";
-    label.textContent = selected.label ?? "선택한 위치";
-    label.setAttribute("aria-label", `선택한 위치: ${label.textContent}`);
-    const overlay = new maps.CustomOverlay({ map, position: new maps.LatLng(selected.point.lat, selected.point.lng), content: label, yAnchor: 1, zIndex: 2 });
-    const focusPin = focusRequest ? new maps.Marker({ position: new maps.LatLng(selected.point.lat, selected.point.lng), title: selected.label, zIndex: 2 }) : null;
-    focusPin?.setMap(map);
-    return () => { overlay.setMap(null); focusPin?.setMap(null); };
-  }, [map, markers, selectedId, clustering, zoom, focusRequest]);
+  useEffect(() => { layerRef.current?.spotlight(focusRequest ? selectedId : null); }, [map, focusRequest, selectedId]);
 
   const frame = useCallback((instance: kakao.maps.Map) => {
     const maps = window.kakao?.maps;
@@ -109,6 +97,14 @@ export function KakaoMapView({
     if (clustering && instance.getLevel() <= MAP_SINGLE_PIN_LEVEL) instance.setLevel(MAP_SINGLE_PIN_LEVEL + 1);
   }, [center, markers, fitPadding, clustering, level]);
 
+  /** 지난번 자리가 있으면 그리로, 없으면 마커 전체에 맞춘다. 전체 위치 요청은 언제나 맞춘다 */
+  const place = useCallback((instance: kakao.maps.Map) => {
+    const maps = window.kakao?.maps;
+    if (!initialViewport || !maps) { frame(instance); return; }
+    instance.setLevel(initialViewport.level);
+    instance.setCenter(new maps.LatLng(initialViewport.center.lat, initialViewport.center.lng));
+  }, [frame, initialViewport]);
+
   useEffect(() => {
     if (!map || handledFit.current === fitRequest) return;
     handledFit.current = fitRequest;
@@ -125,6 +121,12 @@ export function KakaoMapView({
     if (map && maps && mapType) map.setMapTypeId(mapType === "hybrid" ? maps.MapTypeId.HYBRID : maps.MapTypeId.ROADMAP);
   }, [map, mapType]);
 
+  useEffect(() => {
+    const maps = window.kakao?.maps;
+    if (!map || !maps || !attributionCorner) return;
+    map.setCopyrightPosition(attributionCorner === "bottom-right" ? maps.CopyrightPosition.BOTTOMRIGHT : maps.CopyrightPosition.BOTTOMLEFT);
+  }, [map, attributionCorner]);
+
   /**
    * 전체 맞춤은 지도를 처음 열 때 한 번만 한다.
    * 필터를 누를 때마다 서울 전체로 되돌아가면 보고 있던 동네를 잃는다 — 마커만 갈아 낀다.
@@ -135,8 +137,8 @@ export function KakaoMapView({
     if (center) { frame(map); return; }
     if (framedMap.current === map) return;
     framedMap.current = map;
-    frame(map);
-  }, [frame, map, center]);
+    place(map);
+  }, [frame, place, map, center]);
 
   useEffect(() => {
     const maps = window.kakao?.maps;
@@ -149,6 +151,8 @@ export function KakaoMapView({
         viewportCenter.current = map.getCenter();
       }
       if (!previousSize) viewportSize.current = size;
+      const middle = map.getCenter();
+      callbacks.current.onViewportChange?.({ center: { lat: middle.getLat(), lng: middle.getLng() }, level: map.getLevel() });
       const bounds = map.getBounds();
       callbacks.current.onVisibleMarkersChange?.(markers.filter((item) => bounds.contain(new maps.LatLng(item.point.lat, item.point.lng))).map((item) => item.id));
     };
@@ -172,13 +176,13 @@ export function KakaoMapView({
         // relayout 직후 idle의 픽셀 반올림이 다음 패널 개폐마다 누적되지 않도록 기준 좌표를 유지한다.
         viewportCenter.current = previousCenter;
       }
-      else { framedMap.current = map; frame(map); }
+      else { framedMap.current = map; place(map); }
       hadSize = true;
       layerRef.current?.redraw();
     });
     observer.observe(container);
     return () => observer.disconnect();
-  }, [map, frame]);
+  }, [map, place]);
 
   /**
    * 목록에서 고른 집으로는 이동과 확대를 SDK의 jump 한 번으로 끝낸다.

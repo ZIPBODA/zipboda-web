@@ -1,3 +1,4 @@
+import { SUBSCRIPTIONS_PATH } from "@/entities/subscription";
 import { DEFAULT_SUBSCRIPTION_LIST_VIEW, type SubscriptionListView } from "../config/constants";
 
 /** 목록 화면이 이미 쿼리로 들고 있는 필터들 */
@@ -17,6 +18,6 @@ export function createListViewHrefBuilder(searchParams: ListSearchParams) {
     if (view !== DEFAULT_SUBSCRIPTION_LIST_VIEW) query.set("view", view);
 
     const search = query.toString();
-    return search ? `/subscriptions?${search}` : "/subscriptions";
+    return search ? `${SUBSCRIPTIONS_PATH}?${search}` : SUBSCRIPTIONS_PATH;
   };
 }

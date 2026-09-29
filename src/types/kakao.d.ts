@@ -6,6 +6,7 @@
 declare namespace kakao.maps {
   function load(callback: () => void): void;
   const MapTypeId: { ROADMAP: number; HYBRID: number };
+  const CopyrightPosition: { BOTTOMLEFT: number; BOTTOMRIGHT: number };
 
   class LatLng {
     constructor(lat: number, lng: number);
@@ -47,6 +48,7 @@ declare namespace kakao.maps {
     relayout(): void;
     setDraggable(draggable: boolean): void;
     setMapTypeId(type: number): void;
+    setCopyrightPosition(position: number, reversed?: boolean): void;
     setZoomable(zoomable: boolean): void;
   }
 
@@ -65,8 +67,10 @@ declare namespace kakao.maps {
   }
 
   class CustomOverlay {
-    constructor(options: { map?: Map; position: LatLng; content: HTMLElement | string; xAnchor?: number; yAnchor?: number; zIndex?: number });
+    constructor(options: { map?: Map; position: LatLng; content: HTMLElement | string; xAnchor?: number; yAnchor?: number; zIndex?: number; clickable?: boolean });
     setMap(map: Map | null): void;
+    setPosition(position: LatLng): void;
+    setZIndex(zIndex: number): void;
     getContent(): HTMLElement | string;
   }
 

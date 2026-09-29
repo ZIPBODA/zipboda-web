@@ -1,5 +1,4 @@
-import Link from "next/link";
-import { AGENCY_TAG_TONE, type AgencyCode } from "@/entities/subscription";
+import { AGENCY_TAG_TONE, SubscriptionsBackLink, type AgencyCode } from "@/entities/subscription";
 
 interface Props {
   title: string;
@@ -14,14 +13,13 @@ export function DetailTopBar({ title, unitLabel, dday, agency, agencyLabel }: Pr
   return (
     <div className="border-b border-line-subtle bg-surface">
       <div className="mx-auto flex w-full max-w-7xl items-center gap-3 px-4 py-3 md:gap-4 md:px-6 md:py-4">
-        <Link
-          href="/subscriptions"
-          aria-label="목록으로 돌아가기"
+        <SubscriptionsBackLink
+          ariaLabel="목록으로 돌아가기"
           className="flex shrink-0 items-center gap-2 text-sm font-medium text-fg-muted transition-colors hover:text-fg-body"
         >
           <ArrowLeftIcon />
           <span className="hidden sm:inline">목록으로 돌아가기</span>
-        </Link>
+        </SubscriptionsBackLink>
         <span aria-hidden className="hidden text-lg text-line sm:inline">
           |
         </span>

@@ -56,3 +56,9 @@ export const STATUS_BADGE_TONE: Record<SubscriptionStatus, string> = {
   마감: "bg-surface-tertiary text-fg-muted",
   취소: "bg-surface-tertiary text-fg-muted"
 };
+
+/** 청약 첫 화면(지도). 목록은 같은 주소에 ?view=list를 붙인다 */
+export const SUBSCRIPTIONS_PATH = "/subscriptions";
+
+/** 공고 상세에서 '돌아가기'가 마지막으로 보던 지도·목록 주소로 가도록 탭 단위로 기억한다 */
+export const SUBSCRIPTIONS_RETURN_STORAGE_KEY = "zipboda:subscriptions-return";

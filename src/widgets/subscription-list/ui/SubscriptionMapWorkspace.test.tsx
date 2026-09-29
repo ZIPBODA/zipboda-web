@@ -4,7 +4,7 @@ import type { Subscription } from "@/entities/subscription";
 import type { MapViewProps } from "@/shared/ui/map";
 import { SubscriptionMapWorkspace } from "./SubscriptionMapWorkspace";
 
-const navigation = vi.hoisted(() => ({ params: new URLSearchParams("view=map"), push: vi.fn() }));
+const navigation = vi.hoisted(() => ({ params: new URLSearchParams(), push: vi.fn() }));
 vi.mock("next/navigation", () => ({ usePathname: () => "/subscriptions", useSearchParams: () => navigation.params, useRouter: () => ({ push: navigation.push }) }));
 let mapProps: MapViewProps;
 vi.mock("@/shared/ui/map", () => ({
@@ -16,84 +16,113 @@ const items = [base, { ...base, id: "b", title: "도봉 방학동" }, { ...base,
 const options = { regions: ["전체", "서울"], agencies: ["전체", "LH"], sizeRanges: [{ value: "전체", label: "전체" }, { value: "20-25", label: "20~25㎡" }], statuses: ["접수중" as const] };
 const loadDetail = vi.fn(async () => null);
 const draw = (next = items) => <SubscriptionMapWorkspace items={next} options={options} loadDetail={loadDetail} />;
-const panel = () => screen.queryByRole("complementary", { name: "선택한 청약 목록" });
-const resultTitles = () => within(screen.getByLabelText("선택한 청약 결과")).getAllByRole("heading").map((node) => node.textContent);
-beforeEach(() => { navigation.params = new URLSearchParams("view=map"); navigation.push.mockClear(); });
+const panel = () => screen.getByRole("complementary", { name: "청약 목록" });
+const panelStatus = () => within(panel()).getByRole("status").textContent;
+const resultTitles = () => within(screen.getByLabelText("청약 결과")).queryAllByRole("heading").map((node) => node.textContent);
+const handle = () => within(panel()).getByRole("button", { expanded: panel().dataset.sheet !== "peek" });
+let resize = () => {};
+beforeEach(() => {
+  navigation.params = new URLSearchParams();
+  navigation.push.mockClear();
+  vi.stubGlobal("ResizeObserver", class {
+    constructor(callback: ResizeObserverCallback) { resize = () => callback([], {} as ResizeObserver); }
+    observe() {} disconnect() {}
+  });
+});
 
-describe("숫자 선택과 청약 패널", () => {
-  it("초기에는 패널 없이 탐색 메뉴와 지도 필터만 표시한다", () => {
+describe("지도 첫 화면과 청약 목록", () => {
+  it("처음부터 지금 지도에 보이는 공고 목록을 펼쳐 두고 지도·목록 전환을 둔다", () => {
     render(draw());
-    expect(panel()).not.toBeInTheDocument();
+    expect(panel()).toHaveAttribute("data-open", "true");
+    expect(resultTitles()).toEqual(["강남 개포동", "도봉 방학동", "관악 신림동"]);
+    expect(panelStatus()).toBe("이 지역 3건");
+    // 지도 영역 목록은 배지를 누른 선택이 아니다
+    expect(mapProps.selectedIds).toEqual([]);
+    expect(screen.getByRole("button", { name: "청약 3" })).toHaveAttribute("aria-pressed", "true");
     expect(screen.getByRole("navigation", { name: "청약 탐색 메뉴" })).toBeInTheDocument();
     expect(screen.getByRole("search", { name: "공공주택 지도 검색" })).toBeInTheDocument();
-    expect(mapProps.selectedIds).toEqual([]);
+    expect(screen.getAllByRole("link", { name: "목록" })[0]).toHaveAttribute("href", "/subscriptions?view=list");
+    // 왼쪽 아래는 목록·상세 패널과 상태 안내가 덮는다
+    expect(mapProps.attributionCorner).toBe("bottom-right");
   });
 
-  it("그룹 선택만 패널을 열고, 다른 그룹·같은 그룹은 패널을 재생성하지 않는다", () => {
+  it("지도를 움직이면 목록과 청약 버튼 숫자가 지금 보이는 공고로 바뀐다", () => {
     render(draw());
-    act(() => mapProps.onGroupSelect?.(["c", "a", "b"]));
+    act(() => mapProps.onVisibleMarkersChange?.(["c"]));
+    expect(resultTitles()).toEqual(["관악 신림동"]);
+    expect(panelStatus()).toBe("이 지역 1건");
+    expect(screen.getByRole("button", { name: "청약 1" })).toBeInTheDocument();
+    // 지도 아래 가운데에 떠 있는 버튼이다. 왼쪽 탐색 메뉴에는 두지 않는다
+    expect(within(screen.getByRole("navigation", { name: "청약 탐색 메뉴" })).queryByRole("button", { name: /^청약/ })).not.toBeInTheDocument();
+    act(() => mapProps.onVisibleMarkersChange?.([]));
+    expect(resultTitles()).toEqual([]);
+    expect(screen.getAllByText(/이 지도 영역에는 공고가 없습니다/).length).toBeGreaterThan(0);
+  });
+
+  it.each(["badge", "pin"])("%s를 누르면 그 공고로 좁히고, 지도를 움직여도 유지하다가 '지도 영역 전체 보기'로 돌아간다", (kind) => {
+    render(draw());
+    act(() => kind === "badge" ? mapProps.onGroupSelect?.(["b"]) : mapProps.onSelect?.("b"));
+    expect(resultTitles()).toEqual(["도봉 방학동"]);
+    expect(panelStatus()).toBe("선택 1건");
+    expect(mapProps.selectedIds).toEqual(["b"]);
+    expect(mapProps.selectedId).toBe("b");
+    act(() => mapProps.onVisibleMarkersChange?.(["c"]));
+    expect(resultTitles()).toEqual(["도봉 방학동"]);
+    fireEvent.click(screen.getByRole("button", { name: "← 지도 영역 전체 보기" }));
+    expect(resultTitles()).toEqual(["관악 신림동"]);
+    expect(mapProps.selectedIds).toEqual([]);
+    expect(navigation.push).not.toHaveBeenCalled();
+  });
+
+  it("묶음을 바꿔 골라도 패널을 새로 만들지 않는다", () => {
+    render(draw());
     const existing = panel();
+    act(() => mapProps.onGroupSelect?.(["c", "a", "b"]));
     expect(resultTitles()).toEqual(["강남 개포동", "도봉 방학동", "관악 신림동"]);
     act(() => mapProps.onGroupSelect?.(["b", "c"]));
     expect(panel()).toBe(existing);
     expect(resultTitles()).toEqual(["도봉 방학동", "관악 신림동"]);
-    act(() => mapProps.onGroupSelect?.(["b", "c"]));
-    expect(panel()).toBe(existing);
-    expect(navigation.push).not.toHaveBeenCalled();
   });
 
-  it.each(["badge", "pin"])("%s 단일 선택은 패널 1건만 열고 상세로 이동하지 않는다", (kind) => {
+  it("청약 버튼은 지도 영역 목록을 접고 펴고, 접으면 지도 위 안내가 대신 건수를 보여준다", () => {
     render(draw());
-    act(() => kind === "badge" ? mapProps.onGroupSelect?.(["b"]) : mapProps.onSelect?.("b"));
-    expect(resultTitles()).toEqual(["도봉 방학동"]);
-    expect(mapProps.selectedIds).toEqual(["b"]);
-    expect(screen.getByRole("button", { name: "도봉 방학동 상세 보기" })).toBeInTheDocument();
-    expect(navigation.push).not.toHaveBeenCalled();
+    fireEvent.click(screen.getByRole("button", { name: "청약 3" }));
+    expect(panel()).toHaveAttribute("data-open", "false");
+    expect(screen.getByText("지도 대상 3건 · 전체 3건")).toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: "청약 3" }));
+    expect(panel()).toHaveAttribute("data-open", "true");
   });
 
-  it("지도 drag·zoom의 visibleIds 변경은 선택 목록을 바꾸지 않고 버튼 숫자만 바꾼다", () => {
-    render(draw());
-    expect(screen.getByRole("button", { name: "청약 3" })).toBeInTheDocument();
-    act(() => mapProps.onGroupSelect?.(["a", "b"]));
-    act(() => mapProps.onVisibleMarkersChange?.(["c"]));
-    expect(resultTitles()).toEqual(["강남 개포동", "도봉 방학동"]);
-    expect(screen.getByText("현재 지도 1건 · 전체 3건")).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "청약 1" })).toBeInTheDocument();
-    act(() => mapProps.onVisibleMarkersChange?.([]));
-    expect(resultTitles()).toHaveLength(2);
-    expect(screen.getByRole("button", { name: "청약 0" })).toBeDisabled();
-  });
-
-  it("청약 버튼은 지금 화면에 보이는 공고로 목록을 열고, 이미 그 목록이면 닫는다", () => {
-    render(draw());
-    act(() => mapProps.onVisibleMarkersChange?.(["b", "c"]));
-    fireEvent.click(screen.getByRole("button", { name: "청약 2" }));
-    expect(resultTitles()).toEqual(["도봉 방학동", "관악 신림동"]);
-    expect(mapProps.selectedIds).toEqual(["b", "c"]);
-    // 지도를 옮겨 보이는 공고가 달라지면 같은 버튼이 새 범위로 목록을 바꾼다
-    act(() => mapProps.onVisibleMarkersChange?.(["a"]));
-    fireEvent.click(screen.getByRole("button", { name: "청약 1" }));
-    expect(resultTitles()).toEqual(["강남 개포동"]);
-    fireEvent.click(screen.getByRole("button", { name: "청약 1" }));
-    expect(panel()).not.toBeInTheDocument();
-  });
-
-  it("숫자로 고른 목록을 닫은 뒤 청약 버튼은 선택이 아니라 현재 화면 공고를 연다", () => {
+  it("고른 목록을 닫은 뒤 청약 버튼은 선택이 아니라 지도 영역 목록을 연다", () => {
     render(draw());
     act(() => mapProps.onGroupSelect?.(["a"]));
+    expect(screen.getByRole("button", { name: "청약 3" })).toHaveAttribute("aria-pressed", "false");
     fireEvent.click(screen.getByRole("button", { name: "청약 목록 닫기" }));
-    expect(panel()).not.toBeInTheDocument();
+    expect(panel()).toHaveAttribute("data-open", "false");
     expect(mapProps.selectedIds).toEqual([]);
     fireEvent.click(screen.getByRole("button", { name: "청약 3" }));
-    expect(mapProps.selectedIds).toEqual(["a", "b", "c"]);
-    expect(panel()).toBeInTheDocument();
+    expect(resultTitles()).toEqual(["강남 개포동", "도봉 방학동", "관악 신림동"]);
   });
 
-  it("전체 위치와 지도 유형은 선택 목록을 유지한다", () => {
+  it("공고 상세를 연 동안에는 지도가 움직여도 목록을 멈추고, 닫으면 다시 지도를 따른다", async () => {
+    render(draw());
+    fireEvent.click(screen.getByRole("button", { name: "강남 개포동 상세 보기" }));
+    expect(await screen.findByRole("complementary", { name: "선택한 청약 상세" })).toBeInTheDocument();
+    expect(mapProps.selectedId).toBe("a");
+    // 상세로 날아가며 확대되면 옆 카드가 줄줄이 사라지므로 목록을 멈춘다
+    act(() => mapProps.onVisibleMarkersChange?.(["a"]));
+    expect(resultTitles()).toEqual(["강남 개포동", "도봉 방학동", "관악 신림동"]);
+    fireEvent.click(screen.getByRole("button", { name: "← 목록으로" }));
+    expect(screen.queryByRole("complementary", { name: "선택한 청약 상세" })).not.toBeInTheDocument();
+    expect(resultTitles()).toEqual(["강남 개포동"]);
+  });
+
+  it("전체 위치와 지도 유형은 선택 목록을 유지하고, 맞출 때는 가려진 폭을 다시 잰다", () => {
     render(draw());
     act(() => mapProps.onGroupSelect?.(["a", "b"]));
     fireEvent.click(screen.getByRole("button", { name: "전체 위치" }));
     expect(mapProps.fitRequest).toBe(1);
+    expect(mapProps.fitPadding).toHaveLength(4);
     fireEvent.click(screen.getByRole("button", { name: "위성지도" }));
     expect(mapProps.mapType).toBe("hybrid");
     expect(mapProps.selectedIds).toEqual(["a", "b"]);
@@ -111,13 +140,13 @@ describe("숫자 선택과 청약 패널", () => {
     Reflect.deleteProperty(navigator, "geolocation");
   });
 
-  it("필터에서 사라진 선택을 제거하고 모두 사라지면 닫으며 초기화해도 되살리지 않는다", () => {
+  it("필터에서 사라진 선택을 지우고, 모두 사라지면 지도 영역 목록으로 돌아가며 초기화해도 되살리지 않는다", () => {
     const { rerender } = render(draw());
-    act(() => mapProps.onGroupSelect?.(["a", "b", "c"]));
+    act(() => mapProps.onGroupSelect?.(["a", "b"]));
     rerender(draw(items.slice(1)));
-    expect(resultTitles()).toEqual(["도봉 방학동", "관악 신림동"]);
-    rerender(draw([base]));
-    expect(panel()).not.toBeInTheDocument();
+    expect(resultTitles()).toEqual(["도봉 방학동"]);
+    rerender(draw([items[2]]));
+    expect(panelStatus()).toBe("이 지역 1건");
     rerender(draw());
     expect(mapProps.selectedIds).toEqual([]);
   });
@@ -126,39 +155,137 @@ describe("숫자 선택과 청약 패널", () => {
     const { rerender } = render(draw());
     act(() => mapProps.onGroupSelect?.(["a", "b"]));
     fireEvent.change(screen.getByRole("combobox", { name: "결과 정렬" }), { target: { value: "HOUSEHOLDS" } });
-    expect(navigation.push).toHaveBeenCalledWith("/subscriptions?view=map&sort=HOUSEHOLDS", { scroll: false });
+    expect(navigation.push).toHaveBeenCalledWith("/subscriptions?sort=HOUSEHOLDS", { scroll: false });
     rerender(draw([...items].reverse()));
     expect(resultTitles()).toEqual(["도봉 방학동", "강남 개포동"]);
   });
 
-  it("빈 결과·좌표 누락은 패널을 열지 않고 지도 위에서 안내한다", () => {
+  it("빈 결과·좌표 누락은 목록 안에서 안내한다", () => {
     const { rerender } = render(draw([]));
-    expect(screen.getByText(/조건에 맞는 공고가 없습니다/)).toBeInTheDocument();
+    expect(within(panel()).getByText(/조건에 맞는 공고가 없습니다/)).toBeInTheDocument();
     rerender(draw([{ ...base, coord: null }]));
     expect(mapProps.markers).toHaveLength(0);
-    expect(screen.getByText(/좌표가 없는 공고 1건/)).toBeInTheDocument();
-    expect(panel()).not.toBeInTheDocument();
+    expect(within(panel()).getByText(/좌표가 없는 공고 1건/)).toBeInTheDocument();
+    expect(within(panel()).getByRole("link", { name: "목록 보기" })).toHaveAttribute("href", "/subscriptions?view=list");
+  });
+});
+
+describe("모바일 목록 시트", () => {
+  // jsdom에는 PointerEvent가 없어 clientY가 사라진다. 좌표를 싣는 MouseEvent로 대신한다
+  beforeEach(() => {
+    vi.stubGlobal("PointerEvent", class extends MouseEvent {
+      pointerId: number;
+      constructor(type: string, init: PointerEventInit = {}) { super(type, init); this.pointerId = init.pointerId ?? 0; }
+    });
   });
 
-  it.each([["지역", "region", "서울"], ["면적", "size", "20-25"], ["공급기관", "agency", "LH"], ["모집 상태", "status", "접수중"]])("%s 필터 URL 계약을 유지한다", (label, key, value) => {
+  it("손잡이를 누르면 반 높이와 접힘을 오간다", () => {
+    render(draw());
+    expect(panel()).toHaveAttribute("data-sheet", "peek");
+    fireEvent.click(within(panel()).getByRole("button", { name: "청약 목록 펼치기" }));
+    expect(panel()).toHaveAttribute("data-sheet", "half");
+    fireEvent.click(within(panel()).getByRole("button", { name: "청약 목록 접기" }));
+    expect(panel()).toHaveAttribute("data-sheet", "peek");
+  });
+
+  it("끌면 다음 단계에 붙고, 길게 끌면 한 단계를 건너뛰며, 끈 뒤의 누름은 무시한다", () => {
+    render(draw());
+    Object.defineProperty(panel().parentElement!, "clientHeight", { configurable: true, value: 600 });
+    const drag = (fromY: number, toY: number) => {
+      fireEvent.pointerDown(handle(), { clientY: fromY, pointerId: 1 });
+      fireEvent.pointerMove(handle(), { clientY: toY, pointerId: 1 });
+      fireEvent.pointerUp(handle(), { clientY: toY, pointerId: 1 });
+      fireEvent.click(handle());
+    };
+    drag(560, 500);
+    expect(panel()).toHaveAttribute("data-sheet", "half");
+    drag(300, 600 - 20);
+    expect(panel()).toHaveAttribute("data-sheet", "peek");
+    drag(560, 300);
+    expect(panel()).toHaveAttribute("data-sheet", "full");
+  });
+
+  it("손가락이 조금만 움직이면 끌기가 아니라 누름이다", () => {
+    render(draw());
+    fireEvent.pointerDown(handle(), { clientY: 560, pointerId: 1 });
+    fireEvent.pointerMove(handle(), { clientY: 556, pointerId: 1 });
+    fireEvent.pointerUp(handle(), { clientY: 556, pointerId: 1 });
+    fireEvent.click(handle());
+    expect(panel()).toHaveAttribute("data-sheet", "half");
+  });
+
+  it("배지·핀을 누르면 접힌 시트를 반 높이로 펼치고, 이미 펼쳤으면 그대로 둔다", () => {
+    render(draw());
+    act(() => mapProps.onGroupSelect?.(["a"]));
+    expect(panel()).toHaveAttribute("data-sheet", "half");
+    fireEvent.click(handle());
+    act(() => mapProps.onSelect?.("b"));
+    expect(panel()).toHaveAttribute("data-sheet", "half");
+  });
+});
+
+describe("지도 위치 보존", () => {
+  it("주소의 지도 위치로 열고, 되살린 자리를 SDK가 반올림해 돌려줘도 주소를 고치지 않다가 움직이면 바꾼다", () => {
+    const replaceState = vi.spyOn(window.history, "replaceState").mockImplementation(() => {});
+    navigation.params = new URLSearchParams("region=서울&lat=37.5&lng=127&zoom=5");
+    render(draw());
+    expect(mapProps.initialViewport).toEqual({ center: { lat: 37.5, lng: 127 }, level: 5 });
+    act(() => mapProps.onViewportChange?.({ center: { lat: 37.500004, lng: 127 }, level: 5 }));
+    act(() => mapProps.onViewportChange?.({ center: { lat: 37.500004, lng: 127 }, level: 5 }));
+    expect(replaceState).not.toHaveBeenCalled();
+    act(() => mapProps.onViewportChange?.({ center: { lat: 37.6, lng: 127.1 }, level: 6 }));
+    expect(replaceState).toHaveBeenLastCalledWith(null, "", expect.stringContaining("lat=37.60000&lng=127.10000&zoom=6"));
+    // 서버를 다시 부르는 라우터 이동은 쓰지 않는다
+    expect(navigation.push).not.toHaveBeenCalled();
+    replaceState.mockRestore();
+  });
+
+  it("주소에 위치가 없으면 공고 전체에 맞춘 자리를 바로 적는다", () => {
+    const replaceState = vi.spyOn(window.history, "replaceState").mockImplementation(() => {});
+    render(draw());
+    expect(mapProps.initialViewport).toBeUndefined();
+    act(() => mapProps.onViewportChange?.({ center: { lat: 37.55, lng: 126.99 }, level: 8 }));
+    expect(replaceState).toHaveBeenCalledWith(null, "", expect.stringContaining("zoom=8"));
+    replaceState.mockRestore();
+  });
+});
+
+describe("툴바와 필터 주소", () => {
+  it("툴바·탐색 메뉴의 실제 높이를 작업 공간에 넘기고, 툴바가 줄바꿈되면 다시 넘긴다", () => {
+    const heights = new Map([["map-workspace-toolbar", 62], ["map-workspace-rail", 54]]);
+    const offsetHeight = vi.spyOn(HTMLElement.prototype, "offsetHeight", "get").mockImplementation(function (this: HTMLElement) {
+      return [...heights].find(([name]) => this.classList.contains(name))?.[1] ?? 0;
+    });
+    render(draw());
+    const workspace = screen.getByRole("main", { name: "공공주택 지도 탐색" });
+    expect(workspace.style.getPropertyValue("--map-toolbar-height")).toBe("62px");
+    expect(workspace.style.getPropertyValue("--map-rail-height")).toBe("54px");
+    heights.set("map-workspace-toolbar", 114);
+    act(() => resize());
+    expect(workspace.style.getPropertyValue("--map-toolbar-height")).toBe("114px");
+    offsetHeight.mockRestore();
+  });
+
+  it.each([["지역", "region", "서울"], ["면적", "size", "20-25"], ["공급기관", "agency", "LH"], ["모집 상태", "status", "접수중"]])("%s 필터 URL 계약을 유지하고 첫 화면이라 view를 붙이지 않는다", (label, key, value) => {
     render(draw());
     fireEvent.change(screen.getByRole("combobox", { name: label }), { target: { value } });
     const url = new URL(navigation.push.mock.calls[0][0], "https://example.com");
+    expect(url.pathname).toBe("/subscriptions");
     expect(url.searchParams.get(key)).toBe(value);
-    expect(url.searchParams.get("view")).toBe("map");
+    expect(url.searchParams.get("view")).toBeNull();
   });
 
-  it("초기화·뒤로가기·검색어 URL 복원을 유지하고 검색도 자동 확대하지 않는다", () => {
-    navigation.params = new URLSearchParams("view=map&sort=HOUSEHOLDS&region=서울&size=20-25&agency=LH&status=접수중&q=강남");
+  it("초기화는 필터만 지우고 정렬·지도 위치는 남기며, 검색도 자동 확대하지 않는다", () => {
+    navigation.params = new URLSearchParams("sort=HOUSEHOLDS&region=서울&size=20-25&agency=LH&status=접수중&q=강남&lat=37.5&lng=127&zoom=5");
     const { rerender } = render(draw());
     fireEvent.click(screen.getByRole("button", { name: "초기화" }));
-    expect(navigation.push).toHaveBeenLastCalledWith("/subscriptions?view=map&sort=HOUSEHOLDS", { scroll: false });
-    navigation.params = new URLSearchParams("view=map&region=서울");
+    expect(navigation.push).toHaveBeenLastCalledWith("/subscriptions?sort=HOUSEHOLDS&lat=37.5&lng=127&zoom=5", { scroll: false });
+    navigation.params = new URLSearchParams("region=서울");
     rerender(draw());
     expect(screen.getByRole("combobox", { name: "지역" })).toHaveValue("서울");
     fireEvent.change(screen.getByRole("textbox", { name: "지역, 주택명 검색" }), { target: { value: "  개포  " } });
     fireEvent.submit(screen.getByRole("search"));
     expect(decodeURIComponent(navigation.push.mock.calls.at(-1)![0])).toContain("q=개포");
-    rerender(draw([base]));
+    expect(mapProps.fitRequest).toBe(0);
   });
 });
