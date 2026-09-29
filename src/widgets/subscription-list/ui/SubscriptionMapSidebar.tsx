@@ -27,8 +27,9 @@ interface Props {
 const SHEET_HEIGHT_CLASS: Record<MapSheetSnap, string> = { peek: "max-md:h-16", half: "max-md:h-1/2", full: "max-md:map-sheet-full" };
 
 function panelDisplay(open: boolean, detailOpen: boolean) {
-  // 모바일 시트는 늘 떠 있다가 상세가 열리면 그 자리를 내준다. PC 패널은 닫기 버튼으로 접힌다
-  if (detailOpen) return open ? "hidden xl:flex" : "hidden";
+  // 모바일 상세는 화면 전체를 덮는 페이지라 시트는 그 밑에서 자리만 지킨다 — 상세로 날아갈 때 시트가 가릴 폭을 재야 한다.
+  // PC는 xl 미만에서 상세에 자리를 내주고, 닫기 버튼으로 접힌다
+  if (detailOpen) return open ? "flex max-md:invisible md:hidden xl:flex" : "flex max-md:invisible md:hidden";
   return open ? "flex" : "flex md:hidden";
 }
 
@@ -36,15 +37,21 @@ export function SubscriptionMapSidebar({ items, scope, open, sheet, onSheetChang
   const { params, update } = useSubscriptionFilters();
   const sheetRef = useRef<HTMLElement>(null);
   const listRef = useRef<HTMLDivElement>(null);
-  const { height, handle } = useSheetDrag(sheetRef, sheet, onSheetChange);
+  // 모바일에서 고른 공고 시트를 접는 것은 그 선택을 내려놓는 일이다 — 접으면 지도 영역 목록으로 돌아간다
+  const changeSheet = (next: MapSheetSnap) => {
+    onSheetChange(next);
+    if (next === "peek" && scope === "selection") onShowArea();
+  };
+  const { height, handle } = useSheetDrag(sheetRef, sheet, changeSheet);
   const selectionKey = items.map((item) => item.id).join("|");
   useEffect(() => { listRef.current?.scrollTo?.({ top: 0 }); }, [selectionKey]);
   // 접힌 시트에서는 손잡이 아래가 화면에 없다. 보이지 않는 카드로 초점이 들어가지 않게 숨긴다
   const collapsed = sheet === "peek" && "max-md:invisible";
+  const heightClass = sheet === "half" && scope === "selection" ? "max-md:map-sheet-fit" : SHEET_HEIGHT_CLASS[sheet];
 
   return (
     <aside ref={sheetRef} aria-label="청약 목록" data-open={open} data-sheet={sheet} style={height === null ? undefined : { height }}
-      className={cn(panelDisplay(open, detailOpen), "absolute inset-x-0 bottom-0 z-30 flex-col overflow-hidden rounded-t-2xl border-t border-line-subtle bg-surface shadow-sm md:relative md:inset-auto md:z-auto md:h-auto md:w-80 md:shrink-0 md:rounded-2xl md:border", height === null && SHEET_HEIGHT_CLASS[sheet])}>
+      className={cn(panelDisplay(open, detailOpen), "absolute inset-x-0 bottom-0 z-30 flex-col overflow-hidden rounded-t-2xl border-t border-line-subtle bg-surface shadow-sm max-md:bg-surface-secondary md:relative md:inset-auto md:z-auto md:h-auto md:w-80 md:shrink-0 md:rounded-2xl md:border", height === null && heightClass)}>
       <div className="relative shrink-0 border-b border-line-subtle px-5 pb-3 pt-2 md:pt-3">
         <div aria-hidden className="mx-auto mb-1 h-1 w-10 rounded-full bg-line-strong md:hidden" />
         <div className="flex min-h-11 items-center gap-2">
@@ -55,15 +62,15 @@ export function SubscriptionMapSidebar({ items, scope, open, sheet, onSheetChang
         </div>
         {/* 모바일 손잡이. 제목 줄 전체를 덮어 누르기·끌기 영역을 넓힌다 */}
         <button type="button" aria-expanded={sheet !== "peek"} aria-label={sheet === "peek" ? "청약 목록 펼치기" : "청약 목록 접기"} className="absolute inset-x-0 top-0 h-16 touch-none md:hidden" {...handle} />
-        <div className={cn("mt-2 flex items-center justify-between gap-2", collapsed)}>
+        <div className={cn("mt-2 flex items-center justify-between gap-2", collapsed, scope === "selection" && "max-md:hidden")}>
           {scope === "selection" ? <Button type="button" size="sm" variant="ghost" onClick={onShowArea} className="min-h-11 !px-2">← 지도 영역 전체 보기</Button> : <span />}
           <select aria-label="결과 정렬" value={params.get("sort") ?? DEFAULT_SORT} onChange={(event) => update("sort", event.target.value, event.target.value === DEFAULT_SORT)} className="h-11 rounded-lg border border-line bg-surface px-2 text-xs font-semibold text-fg-body">
             {SORT_OPTIONS.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}
           </select>
         </div>
       </div>
-      <div ref={listRef} className={cn("min-h-0 flex-1 space-y-2 overflow-y-auto overscroll-contain p-2", collapsed)} aria-label="청약 결과">
-        {items.length > 0 ? items.map((item) => <SubscriptionMapResultCard key={item.id} item={item} active={activeId === item.id} onSelect={() => onDetail(item.id)} />) : empty}
+      <div ref={listRef} className={cn("min-h-0 flex-1 space-y-2 overflow-y-auto overscroll-contain p-2 max-md:space-y-3 max-md:p-3", collapsed)} aria-label="청약 결과">
+        {items.length > 0 ? items.map((item) => <SubscriptionMapResultCard key={item.id} item={item} active={activeId === item.id} showCta={scope === "selection"} onSelect={() => onDetail(item.id)} />) : empty}
         {footer}
       </div>
     </aside>

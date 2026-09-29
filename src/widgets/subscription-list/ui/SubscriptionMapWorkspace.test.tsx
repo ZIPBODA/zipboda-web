@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { act, fireEvent, render, screen, within } from "@testing-library/react";
+import { act, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import type { Subscription } from "@/entities/subscription";
 import type { MapViewProps } from "@/shared/ui/map";
 import { SubscriptionMapWorkspace } from "./SubscriptionMapWorkspace";
@@ -224,6 +224,42 @@ describe("모바일 목록 시트", () => {
   });
 });
 
+describe("모바일 지도 선택 시트와 검색", () => {
+  it("지도에서 고른 카드에만 '상세 보기' 버튼 모양을 덧대고, 시트를 접으면 선택을 내려놓고 지도 영역 목록으로 돌아간다", () => {
+    render(draw());
+    expect(screen.queryByText("상세 보기")).not.toBeInTheDocument();
+    act(() => mapProps.onSelect?.("b"));
+    expect(within(panel()).getByText("상세 보기")).toBeInTheDocument();
+    fireEvent.click(within(panel()).getByRole("button", { name: "청약 목록 접기" }));
+    expect(panel()).toHaveAttribute("data-sheet", "peek");
+    expect(panelStatus()).toBe("이 지역 3건");
+    expect(mapProps.selectedIds).toEqual([]);
+  });
+
+  it("지도 영역 목록은 접어도 그대로다", () => {
+    render(draw());
+    fireEvent.click(within(panel()).getByRole("button", { name: "청약 목록 펼치기" }));
+    fireEvent.click(within(panel()).getByRole("button", { name: "청약 목록 접기" }));
+    expect(panelStatus()).toBe("이 지역 3건");
+  });
+
+  it("검색창은 접혀 있다가 검색 아이콘으로 펼치고, 검색어를 들고 들어오면 초점은 건드리지 않고 펼친 채로 연다", async () => {
+    const { unmount } = render(draw());
+    const toggle = screen.getByRole("button", { name: "검색 열기" });
+    expect(toggle).toHaveAttribute("aria-expanded", "false");
+    expect(toggle).toHaveAttribute("aria-controls", screen.getByRole("search").id);
+    fireEvent.click(toggle);
+    expect(screen.getByRole("button", { name: "검색 닫기" })).toHaveAttribute("aria-expanded", "true");
+    await waitFor(() => expect(screen.getByRole("textbox", { name: "지역, 주택명 검색" })).toHaveFocus());
+    unmount();
+    navigation.params = new URLSearchParams("q=강남");
+    render(draw());
+    expect(screen.getByRole("button", { name: "검색 닫기" })).toHaveAttribute("aria-expanded", "true");
+    await new Promise((resolve) => requestAnimationFrame(resolve));
+    expect(screen.getByRole("textbox", { name: "지역, 주택명 검색" })).not.toHaveFocus();
+  });
+});
+
 describe("지도 위치 보존", () => {
   it("주소의 지도 위치로 열고, 되살린 자리를 SDK가 반올림해 돌려줘도 주소를 고치지 않다가 움직이면 바꾼다", () => {
     const replaceState = vi.spyOn(window.history, "replaceState").mockImplementation(() => {});
@@ -251,15 +287,14 @@ describe("지도 위치 보존", () => {
 });
 
 describe("툴바와 필터 주소", () => {
-  it("툴바·탐색 메뉴의 실제 높이를 작업 공간에 넘기고, 툴바가 줄바꿈되면 다시 넘긴다", () => {
-    const heights = new Map([["map-workspace-toolbar", 62], ["map-workspace-rail", 54]]);
+  it("툴바의 실제 높이를 작업 공간에 넘기고, 툴바가 줄바꿈되면 다시 넘긴다", () => {
+    const heights = new Map([["map-workspace-toolbar", 62]]);
     const offsetHeight = vi.spyOn(HTMLElement.prototype, "offsetHeight", "get").mockImplementation(function (this: HTMLElement) {
       return [...heights].find(([name]) => this.classList.contains(name))?.[1] ?? 0;
     });
     render(draw());
     const workspace = screen.getByRole("main", { name: "공공주택 지도 탐색" });
     expect(workspace.style.getPropertyValue("--map-toolbar-height")).toBe("62px");
-    expect(workspace.style.getPropertyValue("--map-rail-height")).toBe("54px");
     heights.set("map-workspace-toolbar", 114);
     act(() => resize());
     expect(workspace.style.getPropertyValue("--map-toolbar-height")).toBe("114px");
