@@ -43,3 +43,6 @@ export const MAP_OVERLAY_SELECTORS = {
   panels: 'aside[aria-label="청약 목록"], aside[aria-label="선택한 청약 상세"]',
   bottomBar: ".map-workspace-status, .map-workspace-count"
 } as const;
+
+/** 위치 안내가 떠 있는 시간. 실패 안내는 문장이 길어 읽을 시간을 더 준다 */
+export const MAP_LOCATION_NOTICE_MS = { success: 3000, error: 6000 } as const;

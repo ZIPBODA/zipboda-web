@@ -17,12 +17,13 @@ function RailButton({ icon, children, ...props }: { icon: ReactNode; children: R
   );
 }
 
-export function SubscriptionMapRail({ onFit, onLocate, locating, satellite, onMapType, hasMarkers }: {
-  onFit: () => void; onLocate: () => void; locating: boolean; satellite: boolean; onMapType: () => void; hasMarkers: boolean;
+export function SubscriptionMapRail({ onFit, onLocate, locating, mapReady, satellite, onMapType, hasMarkers }: {
+  onFit: () => void; onLocate: () => void; locating: boolean; mapReady: boolean; satellite: boolean; onMapType: () => void; hasMarkers: boolean;
 }) {
   return <nav aria-label="청약 탐색 메뉴" className="map-workspace-rail map-workspace-below-toolbar absolute left-3 z-20 flex flex-col overflow-hidden rounded-lg border border-line bg-surface shadow-sm md:relative md:left-auto md:top-auto md:z-auto md:w-20 md:shrink-0 md:self-start md:gap-2 md:overflow-visible md:rounded-2xl md:border-line-subtle md:p-2">
     <RailButton icon={<FitIcon />} disabled={!hasMarkers} onClick={onFit}>전체 위치</RailButton>
-    <RailButton icon={<LocateIcon />} disabled={locating} onClick={onLocate}>{locating ? "위치 확인 중" : "내 위치"}</RailButton>
+    {/* 지도가 처음 자리를 잡기 전에 옮기면 그 자리잡기가 내 위치를 덮어쓴다. 지도를 못 띄운 경우에도 옮길 곳이 없다 */}
+    <RailButton icon={<LocateIcon />} disabled={locating || !mapReady} onClick={onLocate}>{locating ? "위치 확인 중" : "내 위치"}</RailButton>
     <RailButton icon={<LayersIcon />} aria-label="위성지도" aria-pressed={satellite} onClick={onMapType}>{satellite ? "일반지도" : "위성지도"}</RailButton>
   </nav>;
 }

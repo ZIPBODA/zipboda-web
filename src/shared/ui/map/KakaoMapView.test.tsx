@@ -2,7 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { loadKakaoMaps } from "../../lib/kakaoMapLoader";
 import { createMarkerLayer } from "./createMarkerLayer";
-import { MAP_FOCUS_ANIMATION_MS, MAP_FOCUS_LEVEL } from "../../config/map";
+import { MAP_FOCUS_ANIMATION_MS, MAP_FOCUS_LEVEL, MAP_MY_LOCATION_LEVEL, MAP_MY_LOCATION_Z_INDEX } from "../../config/map";
 import { KakaoMapView } from "./KakaoMapView";
 import type { MapMarker } from "./types";
 
@@ -17,13 +17,17 @@ const markers: MapMarker[] = [
 function setupSdk() {
   let level = 8;
   let idle: (() => void) | undefined;
+  const handlers = new Map<string, () => void>();
+  const overlays: { options: { content: HTMLElement; zIndex?: number; position: { lat: number; lng: number } }; setMap: ReturnType<typeof vi.fn> }[] = [];
+  const circles: { options: { radius: number; center: { lat: number; lng: number } }; setMap: ReturnType<typeof vi.fn> }[] = [];
   let resize: ResizeObserverCallback | undefined;
   const contain = vi.fn(() => true);
   const origin = { lat: 37.5, lng: 127, getLat: (): number => 37.5, getLng: (): number => 127 };
   const map = {
     jump: vi.fn(), setCopyrightPosition: vi.fn(),
     setCenter: vi.fn(), panBy: vi.fn(), getCenter: vi.fn(() => origin),
-    getProjection: () => ({ containerPointFromCoords: () => ({ x: 0, y: 0 }), coordsFromContainerPoint: (p: { x: number; y: number }) => ({ getLat: () => 37.5 - p.y / 10000, getLng: () => 127 + p.x / 10000 }) }),
+    // 화면 가운데(37.5, 127)를 원점으로 1픽셀 = 0.0001도인 투영. 두 방향이 서로 되돌린다
+    getProjection: () => ({ containerPointFromCoords: (c: { lat: number; lng: number }) => ({ x: (c.lng - 127) * 10000, y: (37.5 - c.lat) * 10000 }), coordsFromContainerPoint: (p: { x: number; y: number }) => ({ getLat: () => 37.5 - p.y / 10000, getLng: () => 127 + p.x / 10000 }) }),
     setBounds: vi.fn(), getBounds: () => ({ contain }), relayout: vi.fn(),
     getLevel: () => level,
     setLevel: vi.fn((next: number) => { level = next; idle?.(); })
@@ -32,13 +36,14 @@ function setupSdk() {
   const maps = {
     Marker: class { setMap = vi.fn(); },
     Point: class { constructor(public x: number, public y: number) {} },
-    CustomOverlay: class { setMap = vi.fn(); },
+    CustomOverlay: class { setMap = vi.fn(); constructor(public options: { content: HTMLElement; zIndex?: number; position: { lat: number; lng: number } }) { overlays.push(this); } },
+    Circle: class { setMap = vi.fn(); constructor(public options: { radius: number; center: { lat: number; lng: number } }) { circles.push(this); } },
     Map: constructor, MarkerClusterer: vi.fn(),
     CopyrightPosition: { BOTTOMLEFT: 0, BOTTOMRIGHT: 1 },
     LatLng: class { constructor(public lat: number, public lng: number) {} },
     LatLngBounds: class {},
     event: {
-      addListener: vi.fn((_map: unknown, _name: string, handler: () => void) => { idle = handler; }),
+      addListener: vi.fn((_map: unknown, name: string, handler: () => void) => { handlers.set(name, handler); if (name === "idle") idle = handler; }),
       removeListener: vi.fn()
     }
   };
@@ -50,13 +55,60 @@ function setupSdk() {
     observe() {} disconnect() {}
   });
   vi.mocked(loadKakaoMaps).mockResolvedValue({ status: "ready", maps: maps as unknown as typeof kakao.maps });
-  return { map, maps, constructor, layer, contain, idle: () => act(() => idle?.()), resize: () => act(() => resize?.([], {} as ResizeObserver)) };
+  return { map, maps, constructor, layer, contain, overlays, circles, emit: (name: string) => act(() => handlers.get(name)?.()), idle: () => act(() => idle?.()), resize: () => act(() => resize?.([], {} as ResizeObserver)) };
 }
 
 beforeEach(() => vi.clearAllMocks());
 afterEach(() => vi.unstubAllGlobals());
 
 describe("지도 상태 갱신", () => {
+  const here = { point: { lat: 37.6, lng: 127.1 }, accuracy: 30, padding: [0, 0, 400, 0] as const };
+  const dotsOf = (sdk: ReturnType<typeof setupSdk>) => sdk.overlays.filter((overlay) => overlay.options.content.getAttribute("aria-label") === "내 위치");
+
+  it("내 위치를 받으면 가려진 폭을 비켜 동네 배율까지 날아가고, 핀·이름표 위에 파란 점과 오차 원을 남긴다", async () => {
+    const sdk = setupSdk();
+    const { rerender } = render(<KakaoMapView markers={markers} clustering myLocation={here} />);
+    await waitFor(() => expect(sdk.map.jump).toHaveBeenCalledTimes(1));
+    const [center, level] = sdk.map.jump.mock.calls[0] as [{ getLat: () => number; getLng: () => number }, number];
+    expect(level).toBe(MAP_MY_LOCATION_LEVEL);
+    // 내 위치(37.6, 127.1)로 가되, 아래 400px이 가려졌으니 점이 남은 화면 가운데 오도록 중심은 점보다 200px 아래다.
+    // 그 200px은 도착 배율(5) 기준이라 지금(8) 기준으로는 2^3분의 1이다
+    expect(center.getLat()).toBeCloseTo(37.6 - 200 / 8 / 10000, 8);
+    expect(center.getLng()).toBeCloseTo(127.1, 8);
+    const [dot] = dotsOf(sdk);
+    expect(dot.options.zIndex).toBe(MAP_MY_LOCATION_Z_INDEX);
+    expect(dot.options.position).toMatchObject({ lat: 37.6, lng: 127.1 });
+    expect(sdk.circles[0].options.center).toMatchObject({ lat: 37.6, lng: 127.1 });
+    expect(sdk.circles.map((circle) => circle.options.radius)).toEqual([30]);
+    rerender(<KakaoMapView markers={markers} clustering myLocation={{ ...here, accuracy: 12 }} />);
+    await waitFor(() => expect(sdk.map.jump).toHaveBeenCalledTimes(2));
+    // 옛 표시는 걷고 새 자리에만 남긴다
+    expect(dot.setMap).toHaveBeenLastCalledWith(null);
+    expect(sdk.circles[0].setMap).toHaveBeenLastCalledWith(null);
+    expect(sdk.circles[1].options.radius).toBe(12);
+  });
+
+  it("이미 더 가까이 보고 있으면 물러나지 않고, 오차를 모르면 점만 찍는다", async () => {
+    const sdk = setupSdk();
+    const { rerender } = render(<KakaoMapView markers={markers} clustering />);
+    await waitFor(() => expect(sdk.constructor).toHaveBeenCalled());
+    sdk.map.setLevel(2);
+    rerender(<KakaoMapView markers={markers} clustering myLocation={{ ...here, accuracy: null }} />);
+    await waitFor(() => expect(sdk.map.jump).toHaveBeenCalled());
+    expect(sdk.map.jump.mock.calls.at(-1)?.[1]).toBe(2);
+    expect(dotsOf(sdk)).toHaveLength(1);
+    expect(sdk.circles).toHaveLength(0);
+  });
+
+  it("사용자가 지도를 끌기 시작하면 알린다", async () => {
+    const sdk = setupSdk();
+    const onDragStart = vi.fn();
+    render(<KakaoMapView markers={markers} clustering onDragStart={onDragStart} />);
+    await waitFor(() => expect(sdk.constructor).toHaveBeenCalled());
+    sdk.emit("dragstart");
+    expect(onDragStart).toHaveBeenCalledOnce();
+  });
+
   it("지난번 자리를 받으면 마커 전체에 맞추지 않고 그 자리로 열고, 멈출 때마다 자리를 알린다", async () => {
     const sdk = setupSdk();
     const onViewportChange = vi.fn();
