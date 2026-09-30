@@ -74,6 +74,11 @@ declare namespace kakao.maps {
     getContent(): HTMLElement | string;
   }
 
+  class Circle {
+    constructor(options: { center: LatLng; radius: number; strokeWeight?: number; strokeColor?: string; strokeOpacity?: number; fillColor?: string; fillOpacity?: number });
+    setMap(map: Map | null): void;
+  }
+
   interface MarkerClustererOptions {
     map: Map;
     gridSize?: number;

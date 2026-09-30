@@ -53,6 +53,15 @@ export const MAP_SINGLE_PIN_LEVEL = 5;
 export const MAP_PIN_LABEL_Z_INDEX = { idle: 2, selected: 3 } as const;
 
 /**
+ * 내 위치로 옮길 때 멈추는 배율. 청약 핀·이름표가 보이기 시작하는 단계라 내 주변 공고가 바로 보인다.
+ * 이미 더 가까이 보고 있으면 물러나지 않는다.
+ */
+export const MAP_MY_LOCATION_LEVEL = MAP_SINGLE_PIN_LEVEL;
+
+/** 내 위치 점은 청약 핀·이름표보다 위에 둔다 — 어디가 나인지 가장 먼저 보여야 한다 */
+export const MAP_MY_LOCATION_Z_INDEX = MAP_PIN_LABEL_Z_INDEX.selected + 1;
+
+/**
  * minClusterSize 1은 한 건도 배지로 만든다. 카카오 SDK에서 실제로 1건짜리 묶음이 생기는 것을
  * 확인하고 정했다(그 아래 단계에서는 SDK가 스스로 개별 마커로 되돌린다).
  * 확대 단계에 따라 이 값을 2로 바꾸면 한 건짜리만 핀으로 풀린다 — minClusterSizeFor 참고.

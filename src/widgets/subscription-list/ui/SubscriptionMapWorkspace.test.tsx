@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { act, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import type { Subscription } from "@/entities/subscription";
 import type { MapViewProps } from "@/shared/ui/map";
@@ -29,6 +29,16 @@ beforeEach(() => {
     observe() {} disconnect() {}
   });
 });
+
+// 가짜 타이머·위치 흉내를 쓰는 테스트가 중간에 실패해도 다음 테스트로 새지 않게 한다
+afterEach(() => {
+  vi.useRealTimers();
+  Reflect.deleteProperty(navigator, "geolocation");
+});
+type Locate = (success: (position: unknown) => void, failure: (error: unknown) => void) => void;
+const geolocate = (getCurrentPosition: Locate) => Object.defineProperty(navigator, "geolocation", { configurable: true, value: { getCurrentPosition } });
+// 지도가 첫 화면 범위를 알려 와야 자리를 잡은 것이다
+const mapReady = () => act(() => mapProps.onVisibleMarkersChange?.(items.map((item) => item.id)));
 
 describe("지도 첫 화면과 청약 목록", () => {
   it("처음부터 지금 지도에 보이는 공고 목록을 펼쳐 두고 지도·목록 전환을 둔다", () => {
@@ -128,16 +138,72 @@ describe("지도 첫 화면과 청약 목록", () => {
     expect(mapProps.selectedIds).toEqual(["a", "b"]);
   });
 
-  it("위치 권한 거부는 지도와 선택을 바꾸지 않고 안내한다", () => {
-    const getCurrentPosition = vi.fn((_success, failure) => failure({ code: 1 }));
-    Object.defineProperty(navigator, "geolocation", { configurable: true, value: { getCurrentPosition } });
+  it("지도가 처음 자리를 잡기 전에는 내 위치를 누를 수 없다 — 그 자리잡기가 내 위치를 덮어쓴다", () => {
     render(draw());
+    expect(screen.getByRole("button", { name: "내 위치" })).toBeDisabled();
+    mapReady();
+    expect(screen.getByRole("button", { name: "내 위치" })).toBeEnabled();
+  });
+
+  it("위치 권한 거부는 지도와 선택을 바꾸지 않고 안내하며, 안내는 읽을 시간을 두고 6초 뒤 사라진다", () => {
+    vi.useFakeTimers();
+    geolocate((_success, failure) => failure({ code: 1, PERMISSION_DENIED: 1 }));
+    render(draw());
+    mapReady();
     act(() => mapProps.onGroupSelect?.(["a"]));
     fireEvent.click(screen.getByRole("button", { name: "내 위치" }));
     expect(screen.getByText(/위치 권한이 거부/)).toBeInTheDocument();
-    expect(mapProps.locationRequest).toBeUndefined();
+    expect(mapProps.myLocation).toBeUndefined();
     expect(mapProps.selectedIds).toEqual(["a"]);
-    Reflect.deleteProperty(navigator, "geolocation");
+    act(() => vi.advanceTimersByTime(5999));
+    expect(screen.getByText(/위치 권한이 거부/)).toBeInTheDocument();
+    act(() => vi.advanceTimersByTime(1));
+    expect(screen.queryByText(/위치 권한이 거부/)).not.toBeInTheDocument();
+  });
+
+  it("권한 외 실패(시간 초과 등)는 다시 시도하라고 안내한다", () => {
+    geolocate((_success, failure) => failure({ code: 3, PERMISSION_DENIED: 1 }));
+    render(draw());
+    mapReady();
+    fireEvent.click(screen.getByRole("button", { name: "내 위치" }));
+    expect(screen.getByText("현재 위치를 확인하지 못했습니다. 다시 시도해 주세요.")).toBeInTheDocument();
+  });
+
+  it("내 위치를 찾으면 오차와 가려진 폭을 지도에 넘기고, 이동 안내는 3초 뒤 사라진다", () => {
+    vi.useFakeTimers();
+    geolocate((success) => success({ coords: { latitude: 37.55, longitude: 126.99, accuracy: 25 } }));
+    render(draw());
+    mapReady();
+    fireEvent.click(screen.getByRole("button", { name: "내 위치" }));
+    expect(mapProps.myLocation).toEqual({ point: { lat: 37.55, lng: 126.99 }, accuracy: 25, padding: [0, 0, 0, 0] });
+    // 안내는 늘 있는 알림 영역 안에 뜬다
+    expect(screen.getByText("현재 위치로 이동했습니다.").closest("[role=status]")).toBeInTheDocument();
+    act(() => vi.advanceTimersByTime(3000));
+    expect(screen.queryByText("현재 위치로 이동했습니다.")).not.toBeInTheDocument();
+  });
+
+  it("위치를 알 수 없는 브라우저에서는 지도를 옮기지 않고 실패 안내만 띄운다", () => {
+    vi.useFakeTimers();
+    Object.defineProperty(navigator, "geolocation", { configurable: true, value: undefined });
+    render(draw());
+    mapReady();
+    fireEvent.click(screen.getByRole("button", { name: "내 위치" }));
+    expect(screen.getByText("현재 브라우저에서 위치 확인을 지원하지 않습니다.")).toBeInTheDocument();
+    expect(mapProps.myLocation).toBeUndefined();
+    act(() => vi.advanceTimersByTime(6000));
+    expect(screen.queryByText("현재 브라우저에서 위치 확인을 지원하지 않습니다.")).not.toBeInTheDocument();
+  });
+
+  it("지도를 끌기 시작하면 떠 있던 위치 안내를 바로 걷는다", () => {
+    geolocate((success) => success({ coords: { latitude: 37.55, longitude: 126.99, accuracy: Number.NaN } }));
+    render(draw());
+    mapReady();
+    fireEvent.click(screen.getByRole("button", { name: "내 위치" }));
+    // 오차를 알 수 없으면 원 없이 점만 찍는다
+    expect(mapProps.myLocation?.accuracy).toBeNull();
+    expect(screen.getByText("현재 위치로 이동했습니다.")).toBeInTheDocument();
+    act(() => mapProps.onDragStart?.());
+    expect(screen.queryByText("현재 위치로 이동했습니다.")).not.toBeInTheDocument();
   });
 
   it("필터에서 사라진 선택을 지우고, 모두 사라지면 지도 영역 목록으로 돌아가며 초기화해도 되살리지 않는다", () => {

@@ -13,6 +13,14 @@ export interface MapViewport {
   level: number;
 }
 
+/** 기기가 알려준 내 위치. 가려진 폭(padding)을 비켜 그 자리로 옮긴다 */
+export interface MapMyLocation {
+  point: GeoPoint;
+  /** 오차 반경(m). 모르면 점만 찍는다 */
+  accuracy: number | null;
+  padding: readonly [top: number, right: number, bottom: number, left: number];
+}
+
 /** 제공자에 기대지 않는 계약 — 카카오를 다른 지도로 바꿔도 이 모양은 그대로다 */
 export interface MapViewProps {
   markers: MapMarker[];
@@ -35,7 +43,10 @@ export interface MapViewProps {
   onGroupSelect?: (ids: string[]) => void;
   selectedIds?: readonly string[];
   fitRequest?: number;
-  locationRequest?: GeoPoint;
+  /** 받을 때마다 그 자리로 옮기고 파란 점과 오차 원을 남긴다 */
+  myLocation?: MapMyLocation;
+  /** 사용자가 손으로 끌기 시작할 때만 온다 — 코드가 지도를 옮길 때(jump·setCenter)는 오지 않는다 */
+  onDragStart?: () => void;
   focusRequest?: { point: GeoPoint; padding: readonly [number, number, number, number] };
   mapType?: "roadmap" | "hybrid";
   /** 지도 제공자 로고·축척을 둘 모서리. 왼쪽 아래를 패널이 덮는 화면은 오른쪽으로 옮겨 가리지 않는다 */

@@ -1,24 +1,40 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { MAP_LEVEL, MAP_FOCUS_ANIMATION_MS, MAP_FOCUS_LEVEL, MAP_SINGLE_MARKER_LEVEL, MAP_SINGLE_PIN_LEVEL, MAP_ZOOM_RANGE } from "../../config/map";
-import { boundsOf } from "../../lib/geo";
+import { MAP_LEVEL, MAP_FOCUS_ANIMATION_MS, MAP_FOCUS_LEVEL, MAP_MY_LOCATION_LEVEL, MAP_MY_LOCATION_Z_INDEX, MAP_SINGLE_MARKER_LEVEL, MAP_SINGLE_PIN_LEVEL, MAP_ZOOM_RANGE } from "../../config/map";
+import { MAP_ACCURACY_CIRCLE_STYLE } from "../../config/mapMyLocationStyle";
+import { boundsOf, type GeoPoint } from "../../lib/geo";
 import { loadKakaoMaps, type MapSdkStatus } from "../../lib/kakaoMapLoader";
 import { cn } from "../cn";
 import { createMarkerLayer } from "./createMarkerLayer";
 import type { MapViewProps } from "./types";
 
+/**
+ * 가려진 폭(padding)을 비켜 point가 남은 화면 가운데 오도록, 이동과 확대를 SDK의 jump 한 번으로 끝낸다.
+ * 프레임마다 중심을 옮기고 두 단계씩 끊어 확대하면 카카오가 단계마다 마커를 감춰 핀이 여러 번 깜빡인다.
+ */
+function jumpTo(maps: typeof kakao.maps, map: kakao.maps.Map, point: GeoPoint, targetLevel: number, [top, right, bottom, left]: readonly [number, number, number, number]) {
+  // 패딩은 화면 픽셀이고 투영은 지금 배율 기준이다. 도착 배율에서 그만큼 비껴 보이려면
+  // 배율 차이의 거듭제곱분의 1만 옮겨야 한다 — 한 단계마다 1픽셀이 담는 거리가 절반으로 준다.
+  const shrink = 2 ** (map.getLevel() - targetLevel);
+  const projection = map.getProjection();
+  const pin = projection.containerPointFromCoords(new maps.LatLng(point.lat, point.lng));
+  const center = projection.coordsFromContainerPoint(new maps.Point(pin.x + (right - left) / 2 / shrink, pin.y + (bottom - top) / 2 / shrink));
+  const reducedMotion = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches ?? false;
+  map.jump(center, targetLevel, { animate: reducedMotion ? false : { duration: MAP_FOCUS_ANIMATION_MS } });
+}
+
 export function KakaoMapView({
   markers, center = null, level = MAP_LEVEL.detail, interactive = true, clustering = false,
   selectedId = null, onSelect, onVisibleMarkersChange, fallback = null, className, ariaLabel = "지도",
-  initialCenter, fitPadding, controlsClassName, onGroupSelect, selectedIds, fitRequest = 0, locationRequest, mapType, focusRequest, attributionCorner, initialViewport, onViewportChange
+  initialCenter, fitPadding, controlsClassName, onGroupSelect, selectedIds, fitRequest = 0, myLocation, mapType, focusRequest, attributionCorner, initialViewport, onViewportChange, onDragStart
 }: MapViewProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const layerRef = useRef<ReturnType<typeof createMarkerLayer> | null>(null);
   const viewportCenter = useRef<kakao.maps.LatLng | null>(null);
   const viewportSize = useRef<{ width: number; height: number } | null>(null);
-  const callbacks = useRef({ onSelect, onGroupSelect, onVisibleMarkersChange, onViewportChange });
-  callbacks.current = { onSelect, onGroupSelect, onVisibleMarkersChange, onViewportChange };
+  const callbacks = useRef({ onSelect, onGroupSelect, onVisibleMarkersChange, onViewportChange, onDragStart });
+  callbacks.current = { onSelect, onGroupSelect, onVisibleMarkersChange, onViewportChange, onDragStart };
   const [map, setMap] = useState<kakao.maps.Map | null>(null);
   const [zoom, setZoom] = useState(level);
   const [status, setStatus] = useState<MapSdkStatus | "loading">("loading");
@@ -113,8 +129,31 @@ export function KakaoMapView({
 
   useEffect(() => {
     const maps = window.kakao?.maps;
-    if (map && maps && locationRequest) map.setCenter(new maps.LatLng(locationRequest.lat, locationRequest.lng));
-  }, [map, locationRequest]);
+    if (!map || !maps || !myLocation) return;
+    jumpTo(maps, map, myLocation.point, Math.min(map.getLevel(), MAP_MY_LOCATION_LEVEL), myLocation.padding);
+    const position = new maps.LatLng(myLocation.point.lat, myLocation.point.lng);
+    // SDK는 확대 애니메이션 동안 오버레이 크기를 0으로 재 앵커를 잡는다. 크기 없는 상자 가운데에 점을 CSS로 놓아
+    // 재는 값과 상관없이 점의 중심이 정확히 그 좌표에 오게 한다
+    const dot = document.createElement("div");
+    dot.className = "relative size-0";
+    dot.setAttribute("role", "img");
+    dot.setAttribute("aria-label", "내 위치");
+    const mark = document.createElement("span");
+    mark.className = "absolute left-0 top-0 size-4 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-surface bg-status-info shadow-sm";
+    dot.append(mark);
+    const overlay = new maps.CustomOverlay({ map, position, content: dot, zIndex: MAP_MY_LOCATION_Z_INDEX });
+    const accuracyCircle = myLocation.accuracy ? new maps.Circle({ center: position, radius: myLocation.accuracy, ...MAP_ACCURACY_CIRCLE_STYLE }) : null;
+    accuracyCircle?.setMap(map);
+    return () => { overlay.setMap(null); accuracyCircle?.setMap(null); };
+  }, [map, myLocation]);
+
+  useEffect(() => {
+    const maps = window.kakao?.maps;
+    if (!map || !maps) return;
+    const dragStart = () => callbacks.current.onDragStart?.();
+    maps.event.addListener(map, "dragstart", dragStart);
+    return () => maps.event.removeListener(map, "dragstart", dragStart);
+  }, [map]);
 
   useEffect(() => {
     const maps = window.kakao?.maps;
@@ -184,23 +223,10 @@ export function KakaoMapView({
     return () => observer.disconnect();
   }, [map, place]);
 
-  /**
-   * 목록에서 고른 집으로는 이동과 확대를 SDK의 jump 한 번으로 끝낸다.
-   * 프레임마다 중심을 옮기고 두 단계씩 끊어 확대하면 카카오가 단계마다 마커를 감춰 핀이 여러 번 깜빡인다.
-   */
   useEffect(() => {
     const maps = window.kakao?.maps;
     if (!map || !maps || !focusRequest) return;
-    const [top, right, bottom, left] = focusRequest.padding;
-    const targetLevel = Math.min(map.getLevel(), MAP_FOCUS_LEVEL);
-    // 패딩은 화면 픽셀이고 투영은 지금 배율 기준이다. 도착 배율에서 그만큼 비껴 보이려면
-    // 배율 차이의 거듭제곱분의 1만 옮겨야 한다 — 한 단계마다 1픽셀이 담는 거리가 절반으로 준다.
-    const shrink = 2 ** (map.getLevel() - targetLevel);
-    const projection = map.getProjection();
-    const pin = projection.containerPointFromCoords(new maps.LatLng(focusRequest.point.lat, focusRequest.point.lng));
-    const center = projection.coordsFromContainerPoint(new maps.Point(pin.x + (right - left) / 2 / shrink, pin.y + (bottom - top) / 2 / shrink));
-    const reducedMotion = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches ?? false;
-    map.jump(center, targetLevel, { animate: reducedMotion ? false : { duration: MAP_FOCUS_ANIMATION_MS } });
+    jumpTo(maps, map, focusRequest.point, Math.min(map.getLevel(), MAP_FOCUS_LEVEL), focusRequest.padding);
   }, [map, focusRequest]);
 
   if (!hasPlace || status === "disabled" || status === "failed") return <div className={className}>{fallback}</div>;

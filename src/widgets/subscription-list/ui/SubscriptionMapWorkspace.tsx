@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
-import type { GeoPoint } from "@/shared/lib/geo";
 import type { MapViewProps } from "@/shared/ui/map";
 import type { LoadMapDetail } from "../model/mapDetail";
 import { SubscriptionMapDetail } from "./SubscriptionMapDetail";
@@ -10,13 +9,14 @@ import { toMapMarkers, type Subscription, type SubscriptionFilterOptions } from 
 import { MAP_LEVEL } from "@/shared/config/map";
 import { Button } from "@/shared/ui";
 import { MapFallback, MapViewLoader } from "@/shared/ui/map";
-import { MAP_INITIAL_CENTER, MAP_GEOLOCATION_OPTIONS } from "../config/constants";
+import { MAP_INITIAL_CENTER } from "../config/constants";
 import { measureCoveredInsets, measureFitPadding, type CoveredInsets } from "../lib/measureCoveredInsets";
 import { useSubscriptionFilters } from "../model/useSubscriptionFilters";
 import { useMapOverlayHeights } from "../model/useMapOverlayHeights";
 import { useMapPanel } from "../model/useMapPanel";
 import { useMapViewportQuery } from "../model/useMapViewportQuery";
 import { useCloseOnBack } from "../model/useCloseOnBack";
+import { useMyLocation } from "../model/useMyLocation";
 import { SubscriptionMapToolbar } from "./SubscriptionMapToolbar";
 import { SubscriptionMapSidebar } from "./SubscriptionMapSidebar";
 import { SubscriptionMapRail } from "./SubscriptionMapRail";
@@ -33,12 +33,8 @@ export function SubscriptionMapWorkspace({ items, options, loadDetail }: { items
   const workspaceRef = useRef<HTMLElement>(null);
   useMapOverlayHeights(workspaceRef);
   const [fitRequest, setFitRequest] = useState(0);
-  const [locationRequest, setLocationRequest] = useState<GeoPoint>();
   const [satellite, setSatellite] = useState(false);
-  const [locating, setLocating] = useState(false);
-  const [locationMessage, setLocationMessage] = useState("");
-  const mounted = useRef(true);
-  useEffect(() => { mounted.current = true; return () => { mounted.current = false; }; }, []);
+  const { locating, myLocation, notice, locate, dismissNotice } = useMyLocation(workspaceRef);
   const { listHref } = useSubscriptionFilters();
   // 첫 맞춤은 지도 SDK가 준비되는 순간 일어난다. 그 전에 패널이 덮은 폭을 재 둬야 공고가 패널 밑에 숨지 않는다
   useLayoutEffect(() => { setFitPadding(measureFitPadding(workspaceRef.current)); }, []);
@@ -66,19 +62,6 @@ export function SubscriptionMapWorkspace({ items, options, loadDetail }: { items
     });
   };
   useCloseOnBack(panel.detailId !== null, closeDetail);
-  const locate = () => {
-    if (!navigator.geolocation) { setLocationMessage("현재 브라우저에서 위치 확인을 지원하지 않습니다."); return; }
-    setLocating(true); setLocationMessage("");
-    navigator.geolocation.getCurrentPosition((position) => {
-      if (!mounted.current) return;
-      setLocationRequest({ lat: position.coords.latitude, lng: position.coords.longitude });
-      setLocating(false); setLocationMessage("현재 위치로 이동했습니다.");
-    }, (error) => {
-      if (!mounted.current) return;
-      setLocating(false);
-      setLocationMessage(error.code === 1 ? "위치 권한이 거부되었습니다. 브라우저 설정에서 권한을 확인해 주세요." : "현재 위치를 확인하지 못했습니다. 다시 시도해 주세요.");
-    }, MAP_GEOLOCATION_OPTIONS);
-  };
   const visibleCount = panel.visibleItemIds.length;
   const missing = items.length - mapped.length;
   const emptyMessage = items.length === 0
@@ -93,14 +76,14 @@ export function SubscriptionMapWorkspace({ items, options, loadDetail }: { items
         <MapViewLoader markers={markers} clustering initialCenter={MAP_INITIAL_CENTER} initialViewport={initialViewport} level={MAP_LEVEL.list}
           fitPadding={fitPadding} selectedIds={panel.selection ?? []} selectedId={panel.detailId ?? (panel.selection?.length === 1 ? panel.selection[0] : null)}
           focusRequest={focusRequest}
-          fitRequest={fitRequest} locationRequest={locationRequest} mapType={satellite ? "hybrid" : "roadmap"} attributionCorner="bottom-right"
-          onSelect={(id) => panel.choose([id])} onGroupSelect={panel.choose} onVisibleMarkersChange={updateVisible} onViewportChange={saveViewport}
+          fitRequest={fitRequest} myLocation={myLocation} mapType={satellite ? "hybrid" : "roadmap"} attributionCorner="bottom-right"
+          onSelect={(id) => panel.choose([id])} onGroupSelect={panel.choose} onVisibleMarkersChange={updateVisible} onViewportChange={saveViewport} onDragStart={dismissNotice}
           ariaLabel="공공주택 지도" controlsClassName="map-workspace-below-toolbar" className="absolute inset-0 overflow-hidden"
           fallback={<MapFallback name="공공주택" point={mapped[0]?.coord ?? null} />} />
       </div>
       <div className="map-workspace-panels pointer-events-none absolute inset-0 z-20 flex p-3 md:gap-3">
       <h1 className="sr-only">공공주택 지도</h1>
-      <SubscriptionMapRail onFit={() => { setFitPadding(measureFitPadding(workspaceRef.current)); setFitRequest((value) => value + 1); }} onLocate={locate} locating={locating} satellite={satellite} onMapType={() => setSatellite((value) => !value)} hasMarkers={mapped.length > 0} />
+      <SubscriptionMapRail onFit={() => { setFitPadding(measureFitPadding(workspaceRef.current)); setFitRequest((value) => value + 1); }} onLocate={locate} locating={locating} mapReady={visibleIds !== null} satellite={satellite} onMapType={() => setSatellite((value) => !value)} hasMarkers={mapped.length > 0} />
       <SubscriptionMapSidebar items={panel.items} scope={panel.scope} open={panel.listOpen} sheet={panel.sheet} onSheetChange={panel.setSheet}
         onClose={panel.closeList} onShowArea={panel.showArea} activeId={panel.detailId} detailOpen={!!panel.detailId}
         onDetail={(id) => { panel.openDetail(id); setFocusVersion((value) => value + 1); }}
@@ -109,7 +92,8 @@ export function SubscriptionMapWorkspace({ items, options, loadDetail }: { items
       {panel.listOpen && panel.detailId && loadDetail && <SubscriptionMapDetail key={panel.detailId} id={panel.detailId} item={mapped.find((item) => item.id === panel.detailId)} loadDetail={loadDetail} onClose={closeDetail} />}
       <div className="map-workspace-tools relative min-w-0 flex-1">
         <SubscriptionMapToolbar options={options} />
-        {locationMessage && <p role="status" className="map-workspace-message absolute z-20 w-fit rounded-lg border border-line bg-surface p-3 text-sm shadow-sm">{locationMessage}</p>}
+        {/* 알림 영역은 늘 두고 문구만 바꾼다 — 문구와 함께 새로 생기는 status는 화면 낭독기가 놓칠 수 있다 */}
+        <div role="status">{notice && <p className="map-workspace-message absolute z-20 w-fit rounded-lg border border-line bg-surface p-3 text-sm shadow-sm">{notice.text}</p>}</div>
         {/* PC에서 목록 패널을 접고 펴는 버튼이다. 숫자는 지금 화면에 보이는 공고 수다. 모바일에서는 시트 손잡이가 이 일을 한다.
             outline 배리언트는 배경이 투명하고 글씨가 브랜드 노랑이라 지도 위에서 읽히지 않아 흰 배경을 덮는다 */}
         <Button size="sm" variant={panel.showsArea ? "primary" : "outline"} disabled={visibleCount === 0 && !panel.showsArea} aria-pressed={panel.showsArea} onClick={panel.toggleArea}
