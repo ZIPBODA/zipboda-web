@@ -31,13 +31,14 @@ describe("모바일 상세 뒤로가기", () => {
     expect(back).not.toHaveBeenCalled();
   });
 
-  it("화면 안 버튼으로 닫으면 쌓은 기록을 되돌리고, 그사이 바뀐 지도 주소를 지난 기록에 다시 적는다", () => {
+  it("화면 안 버튼으로 닫으면 쌓은 기록을 되돌린다", () => {
     mobile(true);
-    const { rerender } = renderHook(({ open }) => useCloseOnBack(open, vi.fn()), { initialProps: { open: true } });
-    window.history.replaceState(null, "", "/subscriptions?lat=37.6&lng=127.1&zoom=4");
+    const onClose = vi.fn();
+    const { rerender } = renderHook(({ open }) => useCloseOnBack(open, onClose), { initialProps: { open: true } });
     rerender({ open: false });
     expect(back).toHaveBeenCalledOnce();
-    expect(window.location.search).toBe("?lat=37.6&lng=127.1&zoom=4");
+    // 되돌리며 생긴 popstate로 상세를 한 번 더 닫지 않는다
+    expect(onClose).not.toHaveBeenCalled();
   });
 
   it("상세 안 링크로 다른 페이지로 떠나면 그 이동을 되돌리지 않는다", () => {
