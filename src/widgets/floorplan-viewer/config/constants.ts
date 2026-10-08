@@ -47,6 +47,25 @@ export const ORBIT_WALL_HEIGHT_M = 1.2;
 export const ORBIT_CAMERA = { heightRatio: 1.15, distanceRatio: 1.1, minDistanceRatio: 0.5, maxDistanceRatio: 2.5, maxPolarRatio: 0.49 } as const;
 export const CAMERA_NEAR_M = 0.05;
 export const CAMERA_FAR_M = 100;
+export const WALK_CAMERA = {
+  shortAxisFov: 75,
+  maxVerticalFov: 85,
+  maxHorizontalFov: 105,
+  initialPitchRad: -Math.PI / 18
+} as const;
+export const CEILING_COLOR = "#F3F4F6";
+export const WALK_ENTRY_OFFSET_MM = 650;
+/** 지붕이 없는 바깥 공간 — 1인칭에서 천장과 실내 조명을 두지 않는다 */
+export const OPEN_AIR_ROOM_LABELS: readonly RoomLabel[] = ["발코니"];
+/** 현관 라벨이 없을 때 출입문 안쪽 시작 자리로 고르지 않는 방 — 바깥이거나 좁아서 들어서자마자 벽이 시야를 막는다 */
+export const WALK_ENTRY_EXCLUDED_LABELS: readonly RoomLabel[] = ["발코니", "욕실", "반침"];
+export const WALL_MATERIAL_GROUPS = [
+  { start: 0, count: 24, materialIndex: 0 },
+  { start: 24, count: 12, materialIndex: 1 }
+] as const;
+export const WALK_TRIM = { heightM: 0.08, depthM: 0.015, frameWidthM: 0.055, color: "#E5E7EB" } as const;
+export const WALK_LIGHT = { ambient: 1.6, hemisphere: 0.6, directional: 0.7, roomIntensity: 5, ceilingOffsetM: 0.25, distanceM: 10, exposure: 1.2, shadowMapSize: 512 } as const;
+export const WALK_RENDER_QUALITY = { warmupS: 2, sampleS: 1, minFps: 30, minDpr: 0.4, reduction: 0.75 } as const;
 export const DEVICE_PIXEL_RATIO_RANGE: [number, number] = [1, 1.5];
 
 export const LOOK_SPEED_RAD_PER_S = 1.8;

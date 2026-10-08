@@ -120,10 +120,10 @@ describe("buildScene", () => {
     expect(scene.floors[0].center).toEqual({ x: 0, z: 0 });
   });
 
-  it("현관이 없으면 외곽 중심에서 가장 큰 방을 바라보며 시작한다", () => {
+  it("현관 라벨이 없으면 외벽 출입문 안쪽에서 방을 바라본다", () => {
     const scene = buildScene(baseModel());
-    expect(scene.spawn.x).toBeCloseTo(0);
-    expect(scene.spawn.z).toBeCloseTo(0);
+    expect(scene.spawn.x).toBeCloseTo(-0.55);
+    expect(scene.spawn.z).toBeCloseTo(-2.35);
   });
 
   it("현관이 있으면 현관 중심에서 가장 큰 방(거실)을 향해 시작한다", () => {
