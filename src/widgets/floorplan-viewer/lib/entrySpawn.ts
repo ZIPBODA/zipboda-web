@@ -1,5 +1,6 @@
 import { COLLISION_MIN_DISTANCE_M, MM_PER_M, pointInPolygon, polygonInteriorPoint, type FloorplanModel2D, type PointMm } from "@/entities/floorplan";
 import { WALK_ENTRY_EXCLUDED_LABELS, WALK_ENTRY_OFFSET_MM } from "../config/constants";
+import { leadsOutside } from "./exteriorDoor";
 
 function distanceToWall(point: PointMm, a: PointMm, b: PointMm): number {
   const dx = b.x - a.x;
@@ -12,7 +13,7 @@ function distanceToWall(point: PointMm, a: PointMm, b: PointMm): number {
 export function entrySpawn(model: FloorplanModel2D): { position: PointMm; look: PointMm } | null {
   for (const opening of model.openings) {
     const wall = model.walls.find((candidate) => candidate.id === opening.wallId);
-    if (opening.type !== "door" || !wall?.exterior) continue;
+    if (opening.type !== "door" || !wall || !leadsOutside(opening, wall, model.outline)) continue;
     const dx = wall.b.x - wall.a.x;
     const dz = wall.b.z - wall.a.z;
     const length = Math.hypot(dx, dz);

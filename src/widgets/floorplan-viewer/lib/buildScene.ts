@@ -17,6 +17,7 @@ import {
 } from "@/entities/floorplan";
 import { FIXTURE_HEIGHT_M, ROOM_FLOOR_COLOR, WALK_TRIM } from "../config/constants";
 import { entrySpawn } from "./entrySpawn";
+import { leadsOutside } from "./exteriorDoor";
 
 export interface ScenePoint {
   x: number;
@@ -66,7 +67,7 @@ export interface BuiltScene {
   floors: SceneFloorSlab[];
   fixtures: SceneFixtureBox[];
   doorFrames: SceneWallBox[];
-  /** 1인칭 충돌용 — 문 구간은 제외해 통과 가능, 창·벽은 포함 */
+  /** 1인칭 충돌용 — 방 사이 문은 비워 통과하고, 집 밖으로 나가는 문·창·벽은 막는다 */
   collision: SceneSegment[];
   spawn: SceneSpawn;
 }
@@ -231,6 +232,8 @@ export function buildScene(model: FloorplanModel2D): BuiltScene {
           boxOnWall(frame, { start: span.end, end: span.end + WALK_TRIM.frameWidthM }, 0, DOOR_HEIGHT_M),
           boxOnWall(frame, { start: span.start - WALK_TRIM.frameWidthM, end: span.end + WALK_TRIM.frameWidthM }, DOOR_HEIGHT_M, DOOR_HEIGHT_M + WALK_TRIM.frameWidthM)
         );
+        // 집 밖은 바닥도 벽도 그리지 않아 현관문으로 나가면 허공에 서게 된다
+        if (leadsOutside(opening, wall, model.outline)) collision.push(segmentOnWall(g, span));
         continue;
       }
       walls.push(boxOnWall(g, span, 0, WINDOW_SILL_M));
