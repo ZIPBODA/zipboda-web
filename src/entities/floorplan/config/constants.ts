@@ -11,7 +11,7 @@ export const DEFAULT_VIEWPOINT: Viewpoint = "1인칭";
 export const CEILING_HEIGHT_M = 2.4;
 export const WALL_THICKNESS_M = 0.1;
 export const EYE_HEIGHT_M = 1.6;
-export const WALK_SPEED_MPS = 2.4;
+export const WALK_SPEED_MPS = 1.2;
 export const CAMERA_FOV = 70;
 /** 카메라가 벽에 파고들지 않도록 유지하는 최소 간격(미터) */
 export const COLLISION_PADDING_M = 0.25;

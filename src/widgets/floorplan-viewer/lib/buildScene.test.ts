@@ -20,6 +20,17 @@ const baseModel = (): FloorplanModel2D => ({
   confidence: { overall: 1, perRoom: {} }
 });
 
+// 같은 유닛을 z=3000 벽으로 두 방으로 나누고, 그 벽에 방 사이 문 1개(1.0~1.9m 구간)
+const twoRoomModel = (exterior: boolean): FloorplanModel2D => ({
+  ...baseModel(),
+  rooms: [
+    { id: "room-0", label: "거실", polygon: rect(0, 0, 4000, 3000) },
+    { id: "room-1", label: "침실", polygon: rect(0, 3000, 4000, 3000) }
+  ],
+  walls: [{ id: "w-mid", a: { x: 0, z: 3000 }, b: { x: 4000, z: 3000 }, thicknessMm: 150, exterior }],
+  openings: [{ wallId: "w-mid", type: "door", offsetMm: 1000, widthMm: 900 }]
+});
+
 describe("solidSpans", () => {
   it("개구부를 뺀 벽 구간을 돌려준다", () => {
     expect(solidSpans(4, [{ start: 1, end: 1.9 }])).toEqual([
@@ -85,12 +96,23 @@ describe("buildScene", () => {
     expect(lintel?.height).toBeCloseTo(0.3);
   });
 
-  it("충돌 세그먼트는 문 구간을 제외한다(문 통과 가능)", () => {
-    const scene = buildScene(baseModel());
+  it("방 사이 문은 충돌에서 빼 지나갈 수 있다", () => {
+    const scene = buildScene(twoRoomModel(false));
     expect(scene.collision).toHaveLength(2);
     const lengths = scene.collision.map((s) => Math.hypot(s.x2 - s.x1, s.z2 - s.z1)).sort((a, b) => a - b);
     expect(lengths[0]).toBeCloseTo(1);
     expect(lengths[1]).toBeCloseTo(2.1);
+  });
+
+  it("집 밖으로 나가는 문은 막아 허공으로 걸어 나가지 않는다", () => {
+    const scene = buildScene(baseModel());
+    expect(scene.collision).toHaveLength(3);
+    const lengths = scene.collision.map((s) => Math.hypot(s.x2 - s.x1, s.z2 - s.z1)).sort((a, b) => a - b);
+    expect(lengths[0]).toBeCloseTo(0.9);
+  });
+
+  it("외벽 표시가 잘못 붙은 방 사이 벽의 문은 막지 않는다", () => {
+    expect(buildScene(twoRoomModel(true)).collision).toHaveLength(2);
   });
 
   it("창은 실 아래·인방 위 박스로 비우고 충돌에는 포함한다", () => {
@@ -120,10 +142,10 @@ describe("buildScene", () => {
     expect(scene.floors[0].center).toEqual({ x: 0, z: 0 });
   });
 
-  it("현관이 없으면 외곽 중심에서 가장 큰 방을 바라보며 시작한다", () => {
+  it("현관 라벨이 없으면 외벽 출입문 안쪽에서 방을 바라본다", () => {
     const scene = buildScene(baseModel());
-    expect(scene.spawn.x).toBeCloseTo(0);
-    expect(scene.spawn.z).toBeCloseTo(0);
+    expect(scene.spawn.x).toBeCloseTo(-0.55);
+    expect(scene.spawn.z).toBeCloseTo(-2.35);
   });
 
   it("현관이 있으면 현관 중심에서 가장 큰 방(거실)을 향해 시작한다", () => {

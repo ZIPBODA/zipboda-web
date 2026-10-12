@@ -15,7 +15,9 @@ import {
   type SceneSegment,
   type Wall2D
 } from "@/entities/floorplan";
-import { FIXTURE_HEIGHT_M, ROOM_FLOOR_COLOR } from "../config/constants";
+import { FIXTURE_HEIGHT_M, ROOM_FLOOR_COLOR, WALK_TRIM } from "../config/constants";
+import { entrySpawn } from "./entrySpawn";
+import { leadsOutside } from "./exteriorDoor";
 
 export interface ScenePoint {
   x: number;
@@ -64,7 +66,8 @@ export interface BuiltScene {
   walls: SceneWallBox[];
   floors: SceneFloorSlab[];
   fixtures: SceneFixtureBox[];
-  /** 1인칭 충돌용 — 문 구간은 제외해 통과 가능, 창·벽은 포함 */
+  doorFrames: SceneWallBox[];
+  /** 1인칭 충돌용 — 방 사이 문은 비워 통과하고, 집 밖으로 나가는 문·창·벽은 막는다 */
   collision: SceneSegment[];
   spawn: SceneSpawn;
 }
@@ -169,8 +172,8 @@ const largestOf = (rooms: Room2D[]): Room2D | null =>
 /**
  * 1인칭 시작 위치를 고른다. 현관이 있으면 현관에서 가장 넓은 방을 바라보고 선다.
  *
- * 방 이름이 인쇄되지 않은 도면도 있고 OCR이 놓치기도 한다. 그때 외곽 무게중심을 쓰면
- * 벽 속이나 방이 아닌 곳에서 시작할 수 있으므로, 가장 넓은 방 안에서 그다음 방을 바라보게 한다.
+ * 현관 라벨이 없으면 외벽 출입문 안쪽을 우선한다. 방 중앙에서 시작하면 방 깊이의 절반만 보인다.
+ * 출입문 안쪽의 안전한 자리를 찾을 수 없으면 가장 넓은 방 안에서 시작한다.
  *
  * 자리는 무게중심이 아니라 방 안이 보장된 점으로 잡는다. ㄱ자 현관·거실은 무게중심이 패인 자리에
  * 떨어져 벽 속에서 시작하게 된다.
@@ -178,6 +181,12 @@ const largestOf = (rooms: Room2D[]): Room2D | null =>
 function pickSpawn(model: FloorplanModel2D, toScene: (p: PointMm) => ScenePoint): SceneSpawn {
   const outlineCenter = polygonInteriorPoint(model.outline);
   const entrance = model.rooms.find((room) => room.label === ENTRANCE_LABEL);
+  const entry = !entrance ? entrySpawn(model) : null;
+  if (entry) {
+    const position = toScene(entry.position);
+    const look = toScene(entry.look);
+    return { ...position, yaw: yawTowards(look.x - position.x, look.z - position.z) };
+  }
   const largest = largestOf(model.rooms.filter((room) => room !== entrance));
 
   const origin = entrance ?? largest;
@@ -202,6 +211,7 @@ export function buildScene(model: FloorplanModel2D): BuiltScene {
 
   const walls: SceneWallBox[] = [];
   const collision: SceneSegment[] = [];
+  const doorFrames: SceneWallBox[] = [];
 
   for (const wall of model.walls) {
     const g = wallGeometry(wall, toScene);
@@ -216,6 +226,14 @@ export function buildScene(model: FloorplanModel2D): BuiltScene {
       const span = openingSpan(opening);
       if (opening.type === "door") {
         walls.push(boxOnWall(g, span, DOOR_HEIGHT_M, CEILING_HEIGHT_M));
+        const frame = { ...g, thicknessM: g.thicknessM + WALK_TRIM.depthM * 2 };
+        doorFrames.push(
+          boxOnWall(frame, { start: span.start - WALK_TRIM.frameWidthM, end: span.start }, 0, DOOR_HEIGHT_M),
+          boxOnWall(frame, { start: span.end, end: span.end + WALK_TRIM.frameWidthM }, 0, DOOR_HEIGHT_M),
+          boxOnWall(frame, { start: span.start - WALK_TRIM.frameWidthM, end: span.end + WALK_TRIM.frameWidthM }, DOOR_HEIGHT_M, DOOR_HEIGHT_M + WALK_TRIM.frameWidthM)
+        );
+        // 집 밖은 바닥도 벽도 그리지 않아 현관문으로 나가면 허공에 서게 된다
+        if (leadsOutside(opening, wall, model.outline)) collision.push(segmentOnWall(g, span));
         continue;
       }
       walls.push(boxOnWall(g, span, 0, WINDOW_SILL_M));
@@ -246,5 +264,5 @@ export function buildScene(model: FloorplanModel2D): BuiltScene {
     };
   });
 
-  return { widthM, depthM, walls, floors, fixtures, collision, spawn: pickSpawn(model, toScene) };
+  return { widthM, depthM, walls, floors, fixtures, doorFrames, collision, spawn: pickSpawn(model, toScene) };
 }
