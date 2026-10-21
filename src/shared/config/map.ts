@@ -24,6 +24,14 @@ export const MAP_SINGLE_MARKER_LEVEL = MAP_LEVEL.detail;
 
 export const MAP_ZOOM_RANGE = { min: 1, max: 14 } as const;
 
+/** 카카오 지도 1px이 담는 거리. 3단계에서 1m이고 한 단계 오를 때마다 두 배가 된다(배율별 실측) */
+export const MAP_METERS_PER_PIXEL = { level: 3, meters: 1 } as const;
+
+/** 위도 1°의 길이. 경도 1°는 여기에 cos(위도)를 곱한다 — 배율이 두 배씩 뛰어 이 정도 어림이면 단계가 맞는다 */
+export const METERS_PER_DEGREE = 111_320;
+
+export const NO_MAP_PADDING = [0, 0, 0, 0] as const;
+
 /**
  * 목록에서 고른 집으로 날아갈 때 멈추는 배율. 상세 화면의 위치 카드와 같아서 같은 집이 같은 크기로 보인다.
  * 이미 더 가까이 보고 있으면 물러나지 않고 자리만 옮긴다.

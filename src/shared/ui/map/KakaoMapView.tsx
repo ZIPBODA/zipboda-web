@@ -1,10 +1,11 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { MAP_LEVEL, MAP_FOCUS_ANIMATION_MS, MAP_FOCUS_LEVEL, MAP_MY_LOCATION_LEVEL, MAP_MY_LOCATION_Z_INDEX, MAP_SINGLE_MARKER_LEVEL, MAP_SINGLE_PIN_LEVEL, MAP_ZOOM_RANGE } from "../../config/map";
+import { MAP_LEVEL, MAP_FOCUS_ANIMATION_MS, MAP_FOCUS_LEVEL, MAP_MY_LOCATION_LEVEL, MAP_MY_LOCATION_Z_INDEX, MAP_SINGLE_MARKER_LEVEL, MAP_SINGLE_PIN_LEVEL, MAP_ZOOM_RANGE, NO_MAP_PADDING } from "../../config/map";
 import { MAP_ACCURACY_CIRCLE_STYLE } from "../../config/mapMyLocationStyle";
 import { boundsOf, type GeoPoint } from "../../lib/geo";
 import { loadKakaoMaps, type MapSdkStatus } from "../../lib/kakaoMapLoader";
+import { estimateFitView } from "../../lib/mapFit";
 import { cn } from "../cn";
 import { createMarkerLayer } from "./createMarkerLayer";
 import type { MapViewProps } from "./types";
@@ -60,10 +61,14 @@ export function KakaoMapView({
         setStatus("failed");
         return;
       }
-      const origin = initialViewport?.center ?? center ?? markers[0]?.point ?? initialCenter;
+      // 여러 공고에 맞출 지도는 맞춘 뒤의 화면에서 바로 시작한다 — 기본 배율로 만들었다 다시 맞추면 지도 조각을 두 벌 받는다
+      const fitBounds = !initialViewport && !center && markers.length > 1 ? boundsOf(markers.map((marker) => marker.point)) : null;
+      const fitted = fitBounds && estimateFitView(fitBounds, { width: containerRef.current.clientWidth, height: containerRef.current.clientHeight }, fitPadding ?? NO_MAP_PADDING);
+      const fittedLevel = fitted && (clustering ? Math.max(fitted.level, MAP_SINGLE_PIN_LEVEL + 1) : fitted.level);
+      const origin = initialViewport?.center ?? center ?? fitted?.center ?? markers[0]?.point ?? initialCenter;
       if (!origin) return;
       const instance = new maps.Map(containerRef.current, {
-        center: new maps.LatLng(origin.lat, origin.lng), level: initialViewport?.level ?? level,
+        center: new maps.LatLng(origin.lat, origin.lng), level: initialViewport?.level ?? fittedLevel ?? level,
         draggable: interactive, scrollwheel: interactive, disableDoubleClickZoom: !interactive
       });
       setMap(instance);
