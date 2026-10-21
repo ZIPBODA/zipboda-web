@@ -1,8 +1,8 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, onTestFinished, vi } from "vitest";
 import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { loadKakaoMaps } from "../../lib/kakaoMapLoader";
 import { createMarkerLayer } from "./createMarkerLayer";
-import { MAP_FOCUS_ANIMATION_MS, MAP_FOCUS_LEVEL, MAP_MY_LOCATION_LEVEL, MAP_MY_LOCATION_Z_INDEX } from "../../config/map";
+import { MAP_FOCUS_ANIMATION_MS, MAP_FOCUS_LEVEL, MAP_MY_LOCATION_LEVEL, MAP_MY_LOCATION_Z_INDEX, MAP_SINGLE_PIN_LEVEL } from "../../config/map";
 import { KakaoMapView } from "./KakaoMapView";
 import type { MapMarker } from "./types";
 
@@ -122,6 +122,32 @@ describe("지도 상태 갱신", () => {
     const reported = onViewportChange.mock.calls.length;
     sdk.idle();
     expect(onViewportChange).toHaveBeenCalledTimes(reported + 1);
+  });
+
+  it("여러 공고에 맞출 지도는 맞춘 뒤의 배율·중심에서 바로 만들고, 마무리 맞춤은 SDK에 맡긴다", async () => {
+    const sdk = setupSdk();
+    const width = vi.spyOn(Element.prototype, "clientWidth", "get").mockReturnValue(400);
+    const height = vi.spyOn(Element.prototype, "clientHeight", "get").mockReturnValue(400);
+    onTestFinished(() => { width.mockRestore(); height.mockRestore(); });
+    render(<KakaoMapView markers={markers} clustering />);
+    await waitFor(() => expect(sdk.map.setBounds).toHaveBeenCalledTimes(1));
+    const [, options] = sdk.constructor.mock.calls[0] as unknown as [unknown, { center: { lat: number; lng: number }; level: number }];
+    // 기본 배율(8)이나 첫 공고 자리가 아니라, 두 공고(세로 약 11km)가 400px 안에 드는 배율과 그 가운데에서 시작한다
+    expect(options.level).toBe(8);
+    expect(options.center.lat).toBeCloseTo(37.55, 8);
+    expect(options.center.lng).toBeCloseTo(127.05, 8);
+  });
+
+  it("맞춘 배율이 핀 단계까지 들어가면 클러스터 지도는 배지 단계에서 시작한다", async () => {
+    const sdk = setupSdk();
+    const width = vi.spyOn(Element.prototype, "clientWidth", "get").mockReturnValue(400);
+    const height = vi.spyOn(Element.prototype, "clientHeight", "get").mockReturnValue(400);
+    onTestFinished(() => { width.mockRestore(); height.mockRestore(); });
+    const neighbors: MapMarker[] = [markers[0], { id: "next-door", point: { lat: 37.5001, lng: 127.0001 } }];
+    render(<KakaoMapView markers={neighbors} clustering />);
+    await waitFor(() => expect(sdk.constructor).toHaveBeenCalled());
+    const [, options] = sdk.constructor.mock.calls[0] as unknown as [unknown, { level: number }];
+    expect(options.level).toBe(MAP_SINGLE_PIN_LEVEL + 1);
   });
 
   it("지난번 자리가 있어도 전체 위치 요청은 마커 전체에 맞춘다", async () => {
