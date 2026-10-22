@@ -1,11 +1,18 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import type { AnchorHTMLAttributes } from "react";
 import { act, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import type { Subscription } from "@/entities/subscription";
 import type { MapViewProps } from "@/shared/ui/map";
+import { MAP_LOCATE_GIVE_UP_MS } from "../config/constants";
+import type { MapDetailData } from "../model/mapDetail";
 import { SubscriptionMapWorkspace } from "./SubscriptionMapWorkspace";
 
 const navigation = vi.hoisted(() => ({ params: new URLSearchParams(), push: vi.fn() }));
 vi.mock("next/navigation", () => ({ usePathname: () => "/subscriptions", useSearchParams: () => navigation.params, useRouter: () => ({ push: navigation.push }) }));
+// 링크가 방문 기록을 쌓을지(push) 바꿔 끼울지(replace)를 속성으로 드러낸다
+vi.mock("next/link", () => ({
+  default: ({ replace, prefetch: _prefetch, scroll: _scroll, ...props }: { replace?: boolean; prefetch?: boolean; scroll?: boolean } & AnchorHTMLAttributes<HTMLAnchorElement>) => <a data-history={replace ? "replace" : "push"} {...props} />
+}));
 let mapProps: MapViewProps;
 vi.mock("@/shared/ui/map", () => ({
   MapViewLoader: (props: MapViewProps) => { mapProps = props; return <div aria-label={props.ariaLabel} />; },
@@ -33,7 +40,9 @@ beforeEach(() => {
 // 가짜 타이머·위치 흉내를 쓰는 테스트가 중간에 실패해도 다음 테스트로 새지 않게 한다
 afterEach(() => {
   vi.useRealTimers();
+  vi.unstubAllGlobals();
   Reflect.deleteProperty(navigator, "geolocation");
+  Reflect.deleteProperty(navigator, "permissions");
 });
 type Locate = (success: (position: unknown) => void, failure: (error: unknown) => void) => void;
 const geolocate = (getCurrentPosition: Locate) => Object.defineProperty(navigator, "geolocation", { configurable: true, value: { getCurrentPosition } });
@@ -127,6 +136,24 @@ describe("지도 첫 화면과 청약 목록", () => {
     expect(resultTitles()).toEqual(["강남 개포동"]);
   });
 
+  it.each([
+    { viewport: "모바일", mobile: true, history: "replace" },
+    { viewport: "PC", mobile: false, history: "push" }
+  ])("$viewport 상세 안 링크는 방문 기록을 $history 한다 — 모바일 상세가 쌓은 기록을 링크가 바꿔 끼운다", async ({ mobile, history }) => {
+    vi.stubGlobal("matchMedia", vi.fn(() => ({ matches: mobile, addEventListener: vi.fn(), removeEventListener: vi.fn() })));
+    const withPlan: MapDetailData = {
+      detail: { id: "a", title: "청약 A", address: "서울", agency: "LH", agencyLabel: "LH", status: "접수중", dday: null, applyPeriod: null, households: null, supplyType: null, competition: null, contractDate: null, moveIn: null, postDate: null, units: [], defaultUnitKey: "a-1", defaultUnitSize: null, image: null, applyUrl: null },
+      plans: [{ unit: "a-1", image: "/plan.png", has3d: true }]
+    };
+    render(<SubscriptionMapWorkspace items={items} options={options} loadDetail={async () => withPlan} />);
+    fireEvent.click(screen.getByRole("button", { name: "강남 개포동 상세 보기" }));
+    const detail = await screen.findByRole("complementary", { name: "선택한 청약 상세" });
+    await within(detail).findByText("청약 A");
+    const links = within(detail).getAllByRole("link");
+    expect(links.map((link) => link.textContent)).toEqual(expect.arrayContaining(["2D 평면도 크게 보기 →", "3D 둘러보기", "공고 전체 보기 →"]));
+    links.forEach((link) => expect(link).toHaveAttribute("data-history", history));
+  });
+
   it("전체 위치와 지도 유형은 선택 목록을 유지하고, 맞출 때는 가려진 폭을 다시 잰다", () => {
     render(draw());
     act(() => mapProps.onGroupSelect?.(["a", "b"]));
@@ -167,6 +194,60 @@ describe("지도 첫 화면과 청약 목록", () => {
     mapReady();
     fireEvent.click(screen.getByRole("button", { name: "내 위치" }));
     expect(screen.getByText("현재 위치를 확인하지 못했습니다. 다시 시도해 주세요.")).toBeInTheDocument();
+  });
+
+  it("권한 창에 답이 없어 결과가 오지 않으면 버튼을 풀고 다시 시도하라고 안내하며, 늦게 온 위치는 그래도 반영한다", () => {
+    vi.useFakeTimers();
+    let succeed: ((position: unknown) => void) | undefined;
+    geolocate((success) => { succeed = success; });
+    render(draw());
+    mapReady();
+    fireEvent.click(screen.getByRole("button", { name: "내 위치" }));
+    act(() => vi.advanceTimersByTime(MAP_LOCATE_GIVE_UP_MS - 1));
+    expect(screen.getByRole("button", { name: "위치 확인 중" })).toBeDisabled();
+    act(() => vi.advanceTimersByTime(1));
+    expect(screen.getByRole("button", { name: "내 위치" })).toBeEnabled();
+    expect(screen.getByText(/위치 확인이 끝나지 않았습니다/)).toBeInTheDocument();
+    // 뒤늦게 권한을 허용하면 누른 사람이 원한 대로 내 위치로 간다
+    act(() => succeed?.({ coords: { latitude: 37.55, longitude: 126.99, accuracy: 25 } }));
+    expect(mapProps.myLocation?.point).toEqual({ lat: 37.55, lng: 126.99 });
+    expect(screen.getByText("현재 위치로 이동했습니다.")).toBeInTheDocument();
+  });
+
+  it("포기한 뒤 다시 누르면 앞선 요청의 늦은 결과는 받지 않는다", () => {
+    vi.useFakeTimers();
+    const pending: ((position: unknown) => void)[] = [];
+    geolocate((success) => { pending.push(success); });
+    render(draw());
+    mapReady();
+    fireEvent.click(screen.getByRole("button", { name: "내 위치" }));
+    act(() => vi.advanceTimersByTime(MAP_LOCATE_GIVE_UP_MS));
+    fireEvent.click(screen.getByRole("button", { name: "내 위치" }));
+    act(() => pending[0]({ coords: { latitude: 35.1, longitude: 129.0, accuracy: 25 } }));
+    expect(mapProps.myLocation).toBeUndefined();
+    expect(screen.getByRole("button", { name: "위치 확인 중" })).toBeDisabled();
+    act(() => pending[1]({ coords: { latitude: 37.55, longitude: 126.99, accuracy: 25 } }));
+    expect(mapProps.myLocation?.point).toEqual({ lat: 37.55, lng: 126.99 });
+  });
+
+  it("권한 창에 오래 머물다 허용하면 그때부터 다시 세어, 위치를 찾는 도중에 포기 안내를 띄우지 않는다", async () => {
+    vi.useFakeTimers();
+    let answer: () => void = () => {};
+    const permission = { state: "prompt", addEventListener: (_type: string, listener: () => void) => { answer = listener; } };
+    Object.defineProperty(navigator, "permissions", { configurable: true, value: { query: vi.fn(async () => permission) } });
+    geolocate(() => {});
+    render(draw());
+    mapReady();
+    fireEvent.click(screen.getByRole("button", { name: "내 위치" }));
+    await act(async () => { await Promise.resolve(); });
+    // 권한 창에서 10초 고민한 뒤 허용했다
+    act(() => vi.advanceTimersByTime(10000));
+    act(() => { permission.state = "granted"; answer(); });
+    act(() => vi.advanceTimersByTime(MAP_LOCATE_GIVE_UP_MS - 1));
+    expect(screen.getByRole("button", { name: "위치 확인 중" })).toBeDisabled();
+    // 허용한 뒤에도 결과가 끝내 오지 않으면 그때는 버튼을 푼다
+    act(() => vi.advanceTimersByTime(1));
+    expect(screen.getByRole("button", { name: "내 위치" })).toBeEnabled();
   });
 
   it("내 위치를 찾으면 오차와 가려진 폭을 지도에 넘기고, 이동 안내는 3초 뒤 사라진다", () => {

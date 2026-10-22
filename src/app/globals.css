@@ -54,6 +54,11 @@
 @container (width < 48rem) {
   .map-workspace-status { bottom: calc(theme(spacing.11) + var(--map-gap)); }
 }
+/* 지도 위 빈 폭이 이보다 좁으면(좁은 PC 화면에서 목록이나 상세를 연 때) 가운데 아래 "청약 N" 버튼이 오른쪽 아래 카카오 축척·로고에 닿는다.
+   축척 길이는 배율마다 달라 옆으로 비키지 않고, 그 줄 위로 한 간격 올린다 */
+@container (width < 25rem) {
+  .map-workspace-count { bottom: var(--map-gap); }
+}
 @container (min-width: 48rem) {
   .map-workspace-toolbar { @apply flex-row items-center; }
   .map-workspace-toolbar > .map-workspace-filters { @apply shrink-0; }

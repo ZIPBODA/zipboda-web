@@ -1,9 +1,14 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
+import type { AnchorHTMLAttributes } from "react";
 import { act, fireEvent, render, screen } from "@testing-library/react";
 import type { Subscription } from "@/entities/subscription";
 import type { MapDetailData } from "../model/mapDetail";
 import { SubscriptionMapDetail } from "./SubscriptionMapDetail";
 
+// 링크가 방문 기록을 쌓을지(push) 바꿔 끼울지(replace)를 속성으로 드러낸다
+vi.mock("next/link", () => ({
+  default: ({ replace, ...props }: { replace?: boolean } & AnchorHTMLAttributes<HTMLAnchorElement>) => <a data-history={replace ? "replace" : "push"} {...props} />
+}));
 vi.mock("@/shared/ui/map", () => ({
   MapViewLoader: ({ ariaLabel }: { ariaLabel?: string }) => <div role="img" aria-label={ariaLabel} />,
   MapFallback: () => null
@@ -58,6 +63,21 @@ describe("모바일 지도 상세", () => {
     await screen.findByText("청약 A");
     expect(screen.queryByRole("link", { name: "공급기관 바로가기 ↗" })).not.toBeInTheDocument();
     expect(screen.getAllByRole("link", { name: "공고 전체 보기 →" }).at(-1)).toHaveAttribute("href", "/subscriptions/a?unit=");
+  });
+
+  it("방문 기록을 차지한 상세의 링크는 새 기록을 쌓지 않고 그 기록을 바꿔 끼운다", async () => {
+    mobile();
+    const withPlan: MapDetailData = { detail: { ...data.detail, defaultUnitKey: "a-1" }, plans: [{ unit: "a-1", image: "/plan.png", has3d: true }] };
+    const { unmount } = render(<SubscriptionMapDetail id="a" item={item} loadDetail={vi.fn().mockResolvedValue(withPlan)} onClose={vi.fn()} replaceHistoryOnLeave />);
+    await screen.findByText("청약 A");
+    const links = screen.getAllByRole("link");
+    expect(links.map((link) => link.textContent)).toEqual(expect.arrayContaining(["2D 평면도 크게 보기 →", "3D 둘러보기", "공고 전체 보기 →"]));
+    links.forEach((link) => expect(link).toHaveAttribute("data-history", "replace"));
+    unmount();
+    // 기록을 차지하지 않은 상세는 평소처럼 새 기록을 쌓는다
+    render(<SubscriptionMapDetail id="a" item={item} loadDetail={vi.fn().mockResolvedValue(withPlan)} onClose={vi.fn()} />);
+    await screen.findByText("청약 A");
+    screen.getAllByRole("link").forEach((link) => expect(link).toHaveAttribute("data-history", "push"));
   });
 
   it("PC에서는 두 번째 지도를 띄우지 않는다", async () => {

@@ -17,6 +17,12 @@ export const MAP_INITIAL_CENTER = { lat: 37.5665, lng: 126.978 };
 export const MAP_FIT_MARGIN = parseInt(ZbSpace14);
 export const MAP_FILTER_KEYS = ["region", "size", "agency", "status", "q"] as const;
 export const MAP_GEOLOCATION_OPTIONS = { timeout: 10000, maximumAge: 60000 } as const;
+/**
+ * 위치 요청의 timeout은 권한 창에 답한 뒤부터 흐른다. 창을 답 없이 닫으면 결과가 끝내 오지 않으므로
+ * 이 시간이 지나면 버튼을 풀어 다시 누를 수 있게 한다. 권한 창에 답하면 그때부터 다시 세고,
+ * timeout보다 길게 잡아 권한이 있는 경우에는 브라우저의 시간 초과 안내가 먼저 온다
+ */
+export const MAP_LOCATE_GIVE_UP_MS = MAP_GEOLOCATION_OPTIONS.timeout * 1.5;
 /** 지도 위 요소가 이 높이를 CSS 변수로 받아 아래에 쌓인다(globals.css의 map-workspace-* 규칙과 짝) */
 export const MAP_OVERLAY_HEIGHT_VARS = [
   { selector: ".map-workspace-toolbar", name: "--map-toolbar-height" }
