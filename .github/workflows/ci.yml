@@ -1,0 +1,31 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+  packages: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    env:
+      # @zipboda 사설 패키지(GitHub Packages) 설치용 — .npmrc가 이 변수를 읽는다.
+      # 패키지 설정에서 이 저장소에 읽기 권한을 주면 GITHUB_TOKEN으로 충분하고,
+      # 그렇지 않으면 read:packages 토큰을 ZIPBODA_PACKAGES_TOKEN 시크릿으로 넣는다
+      NODE_AUTH_TOKEN: ${{ secrets.ZIPBODA_PACKAGES_TOKEN || secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm typecheck
+      - run: pnpm lint
+      - run: pnpm test
+      - run: pnpm build
