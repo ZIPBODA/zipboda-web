@@ -22,8 +22,10 @@ describe("모바일 상세 뒤로가기", () => {
   it("모바일에서 상세를 열면 기록을 하나 쌓고, 뒤로가기는 페이지를 떠나지 않고 상세만 닫는다", () => {
     mobile(true);
     const onClose = vi.fn();
-    const { rerender } = renderHook(({ open }) => useCloseOnBack(open, onClose), { initialProps: { open: true } });
+    const { rerender, result } = renderHook(({ open }) => useCloseOnBack(open, onClose), { initialProps: { open: true } });
     expect(push).toHaveBeenCalledOnce();
+    // 쌓아 둔 동안에는 상세 안 링크가 이 기록을 바꿔 끼우도록 알린다
+    expect(result.current).toBe(true);
     window.dispatchEvent(new PopStateEvent("popstate"));
     expect(onClose).toHaveBeenCalledOnce();
     rerender({ open: false });
@@ -34,9 +36,10 @@ describe("모바일 상세 뒤로가기", () => {
   it("화면 안 버튼으로 닫으면 쌓은 기록을 되돌린다", () => {
     mobile(true);
     const onClose = vi.fn();
-    const { rerender } = renderHook(({ open }) => useCloseOnBack(open, onClose), { initialProps: { open: true } });
+    const { rerender, result } = renderHook(({ open }) => useCloseOnBack(open, onClose), { initialProps: { open: true } });
     rerender({ open: false });
     expect(back).toHaveBeenCalledOnce();
+    expect(result.current).toBe(false);
     // 되돌리며 생긴 popstate로 상세를 한 번 더 닫지 않는다
     expect(onClose).not.toHaveBeenCalled();
   });
@@ -51,7 +54,8 @@ describe("모바일 상세 뒤로가기", () => {
 
   it("PC에서는 기록을 쌓지 않는다", () => {
     mobile(false);
-    renderHook(() => useCloseOnBack(true, vi.fn()));
+    const { result } = renderHook(() => useCloseOnBack(true, vi.fn()));
     expect(push).not.toHaveBeenCalled();
+    expect(result.current).toBe(false);
   });
 });

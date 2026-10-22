@@ -61,7 +61,7 @@ export function SubscriptionMapWorkspace({ items, options, loadDetail }: { items
       row?.querySelector("button")?.focus({ preventScroll: true });
     });
   };
-  useCloseOnBack(panel.detailId !== null, closeDetail);
+  const detailHoldsHistoryEntry = useCloseOnBack(panel.detailId !== null, closeDetail);
   const visibleCount = panel.visibleItemIds.length;
   const missing = items.length - mapped.length;
   const emptyMessage = items.length === 0
@@ -89,7 +89,7 @@ export function SubscriptionMapWorkspace({ items, options, loadDetail }: { items
         onDetail={(id) => { panel.openDetail(id); setFocusVersion((value) => value + 1); }}
         empty={<p className="px-3 py-5 text-sm text-fg-muted">{emptyMessage}</p>}
         footer={panel.scope === "area" && missingNote && <div className="px-3 py-3">{missingNote}</div>} />
-      {panel.listOpen && panel.detailId && loadDetail && <SubscriptionMapDetail key={panel.detailId} id={panel.detailId} item={mapped.find((item) => item.id === panel.detailId)} loadDetail={loadDetail} onClose={closeDetail} />}
+      {panel.listOpen && panel.detailId && loadDetail && <SubscriptionMapDetail key={panel.detailId} id={panel.detailId} item={mapped.find((item) => item.id === panel.detailId)} loadDetail={loadDetail} onClose={closeDetail} replaceHistoryOnLeave={detailHoldsHistoryEntry} />}
       <div className="map-workspace-tools relative min-w-0 flex-1">
         <SubscriptionMapToolbar options={options} />
         {/* 알림 영역은 늘 두고 문구만 바꾼다 — 문구와 함께 새로 생기는 status는 화면 낭독기가 놓칠 수 있다 */}

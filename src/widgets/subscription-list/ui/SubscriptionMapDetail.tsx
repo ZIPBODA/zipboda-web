@@ -18,7 +18,7 @@ import { DeadlineTag } from "./DeadlineTag";
  * PC에서는 목록 옆 패널이고, 모바일에서는 지도 위를 덮는 한 장의 페이지다.
  * 모바일은 사진 옆에 작은 위치 지도를 두고, 신청으로 가는 버튼을 화면 아래에 고정한다 — 긴 기본 정보를 내려 읽어도 신청이 늘 한 번에 닿게.
  */
-export function SubscriptionMapDetail({ id, loadDetail, onClose, item }: { id: string; loadDetail: LoadMapDetail; onClose: () => void; item?: Subscription }) {
+export function SubscriptionMapDetail({ id, loadDetail, onClose, item, replaceHistoryOnLeave = false }: { id: string; loadDetail: LoadMapDetail; onClose: () => void; item?: Subscription; replaceHistoryOnLeave?: boolean }) {
   const [data, setData] = useState<MapDetailData | null>(null);
   const [status, setStatus] = useState<"loading" | "ready" | "error">("loading");
   const [attempt, setAttempt] = useState(0);
@@ -90,10 +90,10 @@ export function SubscriptionMapDetail({ id, loadDetail, onClose, item }: { id: s
             <section className="max-md:bg-surface max-md:p-5"><h4 className="font-bold text-fg-heading max-md:text-lg">기본 정보</h4><dl className="mt-2 divide-y divide-line-subtle">{specs.filter(([, value]) => value).map(([label, value]) => <div key={label} className="flex justify-between gap-4 py-3 text-sm"><dt className="shrink-0 text-fg-muted">{label}</dt><dd className="text-right font-medium">{value}</dd></div>)}</dl></section>
             <section className="space-y-5 max-md:bg-surface max-md:p-5">
               {detail.units.length > 0 && <div><label htmlFor="map-detail-unit" className="font-bold text-fg-heading">평형·호수 선택</label><select id="map-detail-unit" value={unit} onChange={(event) => setUnit(event.target.value)} className="mt-3 h-11 w-full rounded-lg border border-line bg-surface px-3 text-sm">{detail.units.map((entry) => <option key={entry.unitKey ?? entry.size} value={String(entry.unitKey ?? entry.size ?? "")}>{entry.label ?? `${entry.size ?? ""}㎡`}</option>)}</select></div>}
-              {plan?.image && <Link href={`${href}/floorplan?${new URLSearchParams({ unit, view: "2D" })}`} className="block"><div className="relative h-56 rounded-lg border border-line"><Image src={plan.image} alt={`${detail.title} 선택 호수 평면도`} fill sizes="344px" className="object-contain" /></div><span className="mt-2 block text-sm font-semibold">2D 평면도 크게 보기 →</span></Link>}
-              {plan?.has3d && <Link href={`${href}/floorplan?${new URLSearchParams({ unit, view: "3D" })}`} className="flex min-h-11 items-center justify-center rounded-lg bg-brand text-sm font-bold text-brand-on">3D 둘러보기</Link>}
+              {plan?.image && <Link replace={replaceHistoryOnLeave} href={`${href}/floorplan?${new URLSearchParams({ unit, view: "2D" })}`} className="block"><div className="relative h-56 rounded-lg border border-line"><Image src={plan.image} alt={`${detail.title} 선택 호수 평면도`} fill sizes="344px" className="object-contain" /></div><span className="mt-2 block text-sm font-semibold">2D 평면도 크게 보기 →</span></Link>}
+              {plan?.has3d && <Link replace={replaceHistoryOnLeave} href={`${href}/floorplan?${new URLSearchParams({ unit, view: "3D" })}`} className="flex min-h-11 items-center justify-center rounded-lg bg-brand text-sm font-bold text-brand-on">3D 둘러보기</Link>}
               {/* 모바일에서는 아래 고정 버튼이 맡는 링크를 본문에서 한 번 더 보이지 않는다 */}
-              <Link href={noticeHref} className={cn("flex min-h-11 items-center justify-center rounded-lg border border-line text-sm font-semibold", !detail.applyUrl && "max-md:hidden")}>공고 전체 보기 →</Link>
+              <Link replace={replaceHistoryOnLeave} href={noticeHref} className={cn("flex min-h-11 items-center justify-center rounded-lg border border-line text-sm font-semibold", !detail.applyUrl && "max-md:hidden")}>공고 전체 보기 →</Link>
               {detail.applyUrl && <a href={detail.applyUrl} target="_blank" rel="noopener noreferrer" className="flex min-h-11 items-center justify-center rounded-lg bg-brand text-sm font-bold text-brand-on max-md:hidden">공급기관 바로가기 ↗</a>}
             </section>
           </div>
@@ -102,7 +102,7 @@ export function SubscriptionMapDetail({ id, loadDetail, onClose, item }: { id: s
       {status === "ready" && detail && <div className="shrink-0 border-t border-line-subtle bg-surface p-3 md:hidden">
         {detail.applyUrl
           ? <a href={detail.applyUrl} target="_blank" rel="noopener noreferrer" className="flex min-h-12 items-center justify-center rounded-xl bg-brand text-base font-bold text-brand-on">공급기관 바로가기 ↗</a>
-          : <Link href={noticeHref} className="flex min-h-12 items-center justify-center rounded-xl bg-brand text-base font-bold text-brand-on">공고 전체 보기 →</Link>}
+          : <Link replace={replaceHistoryOnLeave} href={noticeHref} className="flex min-h-12 items-center justify-center rounded-xl bg-brand text-base font-bold text-brand-on">공고 전체 보기 →</Link>}
       </div>}
     </aside>
   );
