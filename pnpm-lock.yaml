@@ -18,14 +18,14 @@ importers:
         specifier: 5.0.0-release.1
         version: 5.0.0-release.1
       '@zipboda/tokens':
-        specifier: ^1.0.0
-        version: 1.0.0
+        specifier: ^1.2.2
+        version: 1.2.2
       '@zipboda/ui':
-        specifier: ^1.1.0
-        version: 1.1.0(@zipboda/tokens@1.0.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        specifier: ^3.0.1
+        version: 3.0.1(@zipboda/tokens@1.2.2)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@zipboda/ui-core':
-        specifier: ^1.1.0
-        version: 1.1.0
+        specifier: ^1.3.2
+        version: 1.3.2
       next:
         specifier: ^14.2.15
         version: 14.2.35(@babel/core@7.29.7)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -1181,16 +1181,16 @@ packages:
   '@webgpu/types@0.1.72':
     resolution: {integrity: sha512-0cF7RFM2edNoiIS1ODJp0/Gzv4/xSXhwoR0YCza+OWpJWtn4wmo9DvK91aLlH9+uUnwIriP7ZiC3WitmyhuzBw==}
 
-  '@zipboda/tokens@1.0.0':
-    resolution: {integrity: sha512-27Th4c5i/r0nFibBbwIFfUd0BLkxLKfC+aPxgcHWojo3rHSVp2uyuMDkMwsNXsGNv+3rU0ShWyKarKYg9iHNKQ==, tarball: https://npm.pkg.github.com/download/@zipboda/tokens/1.0.0/302af9feed5946699eb96760e59d59e263541fa6}
+  '@zipboda/tokens@1.2.2':
+    resolution: {integrity: sha512-MaBysyBFOvbqdL9EKKUHnENs0+UeeBB7IsP6EF238IsZ6v33evNkNabgnuhPUEE2kT7aJPe9x/kjhU8lAZpaYA==, tarball: https://npm.pkg.github.com/download/@zipboda/tokens/1.2.2/753f271a4e35da416801b85d9a19a29b6331ee9f}
 
-  '@zipboda/ui-core@1.1.0':
-    resolution: {integrity: sha512-qhR7T7f8gJ4hCe2a9+ZnAFLv2GByTiEh5cW8GBzX5JN7NTMvcval6Z38OwNPY+9bmJF2d7Q2nKk8piqIlzVJYg==, tarball: https://npm.pkg.github.com/download/@zipboda/ui-core/1.1.0/705b4dc5dd2ce3dc9f62c14923e3d0efbf7f5cf3}
+  '@zipboda/ui-core@1.3.2':
+    resolution: {integrity: sha512-Wse7HxdfiD7mhSQWQdTzx5pcu5VyIigUcc51kVuov/Mkt2r+oBf2N3CulC7xIJNqOz8qqk0WtT5WnUu0ATTNJw==, tarball: https://npm.pkg.github.com/download/@zipboda/ui-core/1.3.2/4da76bf9c5343f6a268998f19021dcac70e95c2f}
 
-  '@zipboda/ui@1.1.0':
-    resolution: {integrity: sha512-6dLU7fz9cmgCnVBUOYh27Tztk0Kfyf4N9ZD8ZP1Aqei+eFzpC3TPGHcoENkj23Rxvu7BYnMMC4IBYmEGWAr2Xw==, tarball: https://npm.pkg.github.com/download/@zipboda/ui/1.1.0/a13c2c757a73098a0d62caed864cf45314a7c7bb}
+  '@zipboda/ui@3.0.1':
+    resolution: {integrity: sha512-ZWq4/duR4GP7OYgc+9D5abaXK8gNdeAK3TtkAfH6PeFViTLSzDZOXuSXxOIv3XHgWmEqZ60JuI1lBCLQu0LKeQ==, tarball: https://npm.pkg.github.com/download/@zipboda/ui/3.0.1/6f2623478edaee84721568d13e0d1c3da619d8bb}
     peerDependencies:
-      '@zipboda/tokens': ^1.0.0
+      '@zipboda/tokens': ^1.2.2
       react: '>=18'
       react-dom: '>=18'
 
@@ -4188,14 +4188,14 @@ snapshots:
 
   '@webgpu/types@0.1.72': {}
 
-  '@zipboda/tokens@1.0.0': {}
+  '@zipboda/tokens@1.2.2': {}
 
-  '@zipboda/ui-core@1.1.0': {}
+  '@zipboda/ui-core@1.3.2': {}
 
-  '@zipboda/ui@1.1.0(@zipboda/tokens@1.0.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
+  '@zipboda/ui@3.0.1(@zipboda/tokens@1.2.2)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
-      '@zipboda/tokens': 1.0.0
-      '@zipboda/ui-core': 1.1.0
+      '@zipboda/tokens': 1.2.2
+      '@zipboda/ui-core': 1.3.2
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
 
