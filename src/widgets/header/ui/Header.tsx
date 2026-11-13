@@ -6,7 +6,7 @@ import { useState } from "react";
 import { usePathname } from "next/navigation";
 import icon from "@/shared/assets/brand/icon-logo.png";
 import { useCart } from "@/features/cart";
-import { SearchInput, type SearchEntry } from "@/features/search";
+import { SearchInput } from "@/features/search";
 import { NAV_ITEMS, MOBILE_CONTEXTUAL_HEADER_ROUTES } from "../config/nav";
 import { NotificationPanel } from "./NotificationPanel";
 import { ProfilePanel } from "./ProfilePanel";
@@ -14,7 +14,7 @@ import { ProfilePanel } from "./ProfilePanel";
 type HeaderPanel = "notifications" | "profile" | null;
 
 // figma 135:7847(로그인 후) / 170:2(로그인 전) 공통 헤더/GNB (ZB-U-COM-01/04)
-export function Header({ authenticated = false, searchIndex = [] }: { authenticated?: boolean; searchIndex?: readonly SearchEntry[] }) {
+export function Header({ authenticated = false }: { authenticated?: boolean }) {
   const pathname = usePathname();
   const isActive = (href: string) => (href === "/" ? pathname === "/" : pathname.startsWith(href));
   const [panel, setPanel] = useState<HeaderPanel>(null);
@@ -37,7 +37,7 @@ export function Header({ authenticated = false, searchIndex = [] }: { authentica
           </Link>
 
           {/* figma 353:3084(모바일 fill·입력만) / 135:7856(PC 512·아이콘 내부) */}
-          <SearchInput index={searchIndex} icon={<SearchIcon />} blocked={panel !== null} onActivate={() => setPanel(null)} />
+          <SearchInput icon={<SearchIcon />} blocked={panel !== null} onActivate={() => setPanel(null)} />
 
           {/* figma 353:3091 액션 — 장바구니 + (로그인 후 아이콘 3개 / 로그인 전 로그인 버튼) */}
           {/* figma 353:3091 모바일은 알림·장바구니만 노출(순서도 PC와 반대). 찜·내 정보는 하단 탭으로 접근 */}

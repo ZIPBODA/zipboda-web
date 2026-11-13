@@ -8,3 +8,4 @@ export { MobileQuickMenu } from "./ui/MobileQuickMenu";
 export { MobileSubscriptions } from "./ui/MobileSubscriptions";
 export { MobileFloorplans } from "./ui/MobileFloorplans";
 export { MobileFurniture } from "./ui/MobileFurniture";
+export { HOME_SUBSCRIPTION_COUNT } from "./config/constants";

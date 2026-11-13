@@ -5,6 +5,7 @@ import {
   STATUS_BADGE_TONE,
   SubscriptionCardMobile,
   SubscriptionsBackLink,
+  formatArea,
   type Subscription,
   type SubscriptionDetail,
   type SubscriptionUnit
@@ -25,7 +26,7 @@ interface Props {
 // figma 419:10352 청약 상세(SUBS-03) 모바일 — 컨텍스트 헤더·히어로·정보·탭·뷰어·주변 매물
 export function MobileSubscriptionDetail({ detail, floorplan, selectedUnit, activeTab, nearby }: Props) {
   const sizes = detail.units.flatMap((u) => u.size === null ? [] : [u.size]);
-  const areaRange = sizes.length === 0 ? "" : `${Math.min(...sizes)}㎡ ~ ${Math.max(...sizes)}㎡`;
+  const areaRange = sizes.length === 0 ? "" : `${formatArea(Math.min(...sizes))} ~ ${formatArea(Math.max(...sizes))}`;
   const summary: [string, string][] = [
     ["신청 기간", detail.applyPeriod ?? ""],
     ["세대수", detail.households ?? ""],
@@ -37,7 +38,8 @@ export function MobileSubscriptionDetail({ detail, floorplan, selectedUnit, acti
     const query = new URLSearchParams();
     const nextUnit = unit ?? selectedUnit?.unitKey ?? selectedUnit?.size;
     const nextTab = tab ?? activeTab;
-    if (nextUnit !== (detail.defaultUnitKey ?? detail.defaultUnitSize)) query.set("unit", String(nextUnit));
+    // 주택형·도면이 없는 공고는 고를 호가 없다 — unit을 붙이면 ?unit=undefined로 없는 호를 찾아 404가 된다
+    if (nextUnit !== undefined && nextUnit !== null && nextUnit !== (detail.defaultUnitKey ?? detail.defaultUnitSize)) query.set("unit", String(nextUnit));
     if (nextTab !== DEFAULT_MOBILE_DETAIL_TAB) query.set("tab", nextTab);
     const search = query.toString();
     return search ? `/subscriptions/${detail.id}?${search}` : `/subscriptions/${detail.id}`;
@@ -140,7 +142,7 @@ export function MobileSubscriptionDetail({ detail, floorplan, selectedUnit, acti
                     selected ? "border-brand bg-brand/10 text-fg-heading" : "border-line text-fg-muted"
                   }`}
                 >
-                  {unit.label ?? (unit.size === null ? "" : `${unit.size}㎡ ${unit.type}`)}
+                  {unit.label ?? (unit.size === null ? "" : `${formatArea(unit.size)} ${unit.type}`)}
                 </Link>
               );
             })}

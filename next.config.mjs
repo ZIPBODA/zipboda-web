@@ -16,6 +16,11 @@ const nextConfig = {
   ...(process.env.BUILD_DIST_DIR ? { distDir: process.env.BUILD_DIST_DIR } : {}),
   // 공유 패키지(ESM/TS)를 Next가 트랜스파일
   transpilePackages: ["@zipboda/ui", "@zipboda/ui-core"],
+  // 단지 사진은 LH 청약센터의 사진 파일 주소로 온다(API imageUrl — 수집이 보기 페이지를 사진 주소로 바꿔 둔다).
+  // 허용하지 않은 호스트·경로는 next/image가 렌더링을 멈춘다
+  images: {
+    remotePatterns: [{ protocol: "https", hostname: "apply.lh.or.kr", pathname: "/upload/**" }]
+  },
   // OpenCV.js(Emscripten)는 node 내장 모듈을 조건부 참조하므로 브라우저 번들에서 비워둔다
   webpack: (config) => {
     config.resolve.fallback = { ...config.resolve.fallback, fs: false, path: false, crypto: false };

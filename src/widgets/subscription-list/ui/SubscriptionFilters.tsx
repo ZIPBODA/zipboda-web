@@ -9,7 +9,7 @@ export function SubscriptionFilters({ options }: { options: SubscriptionFilterOp
 
   // figma 135:5623 활성 chip: 지역/면적/공급기관=brand, 정렬=dark(#1A1A1A)
   const chipClass = (active: boolean, tone: "brand" | "dark") =>
-    `shrink-0 rounded-md px-3 py-1.5 text-xs font-medium transition-colors ${
+    `shrink-0 whitespace-nowrap rounded-md px-3 py-1.5 text-xs font-medium transition-colors ${
       active
         ? tone === "dark"
           ? "bg-fg-strong text-fg-ondark"
@@ -20,6 +20,7 @@ export function SubscriptionFilters({ options }: { options: SubscriptionFilterOp
   const current = (key: string) => params.get(key) ?? FILTER_ALL;
   const currentSort = params.get("sort") ?? DEFAULT_SORT;
 
+  // 칩이 바 폭을 넘으면(지역·공급기관이 다 있는 실데이터) 한 줄을 지킨 채 바 안에서 가로로 민다
   return (
     <div className="flex items-center gap-4 overflow-x-auto rounded-xl bg-surface-secondary p-5">
       <FilterGroup label="지역">
@@ -45,7 +46,8 @@ export function SubscriptionFilters({ options }: { options: SubscriptionFilterOp
           </button>
         ))}
       </FilterGroup>
-      <div className="flex flex-1 justify-end">
+      {/* 남는 폭이 있을 때만 정렬을 오른쪽 끝에 붙인다. 줄어드는 칸(flex-1)에 두면 넘칠 때 정렬이 왼쪽으로 밀려 공급기관 칩을 덮는다 */}
+      <div className="ml-auto flex shrink-0">
         <FilterGroup label="정렬">
           {SORT_OPTIONS.map((o) => (
             <button key={o.value} type="button" aria-pressed={currentSort === o.value} className={chipClass(currentSort === o.value, "dark")} onClick={() => update("sort", o.value, o.value === DEFAULT_SORT)}>

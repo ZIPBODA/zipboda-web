@@ -41,7 +41,8 @@ export function SubscriptionMapDetail({ id, loadDetail, onClose, item, replaceHi
   const detail = data?.detail;
   const plan = data?.plans.find((entry) => entry.unit === unit);
   const href = `/subscriptions/${encodeURIComponent(id)}`;
-  const noticeHref = `${href}?${new URLSearchParams({ unit })}`;
+  // 고를 호가 없는 공고(주택형·도면 없음)는 unit을 빼야 상세가 기본 화면으로 열린다
+  const noticeHref = unit ? `${href}?${new URLSearchParams({ unit })}` : href;
   const point = detail?.coord ?? item?.coord ?? null;
   const showsMiniMap = mobile && point !== null;
   const summary = detail ? [

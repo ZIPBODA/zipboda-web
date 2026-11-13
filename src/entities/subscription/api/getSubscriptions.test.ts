@@ -1,95 +1,90 @@
-import { describe, it, expect } from "vitest";
-import { HOUSING_SOURCE_DATA } from "@/shared/api/housing-data";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { getSubscriptionDetail } from "./getSubscriptionDetail";
+import { getSubscriptionMapItems } from "./getSubscriptionMapItems";
 import { getSubscriptions } from "./getSubscriptions";
-import { getSubscriptionFilterOptions } from "./getSubscriptionFilterOptions";
+import { searchSubscriptions } from "./searchSubscriptions";
+import type { SubscriptionListItemDto } from "./subscription.dto";
 
-describe("getSubscriptions 필터", () => {
-  it("주택명·주소·기관 검색을 기존 필터와 함께 적용한다", async () => {
-    expect((await getSubscriptions({ q: "  개포  " })).map((item) => item.id)).toEqual(["gangnam-gaepo"]);
-    expect((await getSubscriptions({ q: "lh" })).length).toBeGreaterThan(0);
-    expect(await getSubscriptions({ q: "개포", size: "0-15" })).toEqual([]);
-    expect(await getSubscriptions({ q: "없는주택" })).toEqual([]);
+const item = (id: string, lat: number | null = null): SubscriptionListItemDto => ({
+  id, title: `단지 ${id}`, noticeTitle: `공고 ${id}`, agencyCode: 1, region: 1, address: "서울 노원구", lat, lng: lat === null ? null : 127,
+  supplyType: null, sizes: [], households: null, applicationCount: null, competition: null, moveIn: null, deadline: null, dday: null, statusCode: 3, imageUrl: null
+});
+
+const envelope = (data: unknown) => ({ success: true, data, error: null });
+const failure = (status: number, message: string) =>
+  new Response(JSON.stringify({ success: false, data: null, error: { code: "E000", message } }), { status });
+
+let fetchMock: ReturnType<typeof vi.fn<(url: string) => Promise<Response>>>;
+const requested = () => new URL(fetchMock.mock.calls[0][0]);
+const answer = (data: unknown) => fetchMock.mockResolvedValue(new Response(JSON.stringify(envelope(data))));
+
+beforeEach(() => {
+  vi.stubEnv("ZIPBODA_API_URL", "http://api.test/api");
+  fetchMock = vi.fn<(url: string) => Promise<Response>>();
+  vi.stubGlobal("fetch", fetchMock);
+});
+
+afterEach(() => {
+  vi.unstubAllEnvs();
+  vi.unstubAllGlobals();
+});
+
+describe("목록(API-010)", () => {
+  it("주소 필터를 코드로 바꿔 정렬·페이지와 함께 묻고, 전체 건수를 함께 준다", async () => {
+    answer({ items: [item("a"), item("b")], page: 2, pageSize: 20, totalCount: 42 });
+    const page = await getSubscriptions({ region: "서울", agency: "LH", sort: "COMPETITION", q: "노원" }, { page: 2 });
+    expect(requested().pathname).toBe("/api/subscriptions");
+    expect(Object.fromEntries(requested().searchParams)).toEqual({ region: "1", agency: "1", keyword: "노원", sort: "COMPETITION", page: "2", pageSize: "20" });
+    expect(page).toMatchObject({ page: 2, pageSize: 20, totalCount: 42 });
+    expect(page.items.map((entry) => entry.id)).toEqual(["a", "b"]);
   });
 
-  it("실제 모집 상태만 옵션으로 제공하고 상태 필터를 적용한다", async () => {
-    const { statuses } = await getSubscriptionFilterOptions();
-    expect(statuses?.length).toBeGreaterThan(0);
-    for (const status of statuses ?? []) {
-      const result = await getSubscriptions({ status });
-      expect(result.length).toBeGreaterThan(0);
-      expect(result.every((item) => item.status === status)).toBe(true);
-    }
-    expect(await getSubscriptions({ status: "없는상태" })).toEqual([]);
-  });
-  // 건수를 숫자로 박아 두면 주택이 늘 때마다 테스트가 깨진다. 규칙에서 기대값을 끌어온다
-  const withFloorplan = HOUSING_SOURCE_DATA.filter((property) => property.layouts.length > 0);
-
-  it("조건이 없으면 평면도가 있는 주택을 전부 돌려준다", async () => {
-    expect((await getSubscriptions()).length).toBe(withFloorplan.length);
-  });
-
-  it("평면도가 한 장도 없는 주택은 목록에 올리지 않는다", async () => {
-    const listed = new Set((await getSubscriptions()).map((s) => s.id));
-    for (const property of HOUSING_SOURCE_DATA) {
-      expect(listed.has(property.id)).toBe(property.layouts.length > 0);
-    }
-  });
-
-  it("면적 구간이 실제로 목록을 줄인다", async () => {
-    const small = await getSubscriptions({ size: "0-15" });
-    const large = await getSubscriptions({ size: "30-" });
-
-    expect(small.map((s) => s.id).sort()).toEqual(["dobong-banghak", "gangseo-hwagok", "gwanak-sillim", "jungnang-myeonmok"]);
-    expect(large.map((s) => s.id).sort()).toEqual(["gangnam-gaepo", "seongdong-yongdap"]);
-  });
-
-  it("어떤 구간도 빈 목록을 내지 않는다", async () => {
-    const { sizeRanges } = await getSubscriptionFilterOptions();
-    for (const range of sizeRanges) {
-      expect((await getSubscriptions({ size: range.value })).length).toBeGreaterThan(0);
-    }
-  });
-
-  it("지역과 기관으로도 거른다", async () => {
-    expect((await getSubscriptions({ region: "서울" })).length).toBe(withFloorplan.length);
-    expect((await getSubscriptions({ region: "부산" })).length).toBe(0);
-    expect((await getSubscriptions({ agency: "LH" })).length).toBe(withFloorplan.length);
-  });
-
-  it("조건을 겹쳐 걸 수 있다", async () => {
-    const list = await getSubscriptions({ region: "서울", agency: "LH", size: "20-25" });
-    expect(list.map((s) => s.id)).toEqual(["songpa-ogeum"]);
-  });
-
-  it("마감 임박 순은 남은 날이 적은 공고부터, 마감한 공고는 뒤로 보낸다", async () => {
-    const ddays = (await getSubscriptions({ sort: "DEADLINE" })).map((s) => s.dday);
-    const open = ddays.filter((d): d is number => d !== null);
-
-    expect(open).toEqual([...open].sort((a, b) => a - b));
-    expect(ddays.slice(open.length).every((d) => d === null)).toBe(true);
+  it("모르는 정렬은 기본 정렬(마감 임박)로 묻는다", async () => {
+    answer({ items: [], page: 1, pageSize: 20, totalCount: 0 });
+    await getSubscriptions({ sort: "POPULAR" as never });
+    expect(requested().searchParams.get("sort")).toBe("DEADLINE");
   });
 });
 
-describe("getSubscriptionFilterOptions", () => {
-  it("칩은 언제나 전체로 시작한다", async () => {
-    const { regions, agencies, sizeRanges } = await getSubscriptionFilterOptions();
+describe("지도(API-012)", () => {
+  it("영역 없이 같은 조건·정렬로 핀을 받고, 좌표가 없는 공고까지 센 건수를 함께 준다", async () => {
+    answer({ markers: [item("a", 37.5)], totalCount: 7 });
+    const result = await getSubscriptionMapItems({ status: "접수중", sort: "HOUSEHOLDS" });
+    expect(requested().pathname).toBe("/api/subscriptions/map");
+    expect(Object.fromEntries(requested().searchParams)).toEqual({ status: "2", sort: "HOUSEHOLDS" });
+    expect(result.totalCount).toBe(7);
+    expect(result.items[0]).toMatchObject({ id: "a", coord: { lat: 37.5, lng: 127 } });
+  });
+});
 
-    expect(regions[0]).toBe("전체");
-    expect(agencies[0]).toBe("전체");
-    expect(sizeRanges[0]).toEqual({ value: "전체", label: "전체" });
+describe("상세(API-011)", () => {
+  it.each([[404, "NOT_FOUND"], [422, "VALIDATION_ERROR"]])("없는 공고·형식이 틀린 id(%s)는 null이다", async (status, message) => {
+    fetchMock.mockResolvedValue(failure(status, message));
+    await expect(getSubscriptionDetail("a".repeat(101))).resolves.toBeNull();
   });
 
-  it("데이터에 없는 지역·기관 칩은 만들지 않는다", async () => {
-    const { regions, agencies } = await getSubscriptionFilterOptions();
-
-    expect(regions).toEqual(["전체", "서울"]);
-    expect(agencies).toEqual(["전체", "LH"]);
+  it("서버 오류는 '없음'으로 숨기지 않고 그대로 던진다", async () => {
+    fetchMock.mockResolvedValue(failure(500, "INTERNAL_ERROR"));
+    await expect(getSubscriptionDetail("cell-1")).rejects.toMatchObject({ status: 500 });
   });
 
-  it("칩마다 결과가 있는지 스스로 확인한다", async () => {
-    const { regions, agencies } = await getSubscriptionFilterOptions();
+  it("id는 경로 조각으로 인코딩한다", async () => {
+    fetchMock.mockResolvedValue(failure(404, "NOT_FOUND"));
+    await getSubscriptionDetail("a/b?c");
+    expect(fetchMock.mock.calls[0][0]).toContain("/api/subscriptions/a%2Fb%3Fc");
+  });
+});
 
-    for (const region of regions) expect((await getSubscriptions({ region })).length).toBeGreaterThan(0);
-    for (const agency of agencies) expect((await getSubscriptions({ agency })).length).toBeGreaterThan(0);
+describe("통합 검색(API-095)", () => {
+  it("공고 몫의 항목과 전체 건수를 준다", async () => {
+    answer({ page: 1, pageSize: 8, subscriptions: { items: [item("a")], totalCount: 31 }, products: { items: [], totalCount: 0 } });
+    const result = await searchSubscriptions("  강남  개포 ", { pageSize: 8 });
+    expect(Object.fromEntries(requested().searchParams)).toEqual({ q: "강남 개포", page: "1", pageSize: "8" });
+    expect(result).toMatchObject({ page: 1, pageSize: 8, totalCount: 31 });
+  });
+
+  it("빈 검색어는 묻지 않는다 — API는 빈 검색어를 요청 오류로 막는다", async () => {
+    await expect(searchSubscriptions("   ")).resolves.toMatchObject({ items: [], totalCount: 0 });
+    expect(fetchMock).not.toHaveBeenCalled();
   });
 });

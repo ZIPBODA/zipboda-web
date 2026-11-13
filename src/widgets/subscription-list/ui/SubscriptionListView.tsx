@@ -1,7 +1,17 @@
-import { SubscriptionCard, SubscriptionCardMobile, type Subscription } from "@/entities/subscription";
+"use client";
+
+import {
+  SubscriptionCard,
+  SubscriptionCardMobile,
+  SubscriptionLoadMore,
+  useSubscriptionPages,
+  type LoadSubscriptionPage,
+  type SubscriptionPage
+} from "@/entities/subscription";
 
 // figma PC 413:718(가로 카드) / Mobile 419:10136(세로 이미지배경 카드) — 이중 렌더
-export function SubscriptionListView({ items }: { items: Subscription[] }) {
+export function SubscriptionListView({ initialPage, loadPage }: { initialPage: SubscriptionPage; loadPage: LoadSubscriptionPage }) {
+  const { items, hasMore, loading, failed, loadMore } = useSubscriptionPages(initialPage, loadPage);
   if (items.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center gap-2 rounded-xl border border-line-subtle bg-surface-secondary py-20 text-center">
@@ -24,6 +34,7 @@ export function SubscriptionListView({ items }: { items: Subscription[] }) {
           <SubscriptionCardMobile key={item.id} item={item} />
         ))}
       </div>
+      {hasMore && <SubscriptionLoadMore loading={loading} failed={failed} onLoadMore={() => void loadMore()} />}
     </>
   );
 }

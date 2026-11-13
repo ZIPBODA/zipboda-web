@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useRef, type ReactNode } from "react";
-import { DEFAULT_SORT, SORT_OPTIONS, type Subscription } from "@/entities/subscription";
+import { useEffect, useRef, useState, type ReactNode } from "react";
+import { DEFAULT_SORT, LIST_PAGE_SIZE, SORT_OPTIONS, SubscriptionLoadMore, type Subscription } from "@/entities/subscription";
 import { Button, cn } from "@/shared/ui";
 import { useSubscriptionFilters } from "../model/useSubscriptionFilters";
 import { useSheetDrag, type MapSheetSnap } from "../model/useSheetDrag";
@@ -45,6 +45,11 @@ export function SubscriptionMapSidebar({ items, scope, open, sheet, onSheetChang
   const { height, handle } = useSheetDrag(sheetRef, sheet, changeSheet);
   const selectionKey = items.map((item) => item.id).join("|");
   useEffect(() => { listRef.current?.scrollTo?.({ top: 0 }); }, [selectionKey]);
+  // 지도가 첫 범위를 알리기 전에는 좌표가 있는 공고 전부가 '보이는 것'이라 수천 장이 한 번에 그려진다 — 목록 화면처럼 나눠 보인다.
+  // 목록이 바뀌면(지도를 움직이거나 다른 핀을 고르면) 다시 첫 몫부터 보인다
+  const [shown, setShown] = useState({ key: selectionKey, count: LIST_PAGE_SIZE });
+  const shownCount = shown.key === selectionKey ? shown.count : LIST_PAGE_SIZE;
+  const showMore = () => setShown({ key: selectionKey, count: shownCount + LIST_PAGE_SIZE });
   // 접힌 시트에서는 손잡이 아래가 화면에 없다. 보이지 않는 카드로 초점이 들어가지 않게 숨긴다
   const collapsed = sheet === "peek" && "max-md:invisible";
   const heightClass = sheet === "half" && scope === "selection" ? "max-md:map-sheet-fit" : SHEET_HEIGHT_CLASS[sheet];
@@ -70,7 +75,8 @@ export function SubscriptionMapSidebar({ items, scope, open, sheet, onSheetChang
         </div>
       </div>
       <div ref={listRef} className={cn("min-h-0 flex-1 space-y-2 overflow-y-auto overscroll-contain p-2 max-md:space-y-3 max-md:p-3", collapsed)} aria-label="청약 결과">
-        {items.length > 0 ? items.map((item) => <SubscriptionMapResultCard key={item.id} item={item} active={activeId === item.id} showCta={scope === "selection"} onSelect={() => onDetail(item.id)} />) : empty}
+        {items.length > 0 ? items.slice(0, shownCount).map((item) => <SubscriptionMapResultCard key={item.id} item={item} active={activeId === item.id} showCta={scope === "selection"} onSelect={() => onDetail(item.id)} />) : empty}
+        {items.length > shownCount && <SubscriptionLoadMore loading={false} failed={false} onLoadMore={showMore} />}
         {footer}
       </div>
     </aside>

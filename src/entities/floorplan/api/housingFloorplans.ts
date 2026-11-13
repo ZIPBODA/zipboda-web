@@ -4,7 +4,7 @@ import { REVIEWED_MODELS } from "./models";
 
 export const HOUSING_FLOORPLANS: Floorplan[] = HOUSING_SOURCE_DATA.flatMap((property) => property.layouts.map((layout) => ({
   id: layout.layoutKey,
-  subscriptionId: property.id,
+  complexId: property.id,
   layoutKey: layout.layoutKey,
   unitKey: layout.unitKey,
   size: layout.exclusiveAreaM2,

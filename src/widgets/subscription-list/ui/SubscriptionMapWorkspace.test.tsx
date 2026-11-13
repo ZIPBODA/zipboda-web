@@ -22,7 +22,7 @@ const base: Subscription = { id: "a", title: "강남 개포동", agency: "LH", s
 const items = [base, { ...base, id: "b", title: "도봉 방학동" }, { ...base, id: "c", title: "관악 신림동" }];
 const options = { regions: ["전체", "서울"], agencies: ["전체", "LH"], sizeRanges: [{ value: "전체", label: "전체" }, { value: "20-25", label: "20~25㎡" }], statuses: ["접수중" as const] };
 const loadDetail = vi.fn(async () => null);
-const draw = (next = items) => <SubscriptionMapWorkspace items={next} options={options} loadDetail={loadDetail} />;
+const draw = (next = items, totalCount = next.length) => <SubscriptionMapWorkspace items={next} totalCount={totalCount} options={options} loadDetail={loadDetail} />;
 const panel = () => screen.getByRole("complementary", { name: "청약 목록" });
 const panelStatus = () => within(panel()).getByRole("status").textContent;
 const resultTitles = () => within(screen.getByLabelText("청약 결과")).queryAllByRole("heading").map((node) => node.textContent);
@@ -112,6 +112,29 @@ describe("지도 첫 화면과 청약 목록", () => {
     expect(panel()).toHaveAttribute("data-open", "true");
   });
 
+  // 지도가 범위를 알리기 전에는 좌표가 있는 공고 전부가 대상이다 — 수천 장을 한 번에 그리지 않게 나눠 보인다
+  it("옆 목록은 20장씩 보이고 '더 보기'로 이어 보이며, 지도가 움직여 목록이 바뀌면 처음 몫으로 돌아간다", () => {
+    const many = Array.from({ length: 45 }, (_, index) => ({ ...base, id: `m${index}`, title: `공고 ${index}` }));
+    render(draw(many));
+    expect(resultTitles()).toHaveLength(20);
+    fireEvent.click(within(panel()).getByRole("button", { name: "더 보기" }));
+    expect(resultTitles()).toHaveLength(40);
+    fireEvent.click(within(panel()).getByRole("button", { name: "더 보기" }));
+    expect(resultTitles()).toHaveLength(45);
+    expect(within(panel()).queryByRole("button", { name: "더 보기" })).toBeNull();
+    act(() => mapProps.onVisibleMarkersChange?.(many.slice(0, 30).map((item) => item.id)));
+    expect(resultTitles()).toHaveLength(20);
+    expect(panelStatus()).toContain("30건");
+  });
+
+  // API는 좌표가 있는 공고만 핀으로 주고, 좌표가 없는 공고까지 센 건수를 따로 준다
+  it("전체 건수는 좌표가 없는 공고까지 세고, 빠진 공고는 목록 보기로 안내한다", () => {
+    render(draw(items, 5));
+    fireEvent.click(screen.getByRole("button", { name: "청약 3" }));
+    expect(screen.getByText("지도 대상 3건 · 전체 5건")).toBeInTheDocument();
+    expect(screen.getAllByText(/좌표가 없는 공고 2건은/).length).toBeGreaterThan(0);
+  });
+
   it("고른 목록을 닫은 뒤 청약 버튼은 선택이 아니라 지도 영역 목록을 연다", () => {
     render(draw());
     act(() => mapProps.onGroupSelect?.(["a"]));
@@ -145,7 +168,7 @@ describe("지도 첫 화면과 청약 목록", () => {
       detail: { id: "a", title: "청약 A", address: "서울", agency: "LH", agencyLabel: "LH", status: "접수중", dday: null, applyPeriod: null, households: null, supplyType: null, competition: null, contractDate: null, moveIn: null, postDate: null, units: [], defaultUnitKey: "a-1", defaultUnitSize: null, image: null, applyUrl: null },
       plans: [{ unit: "a-1", image: "/plan.png", has3d: true }]
     };
-    render(<SubscriptionMapWorkspace items={items} options={options} loadDetail={async () => withPlan} />);
+    render(<SubscriptionMapWorkspace items={items} totalCount={items.length} options={options} loadDetail={async () => withPlan} />);
     fireEvent.click(screen.getByRole("button", { name: "강남 개포동 상세 보기" }));
     const detail = await screen.findByRole("complementary", { name: "선택한 청약 상세" });
     await within(detail).findByText("청약 A");

@@ -27,7 +27,8 @@ export interface Floorplan {
   sourcePdf?: string;
   sourcePage?: number;
   id: string;
-  subscriptionId: string;
+  /** 도면이 붙은 단지. 현황도 카탈로그의 주택 id이자 API 단지 id다 */
+  complexId: string;
   size: number | null;
   type: string;
   rooms: FloorplanRoom[];

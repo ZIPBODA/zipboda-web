@@ -1,28 +1,30 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { getSubscriptionDetail, selectSubscriptionUnit } from "@/entities/subscription";
+import { selectSubscriptionUnit } from "@/entities/subscription";
 import { getFloorplan } from "@/entities/floorplan";
+import { firstParam } from "@/shared/lib/searchParams";
+import { getRequestSubscriptionDetail } from "../../subscriptionDetailData";
 import { DEFAULT_FLOORPLAN_TAB, FLOORPLAN_TAB_KEYS, FloorplanExperienceLoader, type FloorplanTab } from "@/widgets/floorplan-viewer";
 
 interface PageProps {
   params: { id: string };
-  searchParams: { unit?: string; view?: string; mode?: string };
+  searchParams: { unit?: string | string[]; view?: string; mode?: string };
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-  const detail = await getSubscriptionDetail(params.id);
+  const detail = await getRequestSubscriptionDetail(params.id);
   return { title: detail ? `${detail.title} 평면도 집구경 | 집보다` : "평면도 집구경 | 집보다" };
 }
 
 // figma 353:3980·353:3799·353:3902 평면도 2D/3D/1인칭 워크스루(SUBS-08) — 전용 풀스크린
 export default async function FloorplanViewerPage({ params, searchParams }: PageProps) {
-  const detail = await getSubscriptionDetail(params.id);
+  const detail = await getRequestSubscriptionDetail(params.id);
   if (!detail) notFound();
 
-  const unit = selectSubscriptionUnit(detail, searchParams.unit);
+  const unit = selectSubscriptionUnit(detail, firstParam(searchParams.unit));
   if (!unit) notFound();
   const key = unit.unitKey ?? unit.size;
-  const floorplan = key === null ? null : await getFloorplan(detail.id, key);
+  const floorplan = unit.layoutKey ? await getFloorplan(unit.layoutKey) : null;
   if (!floorplan) notFound();
 
   const initialTab: FloorplanTab = FLOORPLAN_TAB_KEYS.includes(searchParams.view ?? "") ? (searchParams.view as FloorplanTab) : DEFAULT_FLOORPLAN_TAB;

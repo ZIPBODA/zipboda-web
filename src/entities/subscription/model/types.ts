@@ -35,6 +35,25 @@ export interface SubscriptionFilterOptions {
   sizeRanges: { value: string; label: string }[];
 }
 
+/** 목록 한 페이지. 화면이 '공고 N건'과 '더 보기'를 그리도록 전체 건수를 함께 둔다 */
+export interface SubscriptionPage {
+  items: Subscription[];
+  page: number;
+  pageSize: number;
+  totalCount: number;
+}
+
+export interface SubscriptionPageRequest {
+  page?: number;
+  pageSize?: number;
+}
+
+/** 지도에 올릴 공고(좌표가 있는 것)와, 좌표가 없는 공고까지 센 전체 건수 */
+export interface SubscriptionMapItems {
+  items: Subscription[];
+  totalCount: number;
+}
+
 export interface SubscriptionFilter {
   q: string;
   status: string;
@@ -46,18 +65,19 @@ export interface SubscriptionFilter {
 
 export interface SubscriptionUnit {
   unitKey?: string;
+  /** 평면도가 있는 호만 있다. 도면 자산(entities/floorplan)을 찾는 열쇠다 */
   layoutKey?: string;
   label?: string;
   floor?: string;
   unit?: string;
   size: number | null;
   type: string;
+  image2dUrl?: string | null;
+  has3d?: boolean;
 }
 
 export interface SubscriptionDetail {
   defaultUnitKey?: string;
-  sourcePdf?: string;
-  sourceIssues?: string[];
   id: string;
   agency: AgencyCode | null;
   agencyLabel: string;
