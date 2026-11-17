@@ -1,7 +1,13 @@
 import type { Metadata } from "next";
 import { getSubscriptions } from "@/entities/subscription";
 import { PageContainer, PageHeader } from "@/shared/ui";
-import { ScoreCalculator } from "@/features/score";
+import { ELIGIBLE_LISTING_COUNT, ScoreCalculator } from "@/features/score";
+
+/**
+ * 요청 때 그린다. 주소 값을 읽지 않는 화면이라 그대로 두면 빌드가 미리 그리며 API를 부른다 — API에 닿지 않는 빌드(CI)가 깨진다.
+ * API 응답은 fetch의 60초 데이터 캐시(shared/api/client)로 계속 아낀다
+ */
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "청약가점 계산기 | 집보다",
@@ -10,7 +16,7 @@ export const metadata: Metadata = {
 
 // figma 135:2577 청약가점 계산기(ZB-U-SCORE-01, PC)
 export default async function ScorePage() {
-  const eligible = (await getSubscriptions()).slice(0, 2);
+  const { items: eligible } = await getSubscriptions({}, { pageSize: ELIGIBLE_LISTING_COUNT });
 
   return (
     <PageContainer>

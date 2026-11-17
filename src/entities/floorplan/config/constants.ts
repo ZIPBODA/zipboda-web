@@ -63,3 +63,6 @@ export const CONFIDENCE_PENALTY: Record<NormalizeFlagCode, number> = {
   "unreachable-room": 0.2,
   "no-doors": 0.2
 };
+
+/** 홈 '인터랙티브 평면도'에 앞세우는 도면 수 */
+export const FEATURED_FLOORPLAN_COUNT = 3;

@@ -17,7 +17,7 @@ export function createDetailHrefBuilder({ id, defaultUnitSize, unit, view, viewp
     const nextView = next.view ?? view;
     const nextViewpoint = next.viewpoint ?? viewpoint;
 
-    if (nextUnit !== defaultUnitSize) query.set("unit", String(nextUnit));
+    if (nextUnit !== null && nextUnit !== undefined && nextUnit !== defaultUnitSize) query.set("unit", String(nextUnit));
     if (nextView !== DEFAULT_VIEW_MODE) query.set("view", nextView);
     if (nextViewpoint !== DEFAULT_VIEWPOINT) query.set("viewpoint", nextViewpoint);
 

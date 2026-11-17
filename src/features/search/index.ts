@@ -1,4 +1,6 @@
 export { SearchInput } from "./ui/SearchInput";
-export { cleanQuery, normalizeQuery, searchAll, getSuggestions, searchHref } from "./lib/search";
-export { createSearchIndex } from "./lib/createSearchIndex";
-export type { SearchEntry } from "./model/types";
+export { SearchHousingResults } from "./ui/SearchHousingResults";
+export { cleanQuery, normalizeQuery, searchAll, mergeSearchResults, getSuggestions, searchHref } from "./lib/search";
+export { createProductSearchIndex, toHousingSearchEntry } from "./lib/createSearchIndex";
+export { SUGGESTION_LIMIT } from "./config/constants";
+export type { SearchEntry, SearchSuggestions, LoadSearchSuggestions } from "./model/types";

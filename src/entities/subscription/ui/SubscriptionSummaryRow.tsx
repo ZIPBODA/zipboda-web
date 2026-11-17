@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { AgencyBadge } from "./AgencyBadge";
 import { DdayBadge } from "./DdayBadge";
+import { sizeChipLabelsOf } from "../lib/formatArea";
 import type { Subscription } from "../model/types";
 
 // figma 135:7088 메인 청약 요약 행 — 목록 카드(135:5669)보다 조밀하고 마감일 중심
@@ -26,9 +27,9 @@ export function SubscriptionSummaryRow({ item }: { item: Subscription; image?: s
         <h3 className="truncate text-base font-semibold text-fg-heading">{item.title}</h3>
         <p className="mt-0.5 text-sm text-fg-disabled">{item.location}</p>
         <div className="mt-2 flex items-center gap-1.5">
-          {item.sizes.map((size) => (
-            <span key={size} className="rounded-full bg-surface-tertiary px-2.5 py-0.5 text-xs font-medium text-fg-body">
-              {size}㎡
+          {sizeChipLabelsOf(item.sizes).map((label) => (
+            <span key={label} className="rounded-full bg-surface-tertiary px-2.5 py-0.5 text-xs font-medium text-fg-body">
+              {label}
             </span>
           ))}
         </div>

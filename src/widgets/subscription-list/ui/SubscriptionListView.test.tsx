@@ -1,0 +1,43 @@
+import { describe, expect, it, vi } from "vitest";
+import type { AnchorHTMLAttributes } from "react";
+import { fireEvent, render, screen, within } from "@testing-library/react";
+import type { Subscription, SubscriptionPage } from "@/entities/subscription";
+import { SubscriptionListView } from "./SubscriptionListView";
+
+vi.mock("next/link", () => ({ default: (props: AnchorHTMLAttributes<HTMLAnchorElement>) => <a {...props} /> }));
+
+const item = (id: string): Subscription => ({
+  id, title: `공고 ${id}`, agency: "LH", region: "서울", location: "서울 노원구", sizes: [16.3], applicants: null, households: null,
+  competition: null, moveIn: null, deadline: null, dday: null, image: null
+});
+const pageOf = (page: number, ids: string[], totalCount: number): SubscriptionPage => ({ items: ids.map(item), page, pageSize: 2, totalCount });
+
+describe("목록 화면 더 보기", () => {
+  it("'더 보기'를 누르면 다음 페이지를 이어 그리고, 다 보이면 버튼을 거둔다", async () => {
+    const loadPage = vi.fn(async () => pageOf(2, ["c"], 3));
+    render(<SubscriptionListView initialPage={pageOf(1, ["a", "b"], 3)} loadPage={loadPage} />);
+    // PC·모바일 카드를 함께 그려 제목이 두 벌이다
+    expect(screen.getAllByText("공고 b")).toHaveLength(2);
+    expect(screen.queryByText("공고 c")).toBeNull();
+
+    fireEvent.click(screen.getByRole("button", { name: "더 보기" }));
+    expect(await screen.findAllByText("공고 c")).toHaveLength(2);
+    expect(loadPage).toHaveBeenCalledWith(2);
+    expect(screen.queryByRole("button", { name: "더 보기" })).toBeNull();
+  });
+
+  it("더 받지 못하면 알리고 다시 시도할 수 있다", async () => {
+    const loadPage = vi.fn().mockRejectedValueOnce(new Error("API down")).mockResolvedValue(pageOf(2, ["c"], 3));
+    render(<SubscriptionListView initialPage={pageOf(1, ["a", "b"], 3)} loadPage={loadPage} />);
+    fireEvent.click(screen.getByRole("button", { name: "더 보기" }));
+    expect(await screen.findByRole("alert")).toHaveTextContent("공고를 더 불러오지 못했습니다");
+    fireEvent.click(screen.getByRole("button", { name: "더 보기" }));
+    expect(await screen.findAllByText("공고 c")).toHaveLength(2);
+  });
+
+  it("공고가 없으면 빈 안내를 보이고 더 보기가 없다", () => {
+    render(<SubscriptionListView initialPage={pageOf(1, [], 0)} loadPage={vi.fn()} />);
+    expect(screen.getByText("조건에 맞는 공고가 없습니다")).toBeInTheDocument();
+    expect(within(document.body).queryByRole("button", { name: "더 보기" })).toBeNull();
+  });
+});

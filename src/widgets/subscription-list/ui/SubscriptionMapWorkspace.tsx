@@ -21,7 +21,8 @@ import { SubscriptionMapToolbar } from "./SubscriptionMapToolbar";
 import { SubscriptionMapSidebar } from "./SubscriptionMapSidebar";
 import { SubscriptionMapRail } from "./SubscriptionMapRail";
 
-export function SubscriptionMapWorkspace({ items, options, loadDetail }: { items: Subscription[]; options: SubscriptionFilterOptions; loadDetail: LoadMapDetail }) {
+/** items는 지도에 올릴(좌표가 있는) 공고, totalCount는 좌표가 없는 공고까지 센 조건 전체 건수다 */
+export function SubscriptionMapWorkspace({ items, totalCount, options, loadDetail }: { items: Subscription[]; totalCount: number; options: SubscriptionFilterOptions; loadDetail: LoadMapDetail }) {
   const mapped = useMemo(() => items.filter((item) => item.coord), [items]);
   const markers = useMemo(() => toMapMarkers(mapped), [mapped]);
   const [visibleIds, setVisibleIds] = useState<string[] | null>(null);
@@ -63,8 +64,8 @@ export function SubscriptionMapWorkspace({ items, options, loadDetail }: { items
   };
   const detailHoldsHistoryEntry = useCloseOnBack(panel.detailId !== null, closeDetail);
   const visibleCount = panel.visibleItemIds.length;
-  const missing = items.length - mapped.length;
-  const emptyMessage = items.length === 0
+  const missing = totalCount - mapped.length;
+  const emptyMessage = totalCount === 0
     ? "조건에 맞는 공고가 없습니다. 필터를 변경해 보세요."
     : "이 지도 영역에는 공고가 없습니다. 지도를 이동하거나 축소해 보세요.";
   const missingNote = missing > 0 && <p className="text-xs text-fg-muted">좌표가 없는 공고 {missing}건은 <Link href={listHref} className="underline">목록 보기</Link>에서 확인할 수 있습니다.</p>;
@@ -102,8 +103,8 @@ export function SubscriptionMapWorkspace({ items, options, loadDetail }: { items
         </Button>
         {/* 목록 패널을 접었을 때만 지도 위에서 건수와 안내를 대신 보여준다 */}
         <div className={`map-workspace-status absolute bottom-0 left-0 right-16 z-10 w-fit max-w-full rounded-lg border border-line bg-surface p-3 shadow-sm ${panel.listOpen ? "hidden" : "hidden md:block"}`}>
-          <p role="status" className="text-xs font-semibold text-fg-heading">{visibleIds === null ? "지도 대상" : "현재 지도"} {visibleCount}건 · 전체 {items.length}건</p>
-          <p className="mt-1 text-xs text-fg-muted">{items.length === 0 || visibleCount === 0 ? emptyMessage : "숫자나 핀을 누르면 선택한 청약 목록을 볼 수 있어요."}</p>
+          <p role="status" className="text-xs font-semibold text-fg-heading">{visibleIds === null ? "지도 대상" : "현재 지도"} {visibleCount}건 · 전체 {totalCount}건</p>
+          <p className="mt-1 text-xs text-fg-muted">{totalCount === 0 || visibleCount === 0 ? emptyMessage : "숫자나 핀을 누르면 선택한 청약 목록을 볼 수 있어요."}</p>
           {missingNote && <div className="mt-1">{missingNote}</div>}
         </div>
       </div>

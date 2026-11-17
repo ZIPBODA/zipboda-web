@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import type { Subscription } from "@/entities/subscription";
+import { sizeChipLabelsOf, type Subscription } from "@/entities/subscription";
 import { MobileHomeSection } from "./MobileHomeSection";
 
 // 마감 임박(D-7 이하)은 D-day 박스를 brand로 강조(figma 419:10731 — 별도 배지 없음)
@@ -23,9 +23,9 @@ export function MobileSubscriptions({ items }: { items: Subscription[] }) {
                   <span className="block truncate text-xs font-semibold text-fg-heading">{item.title}</span>
                   <span className="mt-0.5 block text-caption text-fg-disabled">{item.location}</span>
                   <span className="mt-1.5 flex gap-1">
-                    {item.sizes.map((size) => (
-                      <span key={size} className="rounded-sm bg-surface-tertiary px-1.5 py-0.5 text-caption font-medium text-fg-body">
-                        {size}㎡
+                    {sizeChipLabelsOf(item.sizes).map((label) => (
+                      <span key={label} className="rounded-sm bg-surface-tertiary px-1.5 py-0.5 text-caption font-medium text-fg-body">
+                        {label}
                       </span>
                     ))}
                   </span>

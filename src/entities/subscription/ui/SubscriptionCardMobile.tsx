@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { AGENCY_BADGE_BG, DDAY_URGENT_THRESHOLD } from "../config/constants";
+import { sizeChipLabelsOf } from "../lib/formatArea";
 import type { Subscription } from "../model/types";
 
 // figma 419:10136 모바일 공고 카드 — 세로형(이미지배경 헤더 + 오버레이 텍스트/배지 + 하단 통계 4)
@@ -37,9 +38,9 @@ export function SubscriptionCardMobile({ item }: { item: Subscription }) {
 
       <div className="flex flex-col gap-2.5 px-4 py-3">
         <div className="flex gap-1">
-          {item.sizes.map((size) => (
-            <span key={size} className="rounded-sm bg-surface-tertiary px-1.5 py-0.5 text-caption font-medium text-fg-body">
-              {size}㎡
+          {sizeChipLabelsOf(item.sizes).map((label) => (
+            <span key={label} className="rounded-sm bg-surface-tertiary px-1.5 py-0.5 text-caption font-medium text-fg-body">
+              {label}
             </span>
           ))}
         </div>

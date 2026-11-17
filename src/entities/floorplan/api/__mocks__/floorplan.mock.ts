@@ -15,7 +15,7 @@ const FP_TEST2_MODEL = extractedModel as FloorplanModel2D;
 export const MOCK_FLOORPLANS: Floorplan[] = [
   {
     id: "fp-84a",
-    subscriptionId: "1",
+    complexId: "1",
     size: 84,
     type: "A",
     has3d: true,

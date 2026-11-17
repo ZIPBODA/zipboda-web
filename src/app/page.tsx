@@ -12,8 +12,15 @@ import {
   MobileQuickMenu,
   MobileSubscriptions,
   MobileFloorplans,
-  MobileFurniture
+  MobileFurniture,
+  HOME_SUBSCRIPTION_COUNT
 } from "@/widgets/home";
+
+/**
+ * 요청 때 그린다. 주소 값을 읽지 않는 화면이라 그대로 두면 빌드가 미리 그리며 API를 부른다 — API에 닿지 않는 빌드(CI)가 깨진다.
+ * API 응답은 fetch의 60초 데이터 캐시(shared/api/client)로 계속 아낀다
+ */
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "집보다 — 공공주택 청약부터 가구까지",
@@ -22,8 +29,8 @@ export const metadata: Metadata = {
 
 // figma 135:7027 메인 홈(MAIN-01)
 export default async function Home() {
-  const [subscriptions, floorplans, products] = await Promise.all([
-    getSubscriptions(),
+  const [{ items: subscriptions }, floorplans, products] = await Promise.all([
+    getSubscriptions({}, { pageSize: HOME_SUBSCRIPTION_COUNT }),
     getFeaturedFloorplans(),
     getFeaturedProducts()
   ]);

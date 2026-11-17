@@ -25,6 +25,13 @@ describe("createDetailHrefBuilder", () => {
     expect(query.get("viewpoint")).toBe("3인칭");
   });
 
+  // 주택형·도면이 없는 공고는 고를 호가 없다 — ?unit=null로 없는 호를 찾으면 404다
+  it("고를 호가 없는 공고는 unit 쿼리를 붙이지 않는다", () => {
+    const empty = createDetailHrefBuilder({ ...base, defaultUnitSize: null, unit: null });
+    expect(empty({})).toBe("/subscriptions/1");
+    expect(empty({ view: "3D" })).toBe("/subscriptions/1?view=3D");
+  });
+
   it("기본 평형으로 되돌리면 unit 쿼리를 제거한다", () => {
     expect(createDetailHrefBuilder({ ...base, unit: 59 })({ unit: 84 })).toBe("/subscriptions/1");
   });

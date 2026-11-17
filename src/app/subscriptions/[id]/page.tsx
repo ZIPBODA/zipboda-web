@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { getSubscriptionDetail, getSubscriptions, selectSubscriptionUnit } from "@/entities/subscription";
+import { getSubscriptions, selectSubscriptionUnit } from "@/entities/subscription";
 import {
   getFloorplan,
   DEFAULT_VIEW_MODE,
@@ -11,6 +11,8 @@ import {
   type Viewpoint
 } from "@/entities/floorplan";
 import { getRecommendedProducts } from "@/entities/product";
+import { firstParam } from "@/shared/lib/searchParams";
+import { getRequestSubscriptionDetail } from "../subscriptionDetailData";
 import {
   DetailTopBar,
   FloorplanViewer,
@@ -27,11 +29,11 @@ const NEARBY_COUNT = 2;
 
 interface PageProps {
   params: { id: string };
-  searchParams: { unit?: string; view?: string; viewpoint?: string; tab?: string };
+  searchParams: { unit?: string | string[]; view?: string; viewpoint?: string; tab?: string };
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-  const detail = await getSubscriptionDetail(params.id);
+  const detail = await getRequestSubscriptionDetail(params.id);
   if (!detail) return { title: "청약 공고 | 집보다" };
   return {
     title: `${detail.title} | 집보다`,
@@ -41,11 +43,12 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 // figma 135:4998(2D)·135:5295(3D) 청약 공고 상세(SUBS-03)
 export default async function SubscriptionDetailPage({ params, searchParams }: PageProps) {
-  const detail = await getSubscriptionDetail(params.id);
+  const detail = await getRequestSubscriptionDetail(params.id);
   if (!detail) notFound();
 
-  const selectedUnit = selectSubscriptionUnit(detail, searchParams.unit);
-  if (searchParams.unit !== undefined && !selectedUnit) notFound();
+  const requestedUnit = firstParam(searchParams.unit);
+  const selectedUnit = selectSubscriptionUnit(detail, requestedUnit);
+  if (requestedUnit && !selectedUnit) notFound();
   const unitKey = selectedUnit?.unitKey ?? selectedUnit?.size ?? null;
 
   const view = VIEW_MODES.includes(searchParams.view as FloorplanViewMode)
@@ -58,12 +61,13 @@ export default async function SubscriptionDetailPage({ params, searchParams }: P
     ? (searchParams.tab as MobileDetailTab)
     : DEFAULT_MOBILE_DETAIL_TAB;
 
-  const [floorplan, products, subscriptions] = await Promise.all([
-    unitKey === null ? null : getFloorplan(detail.id, unitKey),
+  // 지금 공고가 첫 페이지에 들 수 있어 하나 더 받아 둔다
+  const [floorplan, products, firstPage] = await Promise.all([
+    selectedUnit?.layoutKey ? getFloorplan(selectedUnit.layoutKey) : null,
     getRecommendedProducts(),
-    getSubscriptions()
+    getSubscriptions({}, { pageSize: NEARBY_COUNT + 1 })
   ]);
-  const nearby = subscriptions.filter((s) => s.id !== detail.id).slice(0, NEARBY_COUNT);
+  const nearby = firstPage.items.filter((s) => s.id !== detail.id).slice(0, NEARBY_COUNT);
 
   const hrefFor = createDetailHrefBuilder({
     id: detail.id,

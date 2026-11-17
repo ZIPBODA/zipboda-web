@@ -32,3 +32,6 @@ export const HOME_PROMO_SLIDES: { image: string; badge?: string; title: string; 
   { image: "/mock/main/main-interactive-1.png", title: "인터랙티브 3D 평면도", subtitle: "2D·3D 미리보기 + 가구 매칭" },
   { image: "/mock/shop/s3-1.webp", title: "인기 가구 추천", subtitle: "새 집을 위한 엄선된 가구" }
 ];
+
+/** 홈 '공공 청약'에 보이는 공고 수 — figma 135:5601 목업 6건(홈 썸네일 main-list-1~6과 같은 수) */
+export const HOME_SUBSCRIPTION_COUNT = 6;

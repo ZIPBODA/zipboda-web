@@ -10,7 +10,7 @@ interface Props {
 
 // figma 135:5023 좌측 — 평면도 프리뷰(2D) + 전용 뷰어(2D/3D·1인칭) 진입 + 방별 치수
 export function FloorplanViewer({ floorplan, subscriptionId, unitSize }: Props) {
-  const base = `/subscriptions/${subscriptionId}/floorplan?unit=${unitSize}`;
+  const base = `/subscriptions/${subscriptionId}/floorplan?unit=${encodeURIComponent(String(unitSize))}`;
 
   return (
     <section className="min-w-0 flex-1">

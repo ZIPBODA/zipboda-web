@@ -1,6 +1,14 @@
 import type { Metadata } from "next";
+import { loadSubscriptionPage } from "./listPageAction";
 import { loadMapDetail } from "./mapDetailAction";
-import { getSubscriptionFilterOptions, getSubscriptions, type SubscriptionSort } from "@/entities/subscription";
+import {
+  getSubscriptionFilterOptions,
+  getSubscriptionMapItems,
+  getSubscriptions,
+  type SubscriptionFilter,
+  type SubscriptionSort
+} from "@/entities/subscription";
+import { firstParam } from "@/shared/lib/searchParams";
 import { PageContainer, PageHeader } from "@/shared/ui";
 import {
   SubscriptionFilters,
@@ -20,36 +28,39 @@ export const metadata: Metadata = {
 };
 
 type PageProps = {
-  searchParams: { region?: string; size?: string; agency?: string; sort?: string; view?: string; q?: string; status?: string };
+  searchParams: Record<"region" | "size" | "agency" | "sort" | "view" | "q" | "status", string | string[] | undefined>;
 };
 
 // figma 135:5601 청약 공고 목록(SUBS-01). 첫 화면은 지도이고 목록은 ?view=list로 연다
 export default async function SubscriptionsPage({ searchParams }: PageProps) {
-  const [items, filterOptions] = await Promise.all([
-    getSubscriptions({
-      region: searchParams.region,
-      size: searchParams.size,
-      agency: searchParams.agency,
-      q: searchParams.q,
-      status: searchParams.status,
-      sort: searchParams.sort as SubscriptionSort | undefined
-    }),
-    getSubscriptionFilterOptions()
-  ]);
+  const params = {
+    region: firstParam(searchParams.region),
+    size: firstParam(searchParams.size),
+    agency: firstParam(searchParams.agency),
+    q: firstParam(searchParams.q),
+    status: firstParam(searchParams.status),
+    sort: firstParam(searchParams.sort),
+    view: firstParam(searchParams.view)
+  };
+  const { view: viewParam, ...filterParams } = params;
+  const filter: Partial<SubscriptionFilter> = { ...filterParams, sort: filterParams.sort as SubscriptionSort | undefined };
 
   // 모르는 값은 첫 화면(지도)으로 되돌린다 — 예전 링크나 오타가 빈 화면이 되지 않게
-  const view: SubscriptionListViewKey = SUBSCRIPTION_LIST_VIEW_KEYS.includes(searchParams.view ?? "")
-    ? (searchParams.view as SubscriptionListViewKey)
+  const view: SubscriptionListViewKey = SUBSCRIPTION_LIST_VIEW_KEYS.includes(viewParam ?? "")
+    ? (viewParam as SubscriptionListViewKey)
     : DEFAULT_SUBSCRIPTION_LIST_VIEW;
 
   if (view === "map") {
+    const [mapItems, filterOptions] = await Promise.all([getSubscriptionMapItems(filter), getSubscriptionFilterOptions()]);
     return (
       <>
         <SubscriptionsReturnTracker />
-        <SubscriptionMapWorkspace items={items} options={filterOptions} loadDetail={loadMapDetail} />
+        <SubscriptionMapWorkspace items={mapItems.items} totalCount={mapItems.totalCount} options={filterOptions} loadDetail={loadMapDetail} />
       </>
     );
   }
+
+  const [firstPage, filterOptions] = await Promise.all([getSubscriptions(filter), getSubscriptionFilterOptions()]);
 
   return (
     <PageContainer>
@@ -57,8 +68,8 @@ export default async function SubscriptionsPage({ searchParams }: PageProps) {
       {/* figma PC 413:645 / Mobile 419:10092 헤더(타이틀 + 뷰 토글) */}
       <PageHeader
         title="공공주택"
-        description={`현황도 기반 주택 ${items.length}건`}
-        actions={<ListViewToggle searchParams={searchParams} view={view} />}
+        description={`공고 ${firstPage.totalCount}건`}
+        actions={<ListViewToggle searchParams={params} view={view} />}
       />
 
       {/* PC 필터 바 / 모바일 칩레일 */}
@@ -71,7 +82,8 @@ export default async function SubscriptionsPage({ searchParams }: PageProps) {
         </div>
       </div>
       <div className="mt-4 md:mt-6">
-        <SubscriptionListView items={items} />
+        {/* 필터가 바뀌면 이어 붙인 페이지를 버리고 첫 페이지부터 다시 그린다 */}
+        <SubscriptionListView key={JSON.stringify(filter)} initialPage={firstPage} loadPage={loadSubscriptionPage.bind(null, filter)} />
       </div>
     </PageContainer>
   );

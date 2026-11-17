@@ -2,6 +2,7 @@ import Link from "next/link";
 import {
   AGENCY_TAG_TONE,
   STATUS_BADGE_TONE,
+  formatArea,
   type SubscriptionDetail
 } from "@/entities/subscription";
 import type { DetailHrefBuilder } from "../model/types";
@@ -75,7 +76,7 @@ export function DetailInfoPanel({ detail, selectedSize, hrefFor }: Props) {
                   selected ? "border-brand bg-amber-100 text-fg-heading" : "border-line text-fg-muted hover:bg-surface-secondary"
                 }`}
               >
-                {unit.label ?? (unit.size === null ? "" : `${unit.size}㎡`)}
+                {unit.label ?? (unit.size === null ? "" : formatArea(unit.size))}
               </Link>
             );
           })}

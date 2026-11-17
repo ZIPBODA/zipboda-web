@@ -5,7 +5,7 @@ import type { Floorplan } from "@/entities/floorplan";
 
 const floorplan: Floorplan = {
   id: "fp-84a",
-  subscriptionId: "1",
+  complexId: "1",
   size: 84,
   type: "A",
   has3d: true,

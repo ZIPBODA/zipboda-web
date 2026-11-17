@@ -5,7 +5,7 @@
 | 항목 | 내용 |
 |------|------|
 | 문서명 | 집보다 Codex 서비스 맥락 |
-| 버전 | v1.1.0 |
+| 버전 | v1.2.0 |
 | 작성일 | 2026-09-17 |
 | 기반 문서 | CLAUDE.md, package.json, next.config.mjs, docs/ZIPBODA_development-plan_v0.1.md, docs/ZIPBODA_handover_2026-08-05.md, docs/ZIPBODA_design-system.md, docs/ZIPBODA_nodeId.md, docs/ZIPBODA_design_nodeId.md, docs/ZIPBODA_요구사항정의서_v0.1.xlsx, docs/ZIPBODA_화면설계서_v0.1.xlsx |
 
@@ -15,6 +15,7 @@
 |------|------|--------|-----------|
 | v1.0.0 | 2026-09-17 | Codex | 공개 GitHub 소개·로컬 정의서·소스 대조, 서비스 도메인·반응형 범위·문서 불일치·확인 한계 기록 |
 | v1.1.0 | 2026-09-18 | Claude | 청약 목록 지도 전환 항목을 카카오맵 구현 상태(`?view=map`·`shared/ui/map`·`NEXT_PUBLIC_KAKAO_MAP_APP_KEY`·`geocode.json`)로 갱신 |
+| v1.2.0 | 2026-11-12 | Claude | 청약 데이터를 zipboda-api로 옮긴 상태 반영 — `geocode.json` 언급 삭제, `ZIPBODA_API_URL`(서버 전용)·서버에서만 호출·목 폴백 없음·catalog.json은 도면 자산만·원격 사진 허용 목록 두 곳 항목 추가 |
 
 ---
 
@@ -66,7 +67,8 @@
 - `src/app/page.tsx`는 서버에서 홈 데이터를 조회하고, Mobile과 PC 컴포넌트를 `md:hidden` / `hidden md:block`으로 나눈다.
 - `MobilePromoCarousel.tsx`는 `HOME_PROMO_SLIDES`를 소비한다. 4초 자동 전환·도트 선택·카운터 코드가 있고, 배너 콘텐츠는 임시 데이터다. 현재 열려 있다는 사실만으로 수정 대상으로 삼지 않는다.
 - `entities/*/api`와 `widgets/my-page/api`의 주요 조회는 `__mocks__`를 참조한다. 인증 화면에도 미연동 TODO가 있다. 화면 존재와 실제 서비스 연동 완료를 구분한다.
-- 청약 목록의 지도 전환은 `/subscriptions?view=map`으로 동작한다. 지도는 카카오맵이며 `shared/ui/map`의 `MapViewLoader`가 유일한 진입점이다. `NEXT_PUBLIC_KAKAO_MAP_APP_KEY`가 없으면 스크립트를 주입하지 않고 카카오맵 링크 대체 표시로 간다. 좌표는 `shared/api/housing-data/geocode.json`에 따로 두며, 비어 있으면 지도 자리는 대체 표시가 된다. 전체화면 평면도 라우트와 `FloorplanExperienceLoader`의 CSR 동적 로딩은 구현되어 있다.
+- 청약 목록의 지도 전환은 `/subscriptions?view=map`으로 동작한다. 지도는 카카오맵이며 `shared/ui/map`의 `MapViewLoader`가 유일한 진입점이다. `NEXT_PUBLIC_KAKAO_MAP_APP_KEY`가 없으면 스크립트를 주입하지 않고 카카오맵 링크 대체 표시로 간다.
+- 청약 공고(목록·지도·상세·검색·홈·가점 화면)는 zipboda-api에서 받는다(2026-11-12 연결). 주소는 서버 전용 환경 변수 `ZIPBODA_API_URL`(예 `http://localhost:4000/api`, `NEXT_PUBLIC_` 아님)이고, 비어 있으면 목 데이터로 돌아가지 않고 오류가 난다. 호출은 서버 컴포넌트·서버 액션에서만 한다(`shared/api/client.ts`). 좌표·공고 일정·신청 인원은 API가 준다 — `shared/api/housing-data/catalog.json`은 관리자 도면 업로드(S4) 전까지 도면 자산(도면 이미지·자르기 영역·3D 모델)만 맡는다. 원격 사진은 `next.config.mjs` images.remotePatterns와 `shared/config/images.ts`에 함께 등록한다.
 - `AppChrome`은 전체화면 평면도 경로에서 공통 셸을 숨기고, 일반 모바일 화면에서는 고정 하단 탭 여백을 제공한다.
 - 모바일 하단 탭은 현재 코드상 **홈·청약·쇼핑·커뮤니티·마이페이지**다.
 - `page.dev.tsx`는 `next.config.mjs`에서 개발 서버에만 등록한다. `/dev/floorplan-review`와 `/ds-check`는 일반 사용자 운영 화면과 구분한다.

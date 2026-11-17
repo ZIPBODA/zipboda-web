@@ -17,6 +17,13 @@ vi.mock("@/shared/ui/map", () => ({
 const data: MapDetailData = { detail: { id: "a", title: "청약 A", address: "서울", agency: "LH", agencyLabel: "LH", status: "접수중", dday: null, applyPeriod: null, households: null, supplyType: null, competition: null, contractDate: null, moveIn: null, postDate: null, units: [], defaultUnitSize: null, image: null, applyUrl: null }, plans: [] };
 
 describe("지도 상세 조회", () => {
+  // 주택형·도면이 없는 공고에 ?unit=을 붙이면 상세가 없는 호를 찾아 404다
+  it("고를 호가 없는 공고는 '공고 전체 보기'에 unit을 붙이지 않는다", async () => {
+    render(<SubscriptionMapDetail id="a" loadDetail={vi.fn().mockResolvedValue(data)} onClose={vi.fn()} />);
+    await screen.findByText("청약 A");
+    for (const link of screen.getAllByRole("link", { name: "공고 전체 보기 →" })) expect(link).toHaveAttribute("href", "/subscriptions/a");
+  });
+
   it("늦게 도착한 이전 공고가 새 상세를 덮어쓰지 않는다", async () => {
     let resolveFirst: (value: MapDetailData) => void = () => {};
     const first = new Promise<MapDetailData>((resolve) => { resolveFirst = resolve; });
@@ -62,7 +69,7 @@ describe("모바일 지도 상세", () => {
     render(<SubscriptionMapDetail id="a" item={item} loadDetail={vi.fn().mockResolvedValue(data)} onClose={vi.fn()} />);
     await screen.findByText("청약 A");
     expect(screen.queryByRole("link", { name: "공급기관 바로가기 ↗" })).not.toBeInTheDocument();
-    expect(screen.getAllByRole("link", { name: "공고 전체 보기 →" }).at(-1)).toHaveAttribute("href", "/subscriptions/a?unit=");
+    expect(screen.getAllByRole("link", { name: "공고 전체 보기 →" }).at(-1)).toHaveAttribute("href", "/subscriptions/a");
   });
 
   it("방문 기록을 차지한 상세의 링크는 새 기록을 쌓지 않고 그 기록을 바꿔 끼운다", async () => {

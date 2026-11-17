@@ -37,3 +37,6 @@ export const SCORE_TIPS = [
   "부양가족을 추가로 등록하세요",
   "무주택 기간 1년마다 2점 추가"
 ];
+
+/** 가점 계산기 옆 '신청 가능한 공고'에 보이는 공고 수 */
+export const ELIGIBLE_LISTING_COUNT = 2;
