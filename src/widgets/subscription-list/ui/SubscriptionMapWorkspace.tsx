@@ -5,7 +5,7 @@ import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } fr
 import type { MapViewProps } from "@/shared/ui/map";
 import type { LoadMapDetail } from "../model/mapDetail";
 import { SubscriptionMapDetail } from "./SubscriptionMapDetail";
-import { toMapMarkers, type Subscription, type SubscriptionFilterOptions } from "@/entities/subscription";
+import { toMapMarkers, type SubscriptionFilterOptions, type SubscriptionMapItem } from "@/entities/subscription";
 import { MAP_LEVEL } from "@/shared/config/map";
 import { Button } from "@/shared/ui";
 import { MapFallback, MapViewLoader } from "@/shared/ui/map";
@@ -22,7 +22,7 @@ import { SubscriptionMapSidebar } from "./SubscriptionMapSidebar";
 import { SubscriptionMapRail } from "./SubscriptionMapRail";
 
 /** items는 지도에 올릴(좌표가 있는) 공고, totalCount는 좌표가 없는 공고까지 센 조건 전체 건수다 */
-export function SubscriptionMapWorkspace({ items, totalCount, options, loadDetail }: { items: Subscription[]; totalCount: number; options: SubscriptionFilterOptions; loadDetail: LoadMapDetail }) {
+export function SubscriptionMapWorkspace({ items, totalCount, options, loadDetail }: { items: SubscriptionMapItem[]; totalCount: number; options: SubscriptionFilterOptions; loadDetail: LoadMapDetail }) {
   const mapped = useMemo(() => items.filter((item) => item.coord), [items]);
   const markers = useMemo(() => toMapMarkers(mapped), [mapped]);
   const [visibleIds, setVisibleIds] = useState<string[] | null>(null);

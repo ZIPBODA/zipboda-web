@@ -38,7 +38,7 @@ function setupSdk() {
     Point: class { constructor(public x: number, public y: number) {} },
     CustomOverlay: class { setMap = vi.fn(); constructor(public options: { content: HTMLElement; zIndex?: number; position: { lat: number; lng: number } }) { overlays.push(this); } },
     Circle: class { setMap = vi.fn(); constructor(public options: { radius: number; center: { lat: number; lng: number } }) { circles.push(this); } },
-    Map: constructor, MarkerClusterer: vi.fn(),
+    Map: constructor,
     CopyrightPosition: { BOTTOMLEFT: 0, BOTTOMRIGHT: 1 },
     LatLng: class { constructor(public lat: number, public lng: number) {} },
     LatLngBounds: class {},
@@ -271,6 +271,7 @@ describe("지도 상태 갱신", () => {
     const sdk = setupSdk();
     const { rerender, unmount } = render(<KakaoMapView markers={markers} clustering />);
     await screen.findByRole("button", { name: "지도 확대" });
+    await waitFor(() => expect(sdk.layer.sync).toHaveBeenCalledWith(markers, null));
     sdk.map.setBounds.mockClear();
     rerender(<KakaoMapView markers={[markers[1]]} clustering />);
     expect(sdk.constructor).toHaveBeenCalledTimes(1);
@@ -305,6 +306,36 @@ describe("지도 상태 갱신", () => {
     expect(sdk.map.setCenter).toHaveBeenLastCalledWith(previousCenter);
     expect(sdk.map.setBounds).not.toHaveBeenCalled();
     expect(sdk.map.setLevel).not.toHaveBeenCalled();
+  });
+
+  it("관찰을 시작할 때 크기가 그대로면 다시 맞추거나 핀을 다시 묶지 않는다", async () => {
+    const sdk = setupSdk();
+    const width = vi.spyOn(Element.prototype, "clientWidth", "get").mockReturnValue(400);
+    const height = vi.spyOn(Element.prototype, "clientHeight", "get").mockReturnValue(400);
+    onTestFinished(() => { width.mockRestore(); height.mockRestore(); });
+    render(<KakaoMapView markers={markers} clustering />);
+    await screen.findByRole("button", { name: "지도 확대" });
+    sdk.resize();
+    expect(sdk.map.relayout).not.toHaveBeenCalled();
+    expect(sdk.layer.redraw).not.toHaveBeenCalled();
+    height.mockReturnValue(560);
+    sdk.resize();
+    expect(sdk.map.relayout).toHaveBeenCalledTimes(1);
+    expect(sdk.layer.redraw).toHaveBeenCalledTimes(1);
+  });
+
+  // 지도는 만드는 순간의 크기로 화면을 잡는다 — 그 뒤 배치가 바뀌었다면 첫 관찰에서 크기가 그대로처럼 보여도 다시 맞춰야 한다
+  it("지도를 만든 뒤 크기가 바뀌었으면 첫 관찰에서 다시 맞춘다", async () => {
+    const sdk = setupSdk();
+    const width = vi.spyOn(Element.prototype, "clientWidth", "get").mockReturnValue(400);
+    const height = vi.spyOn(Element.prototype, "clientHeight", "get").mockReturnValue(400);
+    onTestFinished(() => { width.mockRestore(); height.mockRestore(); });
+    sdk.constructor.mockImplementationOnce(function () { height.mockReturnValue(520); return sdk.map; });
+    render(<KakaoMapView markers={markers} clustering />);
+    await screen.findByRole("button", { name: "지도 확대" });
+    sdk.resize();
+    expect(sdk.map.relayout).toHaveBeenCalledTimes(1);
+    expect(sdk.layer.redraw).toHaveBeenCalledTimes(1);
   });
 
   it("상세 지도는 확대 버튼과 클러스터를 사용하지 않는다", async () => {

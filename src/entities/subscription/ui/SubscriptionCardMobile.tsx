@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { AGENCY_BADGE_BG, DDAY_URGENT_THRESHOLD } from "../config/constants";
+import { AGENCY_BADGE_BG, DDAY_URGENT_THRESHOLD, MOBILE_CARD_IMAGE_SIZES } from "../config/constants";
 import { sizeChipLabelsOf } from "../lib/formatArea";
 import type { Subscription } from "../model/types";
 
@@ -17,7 +17,7 @@ export function SubscriptionCardMobile({ item }: { item: Subscription }) {
   return (
     <Link href={`/subscriptions/${item.id}`} className="block overflow-hidden rounded-xl border border-line-subtle bg-surface">
       <div className="relative h-[120px] bg-surface-tertiary">
-        {item.image && <Image src={item.image} alt="" fill sizes="(min-width: 640px) 50vw, 100vw" className="object-cover" />}
+        {item.image && <Image src={item.image} alt="" fill sizes={MOBILE_CARD_IMAGE_SIZES} className="object-cover" />}
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
 
         <div className="absolute inset-x-0 top-0 flex gap-1 p-2.5">

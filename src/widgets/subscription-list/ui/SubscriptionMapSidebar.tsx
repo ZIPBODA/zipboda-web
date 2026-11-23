@@ -1,14 +1,14 @@
 "use client";
 
 import { useEffect, useRef, useState, type ReactNode } from "react";
-import { DEFAULT_SORT, LIST_PAGE_SIZE, SORT_OPTIONS, SubscriptionLoadMore, type Subscription } from "@/entities/subscription";
+import { DEFAULT_SORT, LIST_PAGE_SIZE, SORT_OPTIONS, SubscriptionLoadMore, type SubscriptionMapItem } from "@/entities/subscription";
 import { Button, cn } from "@/shared/ui";
 import { useSubscriptionFilters } from "../model/useSubscriptionFilters";
 import { useSheetDrag, type MapSheetSnap } from "../model/useSheetDrag";
 import { SubscriptionMapResultCard } from "./SubscriptionMapResultCard";
 
 interface Props {
-  items: Subscription[];
+  items: SubscriptionMapItem[];
   /** area: 지금 지도에 보이는 공고, selection: 배지·핀으로 고른 공고 */
   scope: "area" | "selection";
   /** PC 패널이 펼쳐져 있는지. 모바일 시트는 접혀도 손잡이가 남는다 */

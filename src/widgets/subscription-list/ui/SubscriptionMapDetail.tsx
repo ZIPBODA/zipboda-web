@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { AGENCY_TAG_TONE, STATUS_BADGE_TONE, type Subscription } from "@/entities/subscription";
+import { AGENCY_TAG_TONE, STATUS_BADGE_TONE, type SubscriptionMapItem } from "@/entities/subscription";
 import { MAP_LEVEL } from "@/shared/config/map";
 import { MOBILE_MEDIA_QUERY } from "@/shared/config/viewport";
 import { useMediaQuery } from "@/shared/lib/useMediaQuery";
@@ -18,7 +18,7 @@ import { DeadlineTag } from "./DeadlineTag";
  * PC에서는 목록 옆 패널이고, 모바일에서는 지도 위를 덮는 한 장의 페이지다.
  * 모바일은 사진 옆에 작은 위치 지도를 두고, 신청으로 가는 버튼을 화면 아래에 고정한다 — 긴 기본 정보를 내려 읽어도 신청이 늘 한 번에 닿게.
  */
-export function SubscriptionMapDetail({ id, loadDetail, onClose, item, replaceHistoryOnLeave = false }: { id: string; loadDetail: LoadMapDetail; onClose: () => void; item?: Subscription; replaceHistoryOnLeave?: boolean }) {
+export function SubscriptionMapDetail({ id, loadDetail, onClose, item, replaceHistoryOnLeave = false }: { id: string; loadDetail: LoadMapDetail; onClose: () => void; item?: SubscriptionMapItem; replaceHistoryOnLeave?: boolean }) {
   const [data, setData] = useState<MapDetailData | null>(null);
   const [status, setStatus] = useState<"loading" | "ready" | "error">("loading");
   const [attempt, setAttempt] = useState(0);

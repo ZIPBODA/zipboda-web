@@ -2,7 +2,7 @@ import { ZbBrandPrimary, ZbBrandOnPrimary, ZbRadiusFull, ZbSpace14, ZbSpace4, Zb
 
 /**
  * 숫자 배지. 자릿수가 늘어도 글자가 잘리지 않도록 너비를 고정하지 않고 최소 너비와 좌우 여백으로 늘린다.
- * 카카오는 이 객체를 묶음 표시 div의 인라인 스타일로 그대로 넣는다.
+ * 지도 핀 레이어(createMarkerLayer)가 이 객체를 묶음 배지 div의 인라인 스타일로 그대로 넣는다.
  */
 export const MAP_CLUSTER_STYLE = {
   minWidth: ZbSpace14,

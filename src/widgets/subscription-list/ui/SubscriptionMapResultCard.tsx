@@ -1,5 +1,5 @@
 import Image from "next/image";
-import type { Subscription } from "@/entities/subscription";
+import type { SubscriptionMapItem } from "@/entities/subscription";
 import { cn } from "@/shared/ui";
 import { deadlineLabel } from "../lib/deadlineLabel";
 import { formatAreaRange } from "../lib/formatAreaRange";
@@ -9,7 +9,7 @@ import { DeadlineTag } from "./DeadlineTag";
  * 모바일에서는 회색 시트 위 흰 카드로 서고 주택명을 크게, 마감은 색 태그로 보인다.
  * 지도에서 고른 카드에는 누를 곳이 한눈에 보이도록 '상세 보기' 버튼 모양을 덧댄다 — 실제로 누르는 것은 카드 전체다.
  */
-export function SubscriptionMapResultCard({ item, active, onSelect, showCta = false }: { item: Subscription; active?: boolean; onSelect: () => void; showCta?: boolean }) {
+export function SubscriptionMapResultCard({ item, active, onSelect, showCta = false }: { item: SubscriptionMapItem; active?: boolean; onSelect: () => void; showCta?: boolean }) {
   return (
     <article data-housing-id={item.id} className={cn("relative rounded-xl px-3 py-5 max-md:rounded-2xl max-md:bg-surface max-md:p-5 md:py-6", active ? "bg-surface-secondary ring-2 ring-inset ring-brand" : "hover:bg-surface-secondary")}>
       <p className="text-xs font-medium text-fg-muted">{[item.agency, item.status].filter(Boolean).join(" · ")}</p>

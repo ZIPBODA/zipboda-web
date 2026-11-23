@@ -55,6 +55,14 @@ describe("지도(API-012)", () => {
     expect(result.totalCount).toBe(7);
     expect(result.items[0]).toMatchObject({ id: "a", coord: { lat: 37.5, lng: 127 } });
   });
+
+  // 지도는 핀 전부를 문서에 싣는다 — 지도 화면이 쓰지 않는 칸과 지나친 좌표 자릿수는 빼 문서를 줄인다
+  it("지도 항목은 지도 화면이 쓰는 칸만 남기고 좌표를 소수 여섯째 자리로 줄인다", async () => {
+    fetchMock.mockResolvedValue(new Response(JSON.stringify(envelope({ markers: [{ ...item("a"), lat: 37.2953404384071, lng: 127.081191231128, supplyType: "분양주택", competition: "3.2:1", moveIn: "2028-07" }], totalCount: 1 }))));
+    const { items: [mapped] } = await getSubscriptionMapItems();
+    expect(mapped.coord).toEqual({ lat: 37.29534, lng: 127.081191 });
+    expect(Object.keys(mapped).sort()).toEqual(["agency", "coord", "dday", "deadline", "households", "id", "image", "location", "sizes", "status", "title"]);
+  });
 });
 
 describe("상세(API-011)", () => {

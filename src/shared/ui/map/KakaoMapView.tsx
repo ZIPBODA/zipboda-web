@@ -9,6 +9,7 @@ import { estimateFitView } from "../../lib/mapFit";
 import { cn } from "../cn";
 import { createMarkerLayer } from "./createMarkerLayer";
 import type { MapViewProps } from "./types";
+import { hasMapPlace } from "../../lib/mapPlace";
 
 /**
  * 가려진 폭(padding)을 비켜 point가 남은 화면 가운데 오도록, 이동과 확대를 SDK의 jump 한 번으로 끝낸다.
@@ -39,7 +40,7 @@ export function KakaoMapView({
   const [map, setMap] = useState<kakao.maps.Map | null>(null);
   const [zoom, setZoom] = useState(level);
   const [status, setStatus] = useState<MapSdkStatus | "loading">("loading");
-  const hasPlace = markers.length > 0 || center !== null || initialCenter !== undefined || initialViewport !== undefined;
+  const hasPlace = hasMapPlace({ markers, center, initialCenter, initialViewport });
   const framedMap = useRef<kakao.maps.Map | null>(null);
   const handledFit = useRef(0);
 
@@ -57,20 +58,19 @@ export function KakaoMapView({
         return;
       }
       const maps = result.maps;
-      if (clustering && typeof maps.MarkerClusterer !== "function") {
-        setStatus("failed");
-        return;
-      }
       // 여러 공고에 맞출 지도는 맞춘 뒤의 화면에서 바로 시작한다 — 기본 배율로 만들었다 다시 맞추면 지도 조각을 두 벌 받는다
       const fitBounds = !initialViewport && !center && markers.length > 1 ? boundsOf(markers.map((marker) => marker.point)) : null;
       const fitted = fitBounds && estimateFitView(fitBounds, { width: containerRef.current.clientWidth, height: containerRef.current.clientHeight }, fitPadding ?? NO_MAP_PADDING);
       const fittedLevel = fitted && (clustering ? Math.max(fitted.level, MAP_SINGLE_PIN_LEVEL + 1) : fitted.level);
       const origin = initialViewport?.center ?? center ?? fitted?.center ?? markers[0]?.point ?? initialCenter;
       if (!origin) return;
+      // 지도는 만드는 순간의 크기로 화면을 잡는다. 그 뒤 첫 관찰에서 크기가 다르면 다시 맞춰야 한다(ResizeObserver 참고)
+      const createdSize = { width: containerRef.current.clientWidth, height: containerRef.current.clientHeight };
       const instance = new maps.Map(containerRef.current, {
         center: new maps.LatLng(origin.lat, origin.lng), level: initialViewport?.level ?? fittedLevel ?? level,
         draggable: interactive, scrollwheel: interactive, disableDoubleClickZoom: !interactive
       });
+      viewportSize.current = createdSize;
       setMap(instance);
       setStatus("ready");
     });
@@ -211,6 +211,9 @@ export function KakaoMapView({
     let hadSize = container.clientWidth > 0 && container.clientHeight > 0;
     const observer = new ResizeObserver(() => {
       if (container.clientWidth === 0 || container.clientHeight === 0) { hadSize = false; return; }
+      // 관찰을 시작하면 크기가 그대로여도 한 번 불린다. 지도를 만든 크기 그대로면 다시 맞추거나 다시 묶지 않는다
+      const known = viewportSize.current;
+      if (hadSize && known?.width === container.clientWidth && known.height === container.clientHeight) return;
       // SDK의 getCenter는 새 컨테이너 크기의 영향을 받으므로 마지막 이동 완료 시점을 보존한다.
       const previousCenter = viewportCenter.current ?? map.getCenter();
       viewportSize.current = { width: container.clientWidth, height: container.clientHeight };
@@ -238,7 +241,7 @@ export function KakaoMapView({
 
   return (
     <div role={interactive ? "group" : "img"} aria-label={ariaLabel} className={cn("relative bg-surface-tertiary", className)}>
-      <div ref={containerRef} className="absolute inset-0" />
+      <div ref={containerRef} data-kakao-map className="absolute inset-0" />
       {interactive && status === "ready" && map && (
         <div className={cn("absolute right-3 z-10 flex flex-col overflow-hidden rounded-lg border border-line bg-surface shadow-sm", controlsClassName ?? "top-3")} aria-label="지도 배율">
           <button type="button" aria-label="지도 확대" disabled={zoom <= MAP_ZOOM_RANGE.min} onClick={() => map.setLevel(Math.max(MAP_ZOOM_RANGE.min, map.getLevel() - 1))} className="size-11 text-xl font-semibold text-fg-heading hover:bg-surface-secondary focus-visible:bg-surface-tertiary disabled:text-fg-disabled">+</button>
