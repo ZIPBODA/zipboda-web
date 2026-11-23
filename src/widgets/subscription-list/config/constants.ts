@@ -50,5 +50,8 @@ export const MAP_OVERLAY_SELECTORS = {
   bottomBar: ".map-workspace-status, .map-workspace-count"
 } as const;
 
+/** 목록 화면이 모바일 세로 카드를 보이는 폭(md 미만). PC 가로 카드와 함께 그려 CSS로 하나만 보인다 */
+export const MOBILE_LIST_MEDIA = "(max-width: 767px)";
+
 /** 위치 안내가 떠 있는 시간. 실패 안내는 문장이 길어 읽을 시간을 더 준다 */
 export const MAP_LOCATION_NOTICE_MS = { success: 3000, error: 6000 } as const;

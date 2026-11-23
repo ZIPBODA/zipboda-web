@@ -20,6 +20,9 @@
 .map-cluster-badge[aria-pressed="true"] {
   @apply !bg-surface ring-4 ring-brand;
 }
+/* 카카오는 도형이 없어도 지도의 몇 배 크기인 빈 SVG 층을 깔고, 이동 애니메이션 동안 left·top으로 옮긴다.
+   CWV는 이것을 레이아웃 이동으로 센다(공고를 열어 지도가 날아가는 0.7초 동안 CLS 11.4). 도형이 생기면 다시 보인다 */
+[data-kakao-map] svg:not(:has(> :not(defs))) { display: none; }
 .app-chrome:has([data-map-workspace]) > .app-content { min-height: 0; display: flex; flex-direction: column; }
 .app-chrome:has([data-map-workspace]) > .app-footer { display: none; }
 [data-map-workspace] {

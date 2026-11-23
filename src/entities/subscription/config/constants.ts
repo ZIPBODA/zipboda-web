@@ -94,5 +94,11 @@ export const DRAWING_UNIT_SUFFIX = "-drawing";
 /** 면적 화면 표기 자릿수. 원천은 소수 넷째 자리까지 오지만(청약홈 84.6192㎡) 화면에는 둘째 자리까지 보인다 — 필터·정렬은 원래 값을 쓴다 */
 export const AREA_DISPLAY_DECIMALS = 2;
 
+/** 지도 항목 좌표의 소수 자릿수(약 0.1m). 원천은 열세 자리까지 와 핀 1천여 개면 문서가 수십 KB 늘어난다 */
+export const MAP_ITEM_COORD_DECIMALS = 6;
+
+/** 모바일 세로 카드 사진의 sizes. 목록 화면이 첫 카드 사진을 같은 값으로 미리 받아 같은 파일을 쓴다 */
+export const MOBILE_CARD_IMAGE_SIZES = "(min-width: 640px) 50vw, 100vw";
+
 /** 카드 한 장에 보이는 면적 칩 수. 넘치면 '+n' 칩 하나로 줄인다 — 주택형이 열 개 넘는 단지가 옆 수치를 덮지 않게 */
 export const SIZE_CHIP_LIMIT = 4;

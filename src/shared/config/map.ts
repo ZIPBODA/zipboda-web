@@ -9,9 +9,10 @@ export const IS_MAP_ENABLED = KAKAO_MAP_APP_KEY.length > 0;
 
 /**
  * autoload=false로 받아 kakao.maps.load()로 준비 시점을 직접 기다린다.
- * 목록의 확대 단계별 개수 표시에 clusterer를 사용한다. services(지오코딩)는 싣지 않는다.
+ * 묶음 배지는 직접 계산하므로(markerClusters) clusterer 라이브러리를 받지 않는다 — 지도가 그만큼 일찍 선다.
+ * services(지오코딩)도 싣지 않는다.
  */
-export const KAKAO_MAP_SDK_SRC = `https://dapi.kakao.com/v2/maps/sdk.js?appkey=${KAKAO_MAP_APP_KEY}&autoload=false&libraries=clusterer`;
+export const KAKAO_MAP_SDK_SRC = `https://dapi.kakao.com/v2/maps/sdk.js?appkey=${KAKAO_MAP_APP_KEY}&autoload=false`;
 
 /** 스크립트가 이 시간 안에 오지 않으면 대체 표시로 확정한다. 로딩 표시가 영원히 도는 것을 막는다 */
 export const MAP_SCRIPT_TIMEOUT_MS = 8000;
@@ -38,17 +39,17 @@ export const NO_MAP_PADDING = [0, 0, 0, 0] as const;
  */
 export const MAP_FOCUS_LEVEL = MAP_LEVEL.detail;
 
-/** 이동과 확대를 한 번의 jump 애니메이션으로 끝내는 시간. 카카오는 이 동안 마커를 감추므로 길수록 핀이 오래 사라진다 */
-export const MAP_FOCUS_ANIMATION_MS = 700;
+/**
+ * 이동과 확대를 한 번의 jump 애니메이션으로 끝내는 시간. 카카오는 이 동안 마커를 감추므로 길수록 핀이 오래 사라진다.
+ * 누른 뒤 0.5초 안에 끝내야 한다 — 그 뒤에 움직이는 지도 조각은 CWV가 레이아웃 이동으로 센다(0.7초일 때 CLS 0.62)
+ */
+export const MAP_FOCUS_ANIMATION_MS = 450;
 
 /**
  * 지도는 두 얼굴을 가진다. 멀리서는 어느 동네에 몇 건이 몰렸는지, 가까이서는 어느 집인지 본다.
- * 이 단계에서만 개별 핀을 찍는다.
+ * 이 단계에서는 같은 자리의 핀만 배지로 묶고 나머지는 모두 핀이다 — MAP_SAME_SPOT_GRID_SIZE 참고.
  */
 export const MAP_DETAIL_PIN_LEVEL = MAP_ZOOM_RANGE.min;
-
-/** 이 단계부터는 여러 건을 숫자 배지로 묶는다 */
-export const MAP_AGGREGATE_MIN_LEVEL = MAP_DETAIL_PIN_LEVEL + 1;
 
 /**
  * 한 건짜리는 여기까지만 배지로 두고, 이 단계부터는 바로 핀으로 보여준다.
@@ -69,16 +70,24 @@ export const MAP_MY_LOCATION_LEVEL = MAP_SINGLE_PIN_LEVEL;
 /** 내 위치 점은 청약 핀·이름표보다 위에 둔다 — 어디가 나인지 가장 먼저 보여야 한다 */
 export const MAP_MY_LOCATION_Z_INDEX = MAP_PIN_LABEL_Z_INDEX.selected + 1;
 
-/**
- * minClusterSize 1은 한 건도 배지로 만든다. 카카오 SDK에서 실제로 1건짜리 묶음이 생기는 것을
- * 확인하고 정했다(그 아래 단계에서는 SDK가 스스로 개별 마커로 되돌린다).
- * 확대 단계에 따라 이 값을 2로 바꾸면 한 건짜리만 핀으로 풀린다 — minClusterSizeFor 참고.
- */
-export const MAP_CLUSTER_OPTIONS = {
-  gridSize: 80,
-  minLevel: MAP_AGGREGATE_MIN_LEVEL,
-  minClusterSize: 1
-} as const;
+/** 묶는 격자(화면 px). 묶음 중심에서 가로·세로 이 안에 드는 집을 하나의 숫자 배지로 묶는다 */
+export const MAP_CLUSTER_GRID_SIZE = 80;
 
-/** 한 건짜리를 배지로 둘지(1) 핀으로 풀지(2) — 확대 단계가 정한다 */
+/**
+ * 화면 밖으로 미리 묶어 두는 폭(px). 이 안의 집은 지도를 조금 끌어도 손을 떼기 전에 이미 배지·핀으로 서 있다.
+ * 격자와 따로 둔다 — 같은 자리만 묶는 가장 가까운 단계(격자 1px)에서도 여유가 줄지 않게
+ */
+export const MAP_CLUSTER_VIEW_MARGIN = MAP_CLUSTER_GRID_SIZE;
+
+/** 묶음 크기가 이보다 작으면 배지 대신 핀으로 보인다. 1이면 멀리서는 한 건도 '1건' 배지이고, 2면 한 건짜리만 핀으로 풀린다 */
 export const minClusterSizeFor = (level: number): number => (level <= MAP_SINGLE_PIN_LEVEL ? 2 : 1);
+
+/**
+ * 가장 가까운 단계에서 묶는 격자(화면 px). 같은 단지의 여러 공고는 좌표가 같아 핀이 한 자리에 포개지고 맨 위 하나만
+ * 눌린다(실데이터 121곳, 한 곳 최대 12건) — 같은 자리만 다른 단계와 같은 'N건' 배지로 묶는다. 1px은 이 단계에서 약 0.25m다.
+ * 다른 단지끼리는 20m(80px) 안에 붙은 곳이 있어(실데이터 20쌍) 격자를 넓히면 서로 다른 집이 배지로 묶인다
+ */
+export const MAP_SAME_SPOT_GRID_SIZE = 1;
+
+export const clusterGridSizeFor = (level: number): number =>
+  level <= MAP_DETAIL_PIN_LEVEL ? MAP_SAME_SPOT_GRID_SIZE : MAP_CLUSTER_GRID_SIZE;

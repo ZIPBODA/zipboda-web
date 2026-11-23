@@ -7,6 +7,7 @@ import {
   DRAWING_UNIT_SUFFIX,
   FILTER_ALL,
   KEYWORD_MAX_LENGTH,
+  MAP_ITEM_COORD_DECIMALS,
   REGION_API_CODES,
   SIZE_RANGE_OPTIONS,
   SORT_OPTIONS,
@@ -18,6 +19,7 @@ import type {
   SubscriptionDetail,
   SubscriptionFilter,
   SubscriptionFilterOptions,
+  SubscriptionMapItem,
   SubscriptionPage,
   SubscriptionSort,
   SubscriptionUnit
@@ -82,6 +84,23 @@ export const toSubscription = (dto: SubscriptionListItemDto): Subscription => ({
   households: dto.households,
   competition: dto.competition,
   moveIn: monthOrNull(dto.moveIn),
+  deadline: dateOrNull(dto.deadline),
+  dday: dto.dday,
+  image: displayableImageOf(dto.imageUrl)
+});
+
+const roundCoordinate = (value: number) => Number(value.toFixed(MAP_ITEM_COORD_DECIMALS));
+
+// 지도는 핀 1천여 개를 서버에서 한 번에 바꾸므로 쓰는 칸만 바로 옮긴다
+export const toSubscriptionMapItem = (dto: SubscriptionListItemDto): SubscriptionMapItem => ({
+  id: dto.id,
+  agency: nameOf(AGENCY_API_CODES, dto.agencyCode),
+  status: nameOf(STATUS_API_CODES, dto.statusCode),
+  title: dto.title,
+  location: dto.address,
+  coord: dto.lat === null || dto.lng === null ? null : { lat: roundCoordinate(dto.lat), lng: roundCoordinate(dto.lng) },
+  sizes: dto.sizes,
+  households: dto.households,
   deadline: dateOrNull(dto.deadline),
   dday: dto.dday,
   image: displayableImageOf(dto.imageUrl)

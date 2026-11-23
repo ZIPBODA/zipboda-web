@@ -19,6 +19,8 @@ declare namespace kakao.maps {
     extend(point: LatLng): void;
     isEmpty(): boolean;
     contain(point: LatLng): boolean;
+    getSouthWest(): LatLng;
+    getNorthEast(): LatLng;
   }
 
   interface MapOptions {
@@ -36,7 +38,13 @@ declare namespace kakao.maps {
   }
 
   class Map {
-    getProjection(): { containerPointFromCoords(point: LatLng): Point; coordsFromContainerPoint(point: Point): LatLng };
+    getProjection(): {
+      containerPointFromCoords(point: LatLng): Point;
+      coordsFromContainerPoint(point: Point): LatLng;
+      /** 지금 배율의 지도 픽셀 좌표. 지도를 옮겨도 바뀌지 않는다 */
+      pointFromCoords(point: LatLng): Point;
+      coordsFromPoint(point: Point): LatLng;
+    };
     constructor(container: HTMLElement, options: MapOptions);
     setCenter(position: LatLng): void;
     setLevel(level: number, options?: { anchor?: LatLng; animate?: boolean | { duration: number } }): void;
@@ -79,41 +87,9 @@ declare namespace kakao.maps {
     setMap(map: Map | null): void;
   }
 
-  interface MarkerClustererOptions {
-    map: Map;
-    gridSize?: number;
-    minLevel?: number;
-    minClusterSize?: number;
-    averageCenter?: boolean;
-    disableClickZoom?: boolean;
-    styles?: Record<string, string>[];
-    texts?: (size: number) => string;
-  }
-
-  class MarkerClusterer {
-    constructor(options: MarkerClustererOptions);
-    getMinClusterSize(): number;
-    setMinClusterSize(size: number): void;
-    addMarkers(markers: Marker[], nodraw?: boolean): void;
-    removeMarkers(markers: Marker[], nodraw?: boolean): void;
-    clear(): void;
-    redraw(): void;
-  }
-
-  interface Cluster {
-    getMarkers(): Marker[];
-    getCenter(): LatLng;
-    getSize(): number;
-    getClusterMarker(): CustomOverlay;
-  }
-
   namespace event {
     function addListener(target: Marker | Map, type: string, handler: () => void): void;
     function removeListener(target: Marker | Map, type: string, handler: () => void): void;
-    function addListener(target: MarkerClusterer, type: "clusterclick", handler: (cluster: Cluster) => void): void;
-    function removeListener(target: MarkerClusterer, type: "clusterclick", handler: (cluster: Cluster) => void): void;
-    function addListener(target: MarkerClusterer, type: "clustered", handler: (clusters: Cluster[]) => void): void;
-    function removeListener(target: MarkerClusterer, type: "clustered", handler: (clusters: Cluster[]) => void): void;
   }
 }
 

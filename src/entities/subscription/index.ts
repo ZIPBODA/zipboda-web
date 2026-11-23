@@ -8,6 +8,7 @@ export type {
   SubscriptionFilter,
   SubscriptionFilterOptions,
   SubscriptionPage,
+  SubscriptionMapItem,
   SubscriptionMapItems
 } from "./model/types";
 export {
@@ -20,7 +21,8 @@ export {
   AGENCY_TAG_TONE,
   STATUS_BADGE_TONE,
   SUBSCRIPTIONS_PATH,
-  LIST_PAGE_SIZE
+  LIST_PAGE_SIZE,
+  MOBILE_CARD_IMAGE_SIZES
 } from "./config/constants";
 export { rememberSubscriptionsReturn } from "./lib/returnHref";
 export { SubscriptionsBackLink } from "./ui/SubscriptionsBackLink";

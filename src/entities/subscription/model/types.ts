@@ -48,9 +48,15 @@ export interface SubscriptionPageRequest {
   pageSize?: number;
 }
 
+/**
+ * 지도 화면(핀·옆 목록 카드·상세 머리)이 쓰는 칸만. 지도는 조건에 맞는 공고를 모두 한 번에 받아 문서(HTML)에 싣는다 —
+ * 쓰지 않는 칸까지 실으면 모바일에서 문서와 화면 코드가 그만큼 늦게 와 지도가 늦게 선다
+ */
+export type SubscriptionMapItem = Pick<Subscription, "id" | "agency" | "status" | "title" | "location" | "coord" | "sizes" | "households" | "deadline" | "dday" | "image">;
+
 /** 지도에 올릴 공고(좌표가 있는 것)와, 좌표가 없는 공고까지 센 전체 건수 */
 export interface SubscriptionMapItems {
-  items: Subscription[];
+  items: SubscriptionMapItem[];
   totalCount: number;
 }
 
